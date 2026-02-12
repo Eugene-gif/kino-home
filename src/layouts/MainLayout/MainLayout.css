@@ -1,13 +1,13 @@
 .layout {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  max-width: 1400px;
-  margin: 0 auto;
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	max-width: 1400px;
+	margin: 0 auto;
 
-  .main {
-    flex: 1 0 auto;
-    padding: 0 20px;
-    margin-top: 95px;
-  }
+	.main {
+		flex: 1 0 auto;
+		padding: 0 20px;
+		margin-top: 95px;
+	}
 }

@@ -1,5 +1,26 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "semi": false,
-  "singleQuote": true
+  "semi": true, // Ставить точки с запятой в конце строк
+  "singleQuote": true, // Использовать одинарные кавычки
+  "indent": 2, // Размер отступа (2 пробела)
+  "useTabs": true, // Использовать пробелы вместо табуляции
+  "printWidth": 100, // Максимальная длина строки
+  "bracketSpacing": true, // Пробелы внутри скобок { foo: bar }
+  "endOfLine": "lf", // Символы конца строки (LF для Unix/Mac)
+  "overrides": [
+    {
+      "files": [
+        "*.vue"
+      ],
+      "options": {
+        "vueIndentScriptAndStyle": true,
+        "vueIndentTemplate": true,
+        "scriptIndent": 2,
+        "styleIndent": 2,
+        "templateIndent": 2
+      }
+    },
+  ],
+  "force": true, // 👑 Включить режим "Я ЗДЕСЬ ГЛАВНЫЙ!"
+  "ignoreConfigFiles": true // Игнор других конфигов
 }
