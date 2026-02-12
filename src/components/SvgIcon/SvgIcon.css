@@ -1,0 +1,6 @@
+.svg-icon {
+  width: 20px;
+  height: 20px;
+  color: #898792;
+  /* stroke: var(--icon-color, currentColor); */
+}
