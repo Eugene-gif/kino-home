@@ -2,74 +2,98 @@
 @import './fonts.css';
 
 :root {
-	--font-family-base: 'Roboto', sans-serif;
-	--font-size-base: 16px;
-	--font-weight-base: 400;
-	--line-height-base: 1.2;
-	--text-color-base: #898792;
+  --font-family-base: 'Roboto', sans-serif;
+  --font-size-base: 16px;
+  --font-weight-base: 400;
+  --line-height-base: 1.2;
+  --text-color-base: #898792;
+  --header-ident-base: 90px;
+  --color-red: #ed0a32;
+  --color-white: #fff;
+  --color-dark: #141025;
+  --color-second-dark: #1a0335;
+  --color-grey: #cfd0d9;
 }
 
 html,
 body,
 #app {
-	height: 100dvh;
+  height: 100dvh;
 }
 
 body {
-	font-family: var(--font-family-base);
-	font-size: var(--font-size-base);
-	font-weight: var(--font-weight-base);
-	line-height: var(--line-height-base);
-	color: var(--text-color-base);
-	margin: 0;
-	display: block;
-	min-width: 320px;
-	/* min-height: 100dvh; */
-	background-color: #141025;
-	background-image: url('@/assets/images/bg-app.svg');
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	background-size: cover;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-base);
+  line-height: var(--line-height-base);
+  color: var(--text-color-base);
+  margin: 0;
+  display: block;
+  min-width: 320px;
+  background-color: #141025;
+  background-image: url('@/assets/images/bg-app.svg');
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: cover;
 }
 
-/* #app { */
-/* max-width: 1280px; */
-/* margin: 0 auto; */
-/* padding: 2rem; */
-/* font-weight: normal; */
-/* } */
-
 .visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	border: 0;
-	padding: 0;
-	white-space: nowrap;
-	clip-path: inset(100%);
-	clip: rect(0 0 0 0);
-	overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
 
 h1,
 h2,
 h3 {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
+  color: #fff;
 }
 
 h1 {
-	font-weight: 800;
-	font-size: 4.5rem;
-	letter-spacing: 0.01em;
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 h2 {
-	font-weight: 700;
-	font-size: 2rem;
+  font-weight: 700;
+  font-size: 2rem;
 }
 
 h3 {
-	font-weight: 600;
-	font-size: 1.5rem;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+a {
+  --color-btn: #898792;
+  --transition: all 0.1s ease-in-out;
+
+  transition: var(--transition);
+  color: var(--color-btn);
+  /* outline: none; */
+
+  &:hover {
+    /* text-decoration: underline; */
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+    border-radius: 3px;
+	}
+
+  &:active {
+    filter: drop-shadow(0 0 5px #fff);
+  }
 }

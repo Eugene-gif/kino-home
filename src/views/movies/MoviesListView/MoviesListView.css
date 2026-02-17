@@ -1,0 +1,26 @@
+.movies {
+  /* background-color: pink; */
+}
+
+.hero {
+  .hero-content {
+    max-width: 425px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: red;
+
+  }
+
+  .hero-slider {
+
+  }
+
+  .test-block {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 15px;
+  }
+}
+

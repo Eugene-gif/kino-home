@@ -1,3 +1,25 @@
 .footer {
-	background-color: blueviolet;
+  width: 100%;
+  border-top: 1px solid #3a354d;
+
+  .footer-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .footer-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15%;
+    justify-content: space-between;
+  }
+
+  .footer-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
 }

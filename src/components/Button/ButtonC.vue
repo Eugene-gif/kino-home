@@ -41,5 +41,5 @@
 </template>
 
 <style scoped>
-	@import './ButtonComponent.css';
+	@import './ButtonC.css';
 </style>

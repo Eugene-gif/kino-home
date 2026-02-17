@@ -1,9 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <template>
-	<div class="films">
-		<h1>Страница фильмов</h1>
+	<div class="movies">
+    <h1>Фильмы</h1>
 	</div>
 </template>
 
-<style></style>
+<style scoped>
+	@import './MoviesListView.css';
+</style>

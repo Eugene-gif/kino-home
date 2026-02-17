@@ -4,7 +4,7 @@
 
 <template>
 	<div class="about">
-		<h1>Страница иконок</h1>
+		<h1>Иконки</h1>
 		<div class="list">
 			<SvgIcon name="search" />
 			<SvgIcon name="community" />

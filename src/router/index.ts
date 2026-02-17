@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import MainLayout from '@/layouts/MainLayout/MainLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout/AuthLayout.vue';
 
-const HomeView = () => import('@/views/HomeView.vue');
-const IconsView = () => import('@/views/iconsView/IconsView.vue');
+const HomeView = () => import('@/views/home/HomeView.vue');
+const IconsView = () => import('@/views/icons/IconsView.vue');
 const MoviesListView = () => import('@/views/movies/MoviesListView/MoviesListView.vue');
 // auth
 const LoginView = () => import('@/views/auth/LoginView/LoginView.vue');
