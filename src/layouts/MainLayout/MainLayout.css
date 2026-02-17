@@ -1,13 +1,15 @@
 .layout {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  max-width: 1400px;
-  margin: 0 auto;
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	/* margin: 0 auto; */
 
-  .main {
-    flex: 1 0 auto;
-    padding: 0 20px;
-    margin-top: 95px;
-  }
+	.main {
+    max-width: 1400px;
+    width: 100%;
+		flex: 1 0 auto;
+		padding: 20px 20px 0 20px;
+		/* margin-top: var(--header-ident-base); */
+    margin: var(--header-ident-base) auto 0 auto;
+	}
 }

@@ -1,0 +1,126 @@
+.slider {
+  position: relative;
+  width: 420px;
+  height: 360px;
+}
+
+.slider__viewport {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  perspective: 800px;
+}
+
+/* Базовый стиль слайда */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 230px;
+  height: 320px;
+  padding: 12px 12px 16px;
+  box-sizing: border-box;
+  border-radius: 22px;
+  background: rgba(7, 7, 20, 0.9);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%);
+  transition:
+    transform 0.45s ease,
+    opacity 0.45s ease,
+    filter 0.45s ease;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+}
+
+.slide__poster {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 18px;
+  margin-bottom: 10px;
+}
+
+.slide__info {
+  font-size: 12px;
+}
+
+.slide__meta {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.slide__tags .tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  margin-right: 6px;
+}
+
+/* Положение слайдов относительно активного */
+.slide--active {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.slide--prev {
+  transform: translateX(-145%) scale(0.8);
+  opacity: 0.55;
+  filter: blur(1px);
+  z-index: 2;
+}
+
+.slide--next {
+  transform: translateX(45%) scale(0.8);
+  opacity: 0.55;
+  filter: blur(1px);
+  z-index: 2;
+}
+
+.slide--far {
+  transform: translateX(140%) scale(0.7);
+  opacity: 0.15;
+  filter: blur(2px);
+  z-index: 1;
+}
+
+/* Стрелки */
+.slider__arrow {
+  position: absolute;
+  z-index: 10;
+  /* выше слайдов */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+}
+
+.slider__arrow--prev {
+  left: -18px;
+}
+
+.slider__arrow--next {
+  right: -18px;
+}
+
+.slider__arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

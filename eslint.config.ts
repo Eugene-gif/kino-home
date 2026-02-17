@@ -24,3 +24,6 @@ export default defineConfigWithVueTs(
 
   skipFormatting,
 )
+
+console.log('pluginVue: ', pluginVue);
+console.log('vueTsConfigs: ', vueTsConfigs);

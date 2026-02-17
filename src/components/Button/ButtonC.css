@@ -1,0 +1,36 @@
+.button {
+	--color-btn: #898792;
+	--transition: all 0.1s ease-in-out;
+
+	border: 1px solid var(--color-btn);
+	color: var(--color-btn);
+	border-radius: 10px;
+	height: 50px;
+	min-width: 50px;
+  padding: 0 15px;
+	font-weight: 600;
+	background-color: transparent;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	transition: var(--transition);
+  outline: none;
+
+	.icon {
+		/* color: var(--color-btn); */
+		/* color: currentColor; */
+		transition: var(--transition);
+	}
+
+	&:hover, &:focus-visible {
+		box-shadow: 0 0 10px #fff;
+	}
+
+  &:active {
+		--color-btn: #fff;
+		box-shadow: 0 0 20px #fff;
+		/* box-shadow: 0px 0px 5px 2px #817171; */
+		/* filter: drop-shadow(0 0 10px pink); */
+	}
+}

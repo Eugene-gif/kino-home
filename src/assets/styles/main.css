@@ -7,9 +7,17 @@
   --font-weight-base: 400;
   --line-height-base: 1.2;
   --text-color-base: #898792;
+  --header-ident-base: 90px;
+  --color-red: #ed0a32;
+  --color-white: #fff;
+  --color-dark: #141025;
+  --color-second-dark: #1a0335;
+  --color-grey: #cfd0d9;
 }
 
-html, body, #app {
+html,
+body,
+#app {
   height: 100dvh;
 }
 
@@ -22,20 +30,12 @@ body {
   margin: 0;
   display: block;
   min-width: 320px;
-  /* min-height: 100dvh; */
   background-color: #141025;
   background-image: url('@/assets/images/bg-app.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: cover;
 }
-
-/* #app { */
-  /* max-width: 1280px; */
-  /* margin: 0 auto; */
-  /* padding: 2rem; */
-  /* font-weight: normal; */
-/* } */
 
 .visually-hidden {
   position: absolute;
@@ -50,13 +50,17 @@ body {
   overflow: hidden;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   margin-bottom: 20px;
+  color: #fff;
 }
 
 h1 {
   font-weight: 800;
-  font-size: 4.5rem;
+  font-size: 3rem;
+  line-height: 1.2;
   letter-spacing: 0.01em;
 }
 
@@ -68,4 +72,28 @@ h2 {
 h3 {
   font-weight: 600;
   font-size: 1.5rem;
+}
+
+a {
+  --color-btn: #898792;
+  --transition: all 0.1s ease-in-out;
+
+  transition: var(--transition);
+  color: var(--color-btn);
+  /* outline: none; */
+
+  &:hover {
+    /* text-decoration: underline; */
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+    border-radius: 3px;
+	}
+
+  &:active {
+    filter: drop-shadow(0 0 5px #fff);
+  }
 }
