@@ -3,7 +3,11 @@
 
 <template>
 	<div class="movies">
-    <h1>Фильмы</h1>
+		<h1>Фильмы</h1>
+		<div class="home-swiper">
+      Контент для страницы Фильмов
+    </div>
+
 	</div>
 </template>
 

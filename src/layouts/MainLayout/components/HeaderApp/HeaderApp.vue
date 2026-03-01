@@ -3,7 +3,7 @@
 	import { ref } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
-	import ButtonC from '@/components/Button/ButtonC.vue';
+	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import InputSearch from '@/components/Inputs/InputSearch/InputSearch.vue';
 
 	const searchText = ref<string>('');
@@ -30,10 +30,10 @@
 
 				<ul class="header-options">
 					<li class="options-item">
-						<ButtonC iconName="bell" border="none" iconSize="22px" />
+						<ButtonApp iconName="bell" border="none" iconSize="22px" />
 					</li>
 					<li class="options-item">
-						<ButtonC iconName="user" />
+						<ButtonApp iconName="user" />
 					</li>
 				</ul>
         {{ searchText }}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
 
-	interface Props {
+	interface PropsButtonApp {
 		text?: string;
 		width?: string;
 		height?: string;
@@ -12,7 +12,7 @@
 		iconSize?: string;
 	}
 
-	const props = withDefaults(defineProps<Props>(), {
+	const props = withDefaults(defineProps<PropsButtonApp>(), {
 		width: '',
 		height: '',
 		color: '',
@@ -41,5 +41,5 @@
 </template>
 
 <style scoped>
-	@import './ButtonC.css';
+	@import './ButtonApp.css';
 </style>

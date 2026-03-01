@@ -111,11 +111,13 @@ const FooterData: FooterSectionData[] = [
       {
         text: '8 800 800 80 80',
         path: 'tel:+78008008080',
+        isSimpleLink: true,
         icon: 'phone'
       },
       {
         text: 'support@mail.ru',
         path: 'mailto:support@mail.ru',
+        isSimpleLink: true,
         icon: 'mail',
       },
     ],
@@ -128,16 +130,19 @@ const FooterData: FooterSectionData[] = [
       {
         text: '',
         path: '',
+        isSimpleLink: true,
         icon: 'social-fb'
       },
       {
         text: '',
         path: '',
+        isSimpleLink: true,
         icon: 'social-vk',
       },
       {
         text: '',
         path: '',
+        isSimpleLink: true,
         icon: 'social-insta',
       },
     ],

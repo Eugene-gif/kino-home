@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
-  import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
+	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
 
 	const { props } = defineProps<{ props: FooterSectionData }>();
 </script>
@@ -31,7 +31,7 @@
 			</li>
 		</ul>
 	</section> -->
-  <section class="section">
+	<section class="section">
 		<h3 v-if="props.title" class="title">
 			<template v-if="props.path">
 				<RouterLink :to="props.path">
@@ -45,15 +45,21 @@
 
 		<ul v-if="props.links.length" class="list">
 			<li v-for="link in props.links" :key="link.path" class="item">
-				<RouterLink :to="link.path">
-					<template v-if="link?.icon">
-            <SvgIcon :name="link.icon" />
-						{{ link.icon }}
-					</template>
-					<template v-else>
-						{{ link.text }}
-					</template>
-				</RouterLink>
+				<template v-if="link.isSimpleLink">
+					<a :href="link.path" target="_blank" rel="noopener noreferrer"></a>
+				</template>
+
+				<template v-else>
+					<RouterLink :to="link.path">
+						<template v-if="link?.icon">
+							<SvgIcon :name="link.icon" />
+							{{ link.icon }}
+						</template>
+						<template v-else>
+							{{ link.text }}
+						</template>
+					</RouterLink>
+				</template>
 			</li>
 		</ul>
 	</section>
