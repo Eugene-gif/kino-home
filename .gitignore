@@ -28,6 +28,8 @@ package-lock.json
 *.tsbuildinfo
 
 .eslintcache
+.env
+dataExample
 
 # Cypress
 /cypress/videos/

@@ -7,21 +7,30 @@
 
 	const props = withDefaults(defineProps<Props>(), {
 		card: () => ({
-      id: '',
+			id: '',
 			name: '',
-			image: '',
+			image: 'no-image.webp',
 			tags: [],
 			date: '',
 		}),
 	});
 
 	const { card } = props;
+
+	const onImgError = (evt: Event) => {
+    const img = evt.currentTarget as HTMLImageElement | null;
+    if (!img) return;
+    console.log('onImgError(evt)');
+
+		img.onerror = null;
+		img.src = '/no-image.webp';
+	};
 </script>
 
 <template>
 	<div class="hero-card card">
 		<div class="card-content">
-			<img class="card-img" :src="'/' + card.image" :alt="card.name" />
+			<img class="card-img" :src="'/' + card.image" :alt="card.name" @error="onImgError" />
 			<div class="card-text">
 				<h4 class="card-title">{{ card.name }}</h4>
 				<div class="card-info">
@@ -55,8 +64,14 @@
 		width: 100%;
 		height: 480px;
 		object-fit: cover;
-    border-radius: 12px;
+		border-radius: 12px;
+    min-width: 220px;
 	}
+
+  .card-img[src='/no-image.webp'] {
+    object-fit: contain;
+    background-color: black;
+  }
 
 	.card-text {
 		display: flex;
@@ -79,7 +94,7 @@
 		font-weight: 400;
 		font-size: 12px;
 		line-height: 1.4;
-    flex-wrap: wrap;
+		flex-wrap: wrap;
 	}
 
 	.card-label {
@@ -92,7 +107,7 @@
 		.card-img {
 			height: 480px;
 			border-radius: 12px;
-			object-fit: cover;
+			/* object-fit: cover; */
 		}
 	}
 </style>

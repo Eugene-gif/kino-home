@@ -46,7 +46,15 @@
 		<ul v-if="props.links.length" class="list">
 			<li v-for="link in props.links" :key="link.path" class="item">
 				<template v-if="link.isSimpleLink">
-					<a :href="link.path" target="_blank" rel="noopener noreferrer"></a>
+					<a :href="link.path" target="_blank" rel="noopener noreferrer">
+						<template v-if="link?.icon">
+							<SvgIcon :name="link.icon" />
+							{{ link.icon }}
+						</template>
+						<template v-else>
+							{{ link.text }}
+						</template>
+					</a>
 				</template>
 
 				<template v-else>

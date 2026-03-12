@@ -45,7 +45,7 @@
 	};
 
 	const onSlideChange = () => {
-		console.log('slide change');
+		// console.log('slide change');
 	};
 </script>
 

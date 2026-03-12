@@ -15,6 +15,10 @@
   --color-grey: #cfd0d9;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html,
 body,
 #app {
@@ -91,7 +95,7 @@ a {
     outline: 2px solid #fff;
     outline-offset: 4px;
     border-radius: 3px;
-	}
+  }
 
   &:active {
     filter: drop-shadow(0 0 5px #fff);
