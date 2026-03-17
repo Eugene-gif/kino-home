@@ -19,8 +19,6 @@
     "orval": "orval"
   },
   "dependencies": {
-    "cross-env": "^10.1.0",
-    "gh-pages": "^5.0.0",
     "pinia": "^3.0.4",
     "swiper": "^12.1.2",
     "vue": "^3.5.27",
@@ -32,10 +30,12 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.8.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-oxlint": "~1.42.0",
     "eslint-plugin-vue": "~10.7.0",
+    "gh-pages": "^6.3.0",
     "jiti": "^2.6.1",
     "npm-run-all2": "^8.0.4",
     "orval": "^8.5.3",
