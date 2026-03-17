@@ -2,7 +2,6 @@
 	import { watch } from 'vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
-	console.log('Modal Search');
 
 	const props = defineProps<{
 		isOpen: boolean;
@@ -12,51 +11,28 @@
 		(e: 'close'): void;
 	}>();
 
-	// const inputSearch = ref(null);
 	const closeModal = () => {
-		// document.body.style.overflow = '';
-		// document.removeEventListener('keyup', onEsc);
 		emit('close');
 	};
 
-	// onMounted(() => {
-	// 	nextTick(inputSearch.value?.focus());
-	//   if(document) {
-	//     console.log('addEventListener');
-	//     document.addEventListener('keyup', actionOnEsc);
-	//   }
-	// });
-
 	const onEsc = (evt: KeyboardEvent): void => {
-		console.log('onEsc: ', evt);
 		if (props.isOpen && evt.key === 'Escape') {
 			closeModal();
 		}
 	};
-
-	// onUpdated(() => {
-	//   if(document) {
-	//     console.log('removeEventListener');
-	//     document.removeEventListener('keyup', actionOnEsc);
-	//   }
-	// });
 
 	watch(
 		() => props.isOpen,
 		(isOpen) => {
 			if (!document) return;
 
-			// console.log('isOpen: ', typeof isOpen);
 			if (isOpen) {
-				// console.log('Вешаем обработчик keydown');
 				document.addEventListener('keydown', onEsc);
 				document.body.style.overflow = 'hidden';
 				// document.body.inert = true;
 			} else {
-				// console.log('Удаляем обработчик keydown', document.body);
 				document.removeEventListener('keydown', onEsc);
 				document.body.style.overflow = '';
-				// document.body.inert = false;
 			}
 		},
 	);

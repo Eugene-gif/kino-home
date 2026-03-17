@@ -21,23 +21,8 @@
 
 	const { cards } = props;
 
-	// const nextEl = ref(null);
-	// const prevEl = ref(null);
-
-	// const swiper = new Swiper('.swiper', {
-	// 	navigation: {
-	// 		prevEl: prevEl.value,
-	// 		nextEl: nextEl.value,
-	// 	},
-	// });
-
-	// const swiperInstance = ref(null);
-
 	const onSwiper = async (swiper: SwiperType) => {
 		await nextTick();
-		// swiper.params.navigation.prevEl = prevEl.value;
-		// swiper.params.navigation.nextEl = nextEl.value;
-		// swiperInstance.value = swiper;
 
 		swiper.navigation.destroy();
 		swiper.navigation.init();
@@ -45,7 +30,7 @@
 	};
 
 	const onSlideChange = () => {
-		// console.log('slide change');
+		console.log('slide change'); // Оставляем для отладки
 	};
 </script>
 

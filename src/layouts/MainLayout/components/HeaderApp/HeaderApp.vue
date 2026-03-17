@@ -1,12 +1,11 @@
 <script setup lang="ts">
-	// import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
 	import { ref, watch, nextTick } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ButtonBurger from './ButtonBurger.vue';
 	import ModalSearch from '@/components/Modals/ModalSearch.vue';
-	import InputSearch from '@/components/Inputs/InputSearch/InputSearch.vue';
+	import InputSearch from '@/components/Inputs/InputSearch.vue';
 
 	type InputSearchInstance = {
 		focus: () => void;
@@ -66,7 +65,6 @@
 				</div>
 				<ButtonBurger class="header-burger" v-model:isOpen="isOpenBurgerMenu" />
 				{{ searchText }}
-				<!-- <ButtonApp @click="searchText = ''" iconName="close" iconSize="23px" /> -->
 			</div>
 		</div>
 

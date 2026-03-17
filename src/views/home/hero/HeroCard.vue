@@ -20,7 +20,6 @@
 	const onImgError = (evt: Event) => {
     const img = evt.currentTarget as HTMLImageElement | null;
     if (!img) return;
-    console.log('onImgError(evt)');
 
 		img.onerror = null;
 		img.src = '/no-image.webp';

@@ -15,7 +15,8 @@
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "oxfmt src/"
+    "format": "oxfmt src/",
+    "orval": "orval"
   },
   "dependencies": {
     "cross-env": "^10.1.0",
@@ -37,6 +38,7 @@
     "eslint-plugin-vue": "~10.7.0",
     "jiti": "^2.6.1",
     "npm-run-all2": "^8.0.4",
+    "orval": "^8.5.3",
     "oxfmt": "^0.27.0",
     "oxlint": "~1.42.0",
     "svgo": "^4.0.0",

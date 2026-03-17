@@ -8,14 +8,12 @@
 		(e: 'update:isOpen', value: boolean): void;
 	}>();
 
-  const inputCheckbox = ref<HTMLInputElement | null>(null);
+	const inputCheckbox = ref<HTMLInputElement | null>(null);
 
 	const onInputBurger = () => {
-		// const input = e.currentTarget as HTMLInputElement | null;
-
 		if (!inputCheckbox.value) return;
 		emit('update:isOpen', inputCheckbox.value.checked);
-		console.debug(inputCheckbox.value.checked);
+		console.debug(inputCheckbox.value.checked); // Оставляем для отладки
 	};
 </script>
 
@@ -26,7 +24,7 @@
 				type="checkbox"
 				id="check"
 				ref="inputCheckbox"
-        @input="onInputBurger"
+				@input="onInputBurger"
 				:checked="props.isOpen"
 			/>
 			<span class="top"></span>
@@ -46,7 +44,6 @@
 		border-radius: 10px;
 		height: 50px;
 		min-width: 50px;
-		/* padding: 0 15px; */
 		font-weight: 600;
 		background-color: transparent;
 		display: flex;
@@ -55,8 +52,8 @@
 		gap: 10px;
 		transition: var(--transition);
 		outline: none;
-    width: 50px;
-    height: 50px;
+		width: 50px;
+		height: 50px;
 
 		.icon {
 			transition: var(--transition);
@@ -78,9 +75,7 @@
 			align-items: center;
 			flex-direction: column;
 			gap: 13%;
-			/* width: 3.5rem; */
 			height: 3.5rem;
-			/* border-radius: 0.5rem; */
 			background-color: transparent;
 			transition: all 0.3s;
 		}
