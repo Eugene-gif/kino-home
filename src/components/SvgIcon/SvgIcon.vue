@@ -28,5 +28,9 @@
 </template>
 
 <style scoped>
-	@import './SvgIcon.css';
+	.svg-icon {
+		width: 20px;
+		height: 20px;
+		color: currentColor;
+	}
 </style>

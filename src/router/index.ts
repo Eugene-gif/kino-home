@@ -67,7 +67,7 @@ router.beforeEach((to, from, next) => {
 		console.log('Требуется авторизация и нет ключа направляем на логин');
 		next({ name: 'login' });
 	} else if (!isAuthRequired && isAuth && ['login', 'register'].includes(to.name as string)) {
-		// console.log('Уже вошёл, но лезет на login, направляем на главную');
+		console.log('Уже вошёл, но лезет на login, направляем на главную');
 		next({ name: 'home' });
 	} else {
 		next();

@@ -3,10 +3,14 @@
 }
 
 .hero {
+  display: flex;
+  gap: 20px;
+
   .hero-content {
     max-width: 425px;
+    width: 40%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
     flex-direction: column;
   }
@@ -30,18 +34,26 @@
     border: 1px solid var(--color-red);
   }
 
-  .hero-slider {}
-
-  .hero-slider {
-    flex: 0 0 460px;
-    display: flex;
-    justify-content: center;
-  }
-
   .test-block {
     display: flex;
     justify-content: start;
     align-items: center;
     gap: 15px;
+  }
+
+  .hero-slider {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  @media(max-width: 1000px) {
+    flex-direction: column;
+
+    .hero-content {
+      max-width: 100%;
+      width: 100%;
+      order: 1;
+      text-wrap: balance;
+    }
   }
 }

@@ -1,6 +1,4 @@
-.movies {
-  /* background-color: pink; */
-}
+/* .movies {} */
 
 .hero {
   .hero-content {
@@ -12,10 +10,6 @@
 
   }
 
-  .hero-slider {
-
-  }
-
   .test-block {
     display: flex;
     justify-content: start;
@@ -23,4 +17,3 @@
     gap: 15px;
   }
 }
-

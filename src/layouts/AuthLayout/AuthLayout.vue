@@ -2,12 +2,16 @@
 
 <template>
 	<div class="auth">
-		<!-- <header>Header auth</header> -->
 		<RouterView />
-		<!-- <footer>Footer auth</footer> -->
 	</div>
 </template>
 
 <style scoped>
-	@import './AuthLayout.css';
+	.auth {
+		border: 2px solid grey;
+		border-radius: 20px;
+		padding: 50px;
+		justify-content: center;
+		align-items: center;
+	}
 </style>

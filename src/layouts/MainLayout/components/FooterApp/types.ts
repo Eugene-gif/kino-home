@@ -1,6 +1,7 @@
 type Link = {
   text: string;
   path: string;
+  isSimpleLink?: boolean;
   icon?: string;
   hasIconAndText?: boolean;
 };
