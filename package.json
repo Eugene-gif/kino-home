@@ -22,7 +22,8 @@
     "pinia": "^3.0.4",
     "swiper": "^12.1.2",
     "vue": "^3.5.27",
-    "vue-router": "^5.0.1"
+    "vue-router": "^5.0.1",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
@@ -43,7 +44,6 @@
     "oxlint": "~1.42.0",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
-    "vite-plugin-svg-icons": "^2.0.1",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vue-tsc": "^3.2.4"
   },

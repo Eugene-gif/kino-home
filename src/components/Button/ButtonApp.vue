@@ -1,16 +1,12 @@
 <script setup lang="ts">
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
-
 	interface PropsButtonApp {
-		/*text: string; */
 		width?: string;
 		height?: string;
 		color?: string;
 		bgColor?: string;
 		border?: string | undefined;
-		iconName?: string;
-		iconSize?: string;
 		round?: boolean | string;
+		red?: boolean;
 	}
 
 	const props = withDefaults(defineProps<PropsButtonApp>(), {
@@ -19,12 +15,10 @@
 		color: '',
 		bgColor: '',
 		border: '',
-		iconName: '',
-		iconSize: '',
 		round: false,
 	});
 
-	const { /*text,*/ width, height, color, bgColor, border, round } = props;
+	const { width, height, color, bgColor, border, round } = props;
 
 	const buttonStyle = {
 		width: width,
@@ -44,7 +38,7 @@
 <template>
 	<button class="button" :style="buttonStyle">
 		<slot></slot>
-		<SvgIcon v-if="iconName" class="icon" :name="iconName" :width="iconSize" :height="iconSize" />
+		<slot name="icon"></slot>
 		<slot name="textRight"></slot>
 	</button>
 </template>
@@ -81,6 +75,12 @@
 		&:active {
 			--color-btn: #fff;
 			box-shadow: 0 0 20px #fff;
+		}
+
+		&.red {
+			color: var(--color-white);
+			background-color: var(--color-red);
+			border: 1px solid var(--color-red);
 		}
 	}
 </style>

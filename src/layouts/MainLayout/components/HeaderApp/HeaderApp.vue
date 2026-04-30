@@ -1,11 +1,14 @@
 <script setup lang="ts">
 	import { ref, watch, nextTick } from 'vue';
 	import { RouterLink } from 'vue-router';
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
+	import IconLogo from '@/assets/icons/IconLogo.vue';
+	import IconSearch from '@/assets/icons/IconSearch.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ButtonBurger from './ButtonBurger.vue';
 	import ModalSearch from '@/components/Modals/ModalSearch.vue';
 	import InputSearch from '@/components/Inputs/InputSearch.vue';
+	import IconBell from '@/assets/icons/IconBell.vue';
+	import IconUser from '@/assets/icons/IconUser.vue';
 
 	type InputSearchInstance = {
 		focus: () => void;
@@ -33,7 +36,7 @@
 		<div class="header-wrapper">
 			<div class="header-content">
 				<RouterLink class="header-logo" to="/">
-					<SvgIcon name="logo" width="150px" height="35px" />
+					<IconLogo />
 				</RouterLink>
 
 				<div :class="['header-box-content', isOpenBurgerMenu ? 'open' : '']">
@@ -47,19 +50,22 @@
 
 					<ul class="header-options">
 						<li class="options-item">
-							<ButtonApp
-								@click="() => (isModalSearch = !isModalSearch)"
-								iconName="search"
-								border="none"
-							>
-								<template #textRight>Поиск{{ isModalSearch }}</template>
+							<ButtonApp @click="() => (isModalSearch = !isModalSearch)" border="none">
+								<template #icon><IconSearch /></template>
+								<template #textRight>Поиск</template>
 							</ButtonApp>
 						</li>
 						<li class="options-item">
-							<ButtonApp iconName="bell" border="none" iconSize="22px" round />
+							<ButtonApp border="none" iconSize="22px" round>
+								<template #icon><IconBell /></template>
+							</ButtonApp>
 						</li>
 						<li class="options-item">
-							<ButtonApp iconName="user" />
+							<ButtonApp>
+								<template #icon>
+									<IconUser />
+								</template>
+							</ButtonApp>
 						</li>
 					</ul>
 				</div>
@@ -84,7 +90,132 @@
 </template>
 
 <style scoped>
-	@import './HeaderApp.css';
+	.header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		z-index: 10;
+		background-color: transparent;
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+	}
+
+	.header-wrapper {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 20px 20px 0 20px;
+	}
+
+	.header-content {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		border-bottom: 1px solid #3a354d;
+		padding-bottom: 20px;
+	}
+
+	.header-burger {
+		display: none;
+	}
+
+	.header-box-content {
+		display: contents;
+	}
+
+	.header-logo {
+		max-width: 150px;
+		min-width: 150px;
+		max-height: 35px;
+		width: 100%;
+		height: 100%;
+	}
+
+	.header-nav {
+		margin-left: 4.5%;
+		flex: 1;
+
+		.nav-list {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 16px;
+		}
+
+		.nav-item {
+			color: #898792;
+		}
+
+		.nav-item.search {
+			flex: 1;
+			min-width: 0;
+		}
+	}
+
+	.header-options {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		gap: 16px;
+		margin-left: auto;
+	}
+
+	.router-link-exact-active {
+		color: #fff;
+	}
+
+	@media (width <= 790px) {
+		.header-box-content {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: flex-start;
+			gap: 10px;
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			height: 100dvh;
+			background-color: #3a354d;
+			translate: 100% 0;
+			transition: translate 0.35s ease-in-out;
+			padding: 20px;
+			min-width: 180px;
+			width: 50%;
+			z-index: 8;
+
+			.header-nav {
+				flex: 0;
+			}
+
+			.header-nav,
+			.header-options {
+				margin: 0;
+			}
+
+			.header-nav .nav-list,
+			.header-options {
+				display: flex;
+				flex-direction: column;
+			}
+			&.open {
+				translate: 0 0;
+			}
+		}
+
+		.header-content {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.header-burger {
+			display: flex;
+			z-index: 10;
+		}
+	}
+
 	.v-enter-active,
 	.v-leave-active {
 		transition: opacity 0.35s ease;

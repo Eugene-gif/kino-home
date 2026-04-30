@@ -63,7 +63,6 @@
 </template>
 
 <style scoped>
-	@import './MoviesListView.css';
 	.list {
 		display: flex;
 		flex-direction: column;

@@ -1,31 +1,52 @@
 <script setup lang="ts">
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
+	import IconArrowLeft from '@/assets/icons/IconArrowLeft.vue';
+	import IconArrowRight from '@/assets/icons/IconArrowRight.vue';
+	import IconBell from '@/assets/icons/IconBell.vue';
+	import IconClose from '@/assets/icons/IconClose.vue';
+	import IconCommunity from '@/assets/icons/IconCommunity.vue';
+	import IconCopy from '@/assets/icons/IconCopy.vue';
+	import IconDislike from '@/assets/icons/IconDislike.vue';
+	import IconDocumentation from '@/assets/icons/IconDocumentation.vue';
+	import IconHeart from '@/assets/icons/IconHeart.vue';
+	import IconLike from '@/assets/icons/IconLike.vue';
+	import IconLogo from '@/assets/icons/IconLogo.vue';
+	import IconMail from '@/assets/icons/IconMail.vue';
+	import IconMasterCard from '@/assets/icons/IconMasterCard.vue';
+	import IconMessage from '@/assets/icons/IconMessage.vue';
+	import IconPhone from '@/assets/icons/IconPhone.vue';
+	import IconPlay from '@/assets/icons/IconPlay.vue';
+	import IconSearch from '@/assets/icons/IconSearch.vue';
+	import IconSocialFb from '@/assets/icons/IconSocialFb.vue';
+	import IconSocialInsta from '@/assets/icons/IconSocialInsta.vue';
+	import IconSocialVk from '@/assets/icons/IconSocialVk.vue';
+	import IconUser from '@/assets/icons/IconUser.vue';
 </script>
 
 <template>
 	<div class="about">
 		<h1>Иконки</h1>
 		<div class="list">
-			<SvgIcon name="arrow-left" />
-			<SvgIcon name="arrow-right" />
-			<SvgIcon name="bell" />
-			<SvgIcon name="close" />
-			<SvgIcon name="community" />
-			<SvgIcon name="copy" />
-			<SvgIcon name="dislike" />
-			<SvgIcon name="documentation" />
-			<SvgIcon name="heart" />
-			<SvgIcon name="like" />
-			<SvgIcon name="logo" width="150px" height="35px" />
-			<SvgIcon name="mail" />
-			<SvgIcon name="master-card" width="30px" height="30px" />
-			<SvgIcon name="message" />
-			<SvgIcon name="phone" width="50px" height="50px" color="green" />
-			<SvgIcon name="play" />
-			<SvgIcon name="search" />
-			<SvgIcon name="social-fb" />
-			<SvgIcon name="social-insta" />
-			<SvgIcon name="social-vk" />
+			<IconArrowLeft />
+			<IconArrowRight />
+			<IconBell />
+			<IconClose />
+			<IconCommunity />
+			<IconCopy />
+			<IconDislike />
+			<IconDocumentation />
+			<IconHeart />
+			<IconLike />
+			<IconLogo />
+			<IconMail />
+			<IconMasterCard />
+			<IconMessage />
+			<IconPhone />
+			<IconPlay />
+			<IconSearch />
+			<IconSocialFb />
+			<IconSocialInsta />
+			<IconSocialVk />
+			<IconUser />
 		</div>
 	</div>
 </template>

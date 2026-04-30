@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
+  import IconSearch from '@/assets/icons/IconSearch.vue';
 
 	const props = defineProps<{
 		text: string;
@@ -33,7 +33,7 @@
 <template>
 	<div class="input-wrapper">
 		<div class="icon">
-			<SvgIcon name="search" />
+			<IconSearch />
 		</div>
 		<input
 			ref="inputRef"
@@ -87,8 +87,8 @@
 			position: absolute;
 			left: 0px;
 			cursor: pointer;
-			width: 50px;
-			height: 50px;
+			width: 25px;
+			height: 25px;
 			outline: none;
 			border-style: none;
 			border-radius: 50%;

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 	import { watch } from 'vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
+	import IconLogo from '@/assets/icons/IconLogo.vue';
+	import IconClose from '@/assets/icons/IconClose.vue';
 
 	const props = defineProps<{
 		isOpen: boolean;
@@ -42,8 +43,12 @@
 	<div class="modal-overlay" @click.self="closeModal">
 		<div class="modal-panel">
 			<section class="header">
-				<SvgIcon name="logo" width="150px" height="35px" />
-				<ButtonApp @click="closeModal" iconName="close" iconSize="23px" />
+				<IconLogo />
+				<ButtonApp @click="closeModal">
+					<template #icon>
+						<IconClose />
+					</template>
+				</ButtonApp>
 			</section>
 
 			<section class="content">
@@ -68,6 +73,7 @@
 		inset: 0;
 		overscroll-behavior: contain;
 	}
+
 	.modal-panel {
 		background-color: #111;
 		max-width: 1400px;

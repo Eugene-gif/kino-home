@@ -3,7 +3,7 @@
 <template>
 	<div class="login">
 		<h1>Вход</h1>
-		<RouterLink to="/register" class="nav-link">На страницу регистрации</RouterLink>
+		<RouterLink to="/auth/register" class="nav-link">На страницу регистрации</RouterLink>
 	</div>
 </template>
 

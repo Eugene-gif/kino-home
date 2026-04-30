@@ -1,15 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import MainLayout from '@/layouts/MainLayout/MainLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout/AuthLayout.vue';
 
 const HomeView = () => import('@/views/home/HomeView.vue');
 const IconsView = () => import('@/views/icons/IconsView.vue');
 const MoviesListView = () => import('@/views/movies/MoviesListView/MoviesListView.vue');
-// auth
 const LoginView = () => import('@/views/auth/LoginView/LoginView.vue');
 const RegisterView = () => import('@/views/auth/RegisterView/RegisterView.vue');
-
-import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -18,28 +15,28 @@ const routes: RouteRecordRaw[] = [
 		meta: { requiresAuth: true },
 		children: [
 			{
-				path: '',
+				path: '/',
 				name: 'home',
 				component: HomeView,
 			},
 			{
-				path: '/icons',
+				path: 'icons',
 				name: 'icons',
 				component: IconsView,
 			},
 			{
-				path: '/movies',
+				path: 'movies',
 				name: 'movies',
 				component: MoviesListView,
 			},
 		],
 	},
 	{
-		path: '/',
+		path: '/auth',
 		component: AuthLayout,
 		children: [
-			{ path: '/login', name: 'login', component: LoginView },
-			{ path: '/register', name: 'register', component: RegisterView },
+			{ path: 'login', name: 'login', component: LoginView },
+			{ path: 'register', name: 'register', component: RegisterView },
 		],
 	},
 ];

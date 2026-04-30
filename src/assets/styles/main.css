@@ -1,5 +1,6 @@
 @import './reset.css';
 @import './fonts.css';
+@import 'swiper/css';
 
 :root {
   --font-family-base: 'Roboto', sans-serif;
@@ -22,7 +23,7 @@ html {
 html,
 body,
 #app {
-  height: 100dvh;
+  min-height: 100dvh;
 }
 
 body {

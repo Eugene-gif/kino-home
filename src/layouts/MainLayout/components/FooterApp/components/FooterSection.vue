@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
+	// import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
 
 	const { props } = defineProps<{ props: FooterSectionData }>();
 </script>
@@ -23,7 +23,7 @@
 				<template v-if="link.isSimpleLink">
 					<a :href="link.path" target="_blank" rel="noopener noreferrer">
 						<template v-if="link?.icon">
-							<SvgIcon :name="link.icon" />
+							<!-- <SvgIcon :name="link.icon" /> -->
 							{{ link.icon }}
 						</template>
 						<template v-else>
@@ -35,7 +35,7 @@
 				<template v-else>
 					<RouterLink :to="link.path">
 						<template v-if="link?.icon">
-							<SvgIcon :name="link.icon" />
+							<!-- <SvgIcon :name="link.icon" /> -->
 							{{ link.icon }}
 						</template>
 						<template v-else>
