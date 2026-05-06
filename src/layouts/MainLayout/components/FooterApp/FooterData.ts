@@ -7,8 +7,12 @@ const FooterData: FooterSectionData[] = [
     id: 1,
     links: [
       {
+        text: 'Главная',
+        path: '/',
+      },
+      {
         text: 'Фильмы',
-        path: '',
+        path: '/movies',
       },
       {
         text: 'Сериалы',
@@ -100,13 +104,34 @@ const FooterData: FooterSectionData[] = [
   {
     title: 'Вопросы и ответы',
     path: '',
-    id: 5,
-    links: [],
+    id: 6,
+    links: [
+      {
+        text: 'Что такое КиноДом?',
+        path: '',
+      },
+      {
+        text: 'Почему лучше выбрать наш сервис?',
+        path: '',
+      },
+      {
+        text: 'Сколько стоит слон?',
+        path: '',
+      },
+      {
+        text: 'Для чего козе баян?',
+        path: '',
+      },
+      {
+        text: 'Почему Толя Анатолий, а Коля не Анаколий?',
+        path: '',
+      },
+    ],
   },
   {
     title: 'Техническая поддержка',
     path: '',
-    id: 6,
+    id: 7,
     links: [
       {
         text: '8 800 800 80 80',
@@ -125,25 +150,25 @@ const FooterData: FooterSectionData[] = [
   {
     title: 'Подписывайтесь на нас',
     path: '',
-    id: 7,
+    id: 8,
     links: [
       {
         text: '',
-        path: '',
+        path: 'https://www.facebook.com/',
         isSimpleLink: true,
-        icon: 'social-fb'
+        icon: 'fb'
       },
       {
         text: '',
-        path: '',
+        path: 'https://vk.com/',
         isSimpleLink: true,
-        icon: 'social-vk',
+        icon: 'vk',
       },
       {
         text: '',
-        path: '',
+        path: 'https://www.instagram.com/',
         isSimpleLink: true,
-        icon: 'social-insta',
+        icon: 'insta',
       },
     ],
   },
