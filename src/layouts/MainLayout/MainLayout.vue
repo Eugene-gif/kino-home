@@ -18,7 +18,7 @@
 <style scoped>
 	.layout {
 		display: flex;
-		height: 100%;
+		min-height: 100dvh;
 		flex-direction: column;
 
 		.main {

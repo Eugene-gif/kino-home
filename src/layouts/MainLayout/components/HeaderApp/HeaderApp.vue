@@ -1,6 +1,13 @@
 <script setup lang="ts">
-	import { ref, watch, nextTick } from 'vue';
+	import { ref, watch, computed, nextTick, onMounted } from 'vue';
 	import { RouterLink } from 'vue-router';
+	import { storeToRefs } from 'pinia';
+	import { useToast } from 'vue-toastification';
+	import { useSearchStore } from '@/stores/search';
+	import { buildImagePath } from '@/utils/images';
+
+	import LoaderApp from '@/components/Loader/LoaderApp.vue';
+	import ContentModalSearch from './ContentModalSearch.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconSearch from '@/assets/icons/IconSearch.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
@@ -10,14 +17,50 @@
 	import IconBell from '@/assets/icons/IconBell.vue';
 	import IconUser from '@/assets/icons/IconUser.vue';
 
+	import type { ModalSearchCardItem } from './headerTypes';
+
+	const toast = useToast();
+	const searchStore = useSearchStore();
+	const { fetchSearchMulti, fetchTrendingAll, fetchPersonPopularList, clearSearchedList } =
+		searchStore;
+	const { searchedList, trendingList, personList } = storeToRefs(searchStore);
+
 	type InputSearchInstance = {
 		focus: () => void;
 	};
 
+	const isLoading = ref(true);
+	const isLoadedSearch = ref<boolean>(false);
 	const searchText = ref<string>('');
 	const isOpenBurgerMenu = ref<boolean>(false);
 	const isModalSearch = ref<boolean>(false);
 	const inputSearchRef = ref<InputSearchInstance | null>(null);
+
+	const uiTrendingList = computed<ModalSearchCardItem[] | []>(() => {
+		return trendingList.value.map((movie) => ({
+			id: movie.id,
+			title: movie.name ? movie.name : (movie.title ?? 'Без имени'),
+			imageUrl: buildImagePath(movie.poster_path),
+			mediaType: movie.media_type,
+		}));
+	});
+
+	const uiSearchedList = computed<ModalSearchCardItem[] | []>(() => {
+		return searchedList.value.map((movie) => ({
+			id: movie.id,
+			title: movie.name ? movie.name : (movie.title ?? 'Без имени'),
+			imageUrl: buildImagePath(movie.poster_path),
+			mediaType: movie.media_type,
+		}));
+	});
+
+	const uiPersonList = computed(() => {
+		return personList.value.map((person) => ({
+			id: person.id,
+			name: person.name,
+			profession: person.known_for_department,
+		}));
+	});
 
 	watch(isModalSearch, async (value: boolean): Promise<void> => {
 		if (value) {
@@ -26,9 +69,45 @@
 		}
 	});
 
+	const clearSearch = () => {
+		searchText.value = '';
+		clearSearchedList();
+		isLoadedSearch.value = false;
+	};
+
 	const closeModalSearch = () => {
 		isModalSearch.value = false;
+		isLoadedSearch.value = false;
 	};
+
+	const loadSearch = async (str: string) => {
+		if (!str.trim()) return;
+
+		try {
+			isLoading.value = true;
+			await fetchSearchMulti(str);
+		} finally {
+			isLoading.value = false;
+			isLoadedSearch.value = true;
+		}
+	};
+
+	const loadHeaderData = async () => {
+		const results = await Promise.allSettled([fetchTrendingAll(), fetchPersonPopularList()]);
+
+		results.forEach((result, index) => {
+			const names = ['трендов', 'популярных персон'];
+
+			if (result.status === 'rejected') {
+				toast.error(`Ошибка загрузки ${names[index]}`);
+				console.error(`Ошибка загрузки ${names[index]}:`, result.reason);
+			}
+		});
+
+		isLoading.value = false;
+	};
+
+	onMounted(loadHeaderData);
 </script>
 
 <template>
@@ -44,6 +123,7 @@
 						<ul class="nav-list">
 							<li class="nav-item"><RouterLink to="/">Главная</RouterLink></li>
 							<li class="nav-item"><RouterLink to="/movies">Фильмы</RouterLink></li>
+							<li class="nav-item"><RouterLink to="/tv">Сериалы</RouterLink></li>
 							<li class="nav-item"><RouterLink to="/icons">Иконки</RouterLink></li>
 						</ul>
 					</nav>
@@ -56,7 +136,7 @@
 							</ButtonApp>
 						</li>
 						<li class="options-item">
-							<ButtonApp border="none" iconSize="22px" round>
+							<ButtonApp border="none" iconSize="22px">
 								<template #icon><IconBell /></template>
 							</ButtonApp>
 						</li>
@@ -70,18 +150,37 @@
 					</ul>
 				</div>
 				<ButtonBurger class="header-burger" v-model:isOpen="isOpenBurgerMenu" />
-				{{ searchText }}
 			</div>
 		</div>
 
 		<Teleport to="#app">
 			<Transition>
 				<ModalSearch v-show="isModalSearch" :isOpen="isModalSearch" @close="closeModalSearch">
-					<template #main>
-						<div class="panel">
-							<InputSearch ref="inputSearchRef" v-model:text="searchText" />
-							{{ searchText }}
+					<template #search>
+						<div class="modal-search-field">
+							<InputSearch
+								ref="inputSearchRef"
+								v-model:text="searchText"
+								@keyup.enter="loadSearch(searchText)"
+							/>
+							<ButtonApp @click="loadSearch(searchText)" blue>Поиск</ButtonApp>
+							<ButtonApp v-if="searchedList.length" @click="clearSearch" red
+								>Очистить поиск</ButtonApp
+							>
 						</div>
+					</template>
+
+					<template #content>
+						<ContentModalSearch
+							v-if="!isLoading"
+							:lenSearchedList="uiSearchedList.length"
+							:isLoadedSearch="isLoadedSearch"
+							:uiTrendingList="uiTrendingList"
+							:uiPersonList="uiPersonList"
+							:uiSearchedList="uiSearchedList"
+							@closeModal="closeModalSearch"
+						/>
+						<LoaderApp v-else style="min-height: 160px" />
 					</template>
 				</ModalSearch>
 			</Transition>
@@ -163,6 +262,12 @@
 
 	.router-link-exact-active {
 		color: #fff;
+	}
+
+	.modal-search-field {
+		display: flex;
+		align-items: center;
+		gap: 15px;
 	}
 
 	@media (width <= 790px) {

@@ -1,8 +1,8 @@
 import { ref } from 'vue';
 import { defineStore, storeToRefs } from 'pinia';
 import { useGenresStore } from '@/stores/genres';
-import { moviePopularList, discoverMovie } from '@/api/endpoints';
-import type { MoviePopularList200ResultsItem, GenreWithMovies } from '@/stores/movies/moviesTypes';
+import { moviePopularList, discoverMovie, movieDetails } from '@/api/endpoints';
+import type { MoviePopularList200ResultsItem, MovieDetails200,  GenreWithMovies, AppendOptions } from '@/stores/typesForStores';
 
 export const useMoviesStore = defineStore('movies', () => {
   const genresStore = useGenresStore();
@@ -10,7 +10,21 @@ export const useMoviesStore = defineStore('movies', () => {
 
   const popularMovies = ref<MoviePopularList200ResultsItem[] | []>([]);
   const moviesByAllGenres = ref<GenreWithMovies[] | []>([]);
+  const singleMovieDetails = ref<MovieDetails200 | null>(null);
 
+  // Получаем детали фильма по id
+  const fetchMovieDetails = async (id: number, append: AppendOptions[] = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images']) => {
+    try {
+      const { data } = await movieDetails(id, { append_to_response: append.join(',') });
+      console.log(`fetchMovieDetails(id: ${id}): `, data);
+      singleMovieDetails.value = data;
+    } catch (err) {
+      console.error(`Failed to fetch movie details(id: ${id})`);
+      throw err;
+    }
+  }
+
+  // Список популярных фильмов
   const fetchPopularMovies = async () => {
     const { data, status } = await moviePopularList();
 
@@ -29,7 +43,6 @@ export const useMoviesStore = defineStore('movies', () => {
   // Списки фильмов по всем жанрам
   const fetchMoviesByAllGenres = async (limit?: number) => {
     const genres = limit ? movies.value.slice(0, limit) : movies.value;
-    console.log('genres: ', movies.value);
     const results = await Promise.allSettled(genres.map((genre) => fetchMoviesByGenre(genre.id)));
 
     moviesByAllGenres.value = genres.map((genre, i) => {
@@ -52,12 +65,15 @@ export const useMoviesStore = defineStore('movies', () => {
     ]);
   };
 
+
   return {
     popularMovies,
     moviesByAllGenres,
+    singleMovieDetails,
+    fetchMovieDetails,
     fetchPopularMovies,
     fetchMoviesByGenre,
     fetchMoviesByAllGenres,
-    fetchHomeData
+    fetchHomeData,
   }
 });

@@ -3,7 +3,7 @@
 	import { storeToRefs } from 'pinia';
 	import { useToast } from 'vue-toastification';
 	import { useGenresStore } from '@/stores/genres';
-	import { useMoviesStore } from '@/stores/movies/movies';
+	import { useMoviesStore } from '@/stores/movies';
 	import { buildImagePath } from '@/utils/images';
 	import { formatDate } from '@/utils/date';
 
@@ -57,7 +57,7 @@
 							rating: film.vote_average?.toFixed(1) ?? '0.0',
 							imageUrl: buildImagePath(film.poster_path),
 							genreNames: getMovieGenreNamesByIds(film.genre_ids),
-							type: 'Фильм',
+							mediaType: 'movie',
 						};
 					}) ?? [],
 			};
@@ -131,19 +131,4 @@
 	</div>
 </template>
 
-<style scoped>
-	.test-list {
-		background-color: brown;
-		padding: 20px;
-		border-radius: 20px;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-
-		.test-item {
-			border: 1px solid lightgreen;
-			border-radius: 15px;
-			padding: 10px;
-		}
-	}
-</style>
+<style scoped></style>

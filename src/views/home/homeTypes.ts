@@ -14,7 +14,7 @@ export interface CatalogCardItem {
   rating: string;
   imageUrl: string;
   genreNames: string[];
-  type: string;
+  mediaType: string;
 }
 
 export interface CatalogGenreWithMovies {

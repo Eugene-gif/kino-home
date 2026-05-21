@@ -82,7 +82,7 @@
 					:rating="movie.rating"
 					:imageUrl="movie.imageUrl"
 					:genreNames="movie.genreNames"
-					:type="movie.type"
+					:mediaType="movie.mediaType"
 				/>
 			</SwiperSlide>
 		</Swiper>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
+
 	interface PropsButtonApp {
 		width?: string;
 		height?: string;
@@ -7,6 +9,7 @@
 		border?: string | undefined;
 		round?: boolean | string;
 		red?: boolean;
+		blue?: boolean;
 	}
 
 	const props = withDefaults(defineProps<PropsButtonApp>(), {
@@ -16,9 +19,11 @@
 		bgColor: '',
 		border: '',
 		round: false,
+		red: false,
+		blue: false,
 	});
 
-	const { width, height, color, bgColor, border, round } = props;
+	const { width, height, color, bgColor, border, round, red, blue } = props;
 
 	const buttonStyle = {
 		width: width,
@@ -33,10 +38,14 @@
 					? ''
 					: round,
 	};
+
+	const propsColor = red ? 'red' : blue ? 'blue' : '';
+
+	const noBorder = computed(() => border === 'none');
 </script>
 
 <template>
-	<button class="button" :style="buttonStyle">
+	<button class="button" :class="[propsColor, noBorder ? 'no-border' : '']" :style="buttonStyle">
 		<slot></slot>
 		<slot name="icon"></slot>
 		<slot name="textRight"></slot>
@@ -47,6 +56,7 @@
 	.button {
 		--color-btn: #898792;
 		--transition: all 0.1s ease-in-out;
+		--color-blue: #9747ff;
 
 		border: 1px solid var(--color-btn);
 		color: var(--color-btn);
@@ -77,10 +87,25 @@
 			box-shadow: 0 0 20px #fff;
 		}
 
+    &.no-border:hover {
+      box-shadow: none;
+      filter: drop-shadow(0px 1px 10px #fff);
+    }
+
+    &.no-border:active {
+      box-shadow: none;
+    }
+
 		&.red {
 			color: var(--color-white);
 			background-color: var(--color-red);
 			border: 1px solid var(--color-red);
+		}
+
+		&.blue {
+			color: var(--color-white);
+			background-color: var(--color-blue);
+			border: 1px solid var(--color-blue);
 		}
 	}
 </style>

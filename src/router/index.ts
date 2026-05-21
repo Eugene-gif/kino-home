@@ -4,7 +4,10 @@ import AuthLayout from '@/layouts/AuthLayout/AuthLayout.vue';
 
 const HomeView = () => import('@/views/home/HomeView.vue');
 const IconsView = () => import('@/views/icons/IconsView.vue');
-const MoviesListView = () => import('@/views/movies/MoviesListView/MoviesListView.vue');
+const TvListView = () => import('@/views/media/tv/TvView.vue');
+const MoviesListView = () => import('@/views/media/movies/MoviesView.vue');
+const MovieDetails = () => import ('@/views/media/movies/MovieDetails.vue');
+const TvDetails = () => import ('@/views/media/tv/TvDetails.vue');
 const LoginView = () => import('@/views/auth/LoginView/LoginView.vue');
 const RegisterView = () => import('@/views/auth/RegisterView/RegisterView.vue');
 
@@ -28,6 +31,23 @@ const routes: RouteRecordRaw[] = [
 				path: 'movies',
 				name: 'movies',
 				component: MoviesListView,
+			},
+      {
+				path: 'tv',
+				name: 'tv',
+				component: TvListView,
+			},
+      {
+				path: 'movies/:id',
+				name: 'movie-details',
+				component: MovieDetails,
+				props: true, // опционально: прокидываем params.id как props (удобнее типизировать/тестировать)
+			},
+      {
+				path: 'tv/:id',
+				name: 'tv-details',
+				component: TvDetails,
+				props: true,
 			},
 		],
 	},

@@ -51,8 +51,12 @@
 				</ButtonApp>
 			</section>
 
+			<section class="search">
+				<slot name="search"></slot>
+			</section>
+
 			<section class="content">
-				<slot name="main"></slot>
+				<slot name="content"></slot>
 			</section>
 		</div>
 	</div>
@@ -61,30 +65,42 @@
 <style scoped>
 	.modal-overlay {
 		position: fixed;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
+		inset: 0;
 		z-index: 12;
 		background-color: rgba(0, 0, 0, 0.6);
 		backdrop-filter: blur(20px);
-		inset: 0;
 		overscroll-behavior: contain;
 	}
 
 	.modal-panel {
 		background-color: #111;
 		max-width: 1400px;
-		max-height: 60dvh;
+		max-height: 90dvh;
 		margin: 0 auto;
 		padding: 20px;
+
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
 	}
 
 	.header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.search {
+    max-width: 900px;
+    margin-top: 20px;
+	}
+
+	.content {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		margin-top: 32px;
 	}
 </style>

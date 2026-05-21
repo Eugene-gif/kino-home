@@ -56,11 +56,11 @@
 		justify-content: center;
 		gap: 15px;
 		position: relative;
-		max-width: 900px;
+    width: 100%;
 
 		.input {
 			width: 100%;
-			padding: 10px;
+			padding: 10px 24px 10px 10px;
 			outline: none;
 			transition: 0.5s ease-in-out;
 			background-color: transparent;

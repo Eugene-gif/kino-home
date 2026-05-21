@@ -22,11 +22,6 @@ app.use(Toast, {
   pauseOnHover: true,
 });
 
-// {
-  // position: POSITION.TOP_RIGHT,
-  // maxToasts: 5,
-// }
-
 (async () => {
   try {
     const genresStore = useGenresStore(pinia);

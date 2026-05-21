@@ -1,25 +1,26 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-// import { genreMovieList, moviePopularList } from '@/api/endpoints';
-import type { GenreMovieList200GenresItem } from '@/api/types'; 
+import { /*genreMovieList, moviePopularList,*/ tvSeriesDetails } from '@/api/endpoints';
+import type { TvSeriesDetails200, GenreMovieList200GenresItem, AppendOptions } from '@/stores/typesForStores';
 
 export const useTvStore = defineStore('tv', () => {
   const genresTvList = ref<GenreMovieList200GenresItem[] | []>([]);
+  const singleTvDetails = ref<TvSeriesDetails200 | null>(null);
 
-  // const fetchGenresMovies = async () => {
-  //   const response = await genreMovieList();
-  //   const { data } = response;
-  //   if (response.status >= 200 && response.status < 300) {
-  //     genresMoviesList.value = data.genres ?? [];
-  //   }
-  // }
-
-  // const fetchPopularMovies = async () => {
-  //   const response = await moviePopularList();
-  //   console.log(response);
-  // }
+  const fetchTvDetails = async (id: number, append: AppendOptions[] = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images']) => {
+    try {
+      const { data } = await tvSeriesDetails(id, { append_to_response: append.join(',') });
+      console.log(`fetchTvDetails(id: ${id}): `, data);
+      singleTvDetails.value = data;
+    } catch (err) {
+      console.error(`Failed to fetch movie details(id: ${id})`);
+      throw err;
+    }
+  }
 
   return {
     genresTvList,
+    singleTvDetails,
+    fetchTvDetails
   }
 });

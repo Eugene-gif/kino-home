@@ -8,37 +8,44 @@
 		rating: '0.0',
 		imageUrl: '',
 		genreNames: () => [],
-		type: '',
+		mediaType: '',
 	});
 </script>
 
 <template>
 	<div class="card">
-		<img
-			class="card-img"
-			:src="props.imageUrl"
-			:alt="props.title"
-			loading="lazy"
-			decoding="async"
-			@error="onImgError"
-		/>
-		<div class="card-text">
-			<div class="card-info">
-				<span class="card-rating">{{ props.rating }}</span>
-				<span class="card-type">{{ props.type }}</span>
-				<span class="card-genres">
-					<template v-for="(genre, idx) in genreNames" :key="genre + idx">
-						{{ genre && genreNames[idx + 1] ? genre + ', ' : genre }}
-					</template>
-				</span>
+		<RouterLink
+			:to="{
+				name: props.mediaType === 'movie' ? 'movie-details' : 'tv-details',
+				params: { id: props.id },
+			}"
+		>
+			<img
+				class="card-img"
+				:src="props.imageUrl"
+				:alt="props.title"
+				loading="lazy"
+				decoding="async"
+				@error="onImgError"
+			/>
+			<div class="card-text">
+				<div class="card-info">
+					<span class="card-rating">{{ props.rating }}</span>
+					<span class="card-type">{{ props.mediaType === 'movie' ? 'Фильм' : 'Сериал' }}</span>
+					<span class="card-genres">
+						<template v-for="(genre, idx) in genreNames" :key="genre + idx">
+							{{ genre && genreNames[idx + 1] ? genre + ', ' : genre }}
+						</template>
+					</span>
+				</div>
+				<div class="card-title">{{ props.title }}</div>
 			</div>
-			<div class="card-title">{{ props.title }}</div>
-		</div>
+		</RouterLink>
 	</div>
 </template>
 
 <style scoped>
-	.card {
+	.card a {
 		display: flex;
 		flex-direction: column;
 		max-width: 335px;
