@@ -124,7 +124,7 @@
 							<li class="nav-item"><RouterLink to="/">Главная</RouterLink></li>
 							<li class="nav-item"><RouterLink to="/movies">Фильмы</RouterLink></li>
 							<li class="nav-item"><RouterLink to="/tv">Сериалы</RouterLink></li>
-							<li class="nav-item"><RouterLink to="/icons">Иконки</RouterLink></li>
+							<li class="nav-item"><RouterLink to="/collections">Коллекции</RouterLink></li>
 						</ul>
 					</nav>
 

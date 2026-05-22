@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	console.log('init input');
+	// console.log('init input');
 </script>
 
 <template>

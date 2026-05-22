@@ -3,7 +3,7 @@ import MainLayout from '@/layouts/MainLayout/MainLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout/AuthLayout.vue';
 
 const HomeView = () => import('@/views/home/HomeView.vue');
-const IconsView = () => import('@/views/icons/IconsView.vue');
+const CollectionsView = () => import('@/views/collections/CollectionsView.vue');
 const TvListView = () => import('@/views/media/tv/TvView.vue');
 const MoviesListView = () => import('@/views/media/movies/MoviesView.vue');
 const MovieDetails = () => import ('@/views/media/movies/MovieDetails.vue');
@@ -23,9 +23,9 @@ const routes: RouteRecordRaw[] = [
 				component: HomeView,
 			},
 			{
-				path: 'icons',
-				name: 'icons',
-				component: IconsView,
+				path: 'collections',
+				name: 'collections',
+				component: CollectionsView,
 			},
 			{
 				path: 'movies',

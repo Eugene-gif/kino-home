@@ -27,7 +27,6 @@ export const useSearchStore = defineStore('search', () => {
     try {
       const { data } = await trendingAll();
       trendingList.value = data.results ?? [];
-      console.log('trendingList.value: ', trendingList.value);
     } catch (err) {
       console.error('Failed to fetch trendingAll');
       throw err;

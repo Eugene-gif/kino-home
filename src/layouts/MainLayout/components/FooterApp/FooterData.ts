@@ -16,11 +16,11 @@ const FooterData: FooterSectionData[] = [
       },
       {
         text: 'Сериалы',
-        path: '',
+        path: '/tv',
       },
       {
         text: 'Подборки',
-        path: '',
+        path: '/collections',
       },
     ],
   },
