@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { routeNames } from '@/constants/routesData';
+
 	import type {
 		ModalSearchCardItem,
 		PersonCardItem,
@@ -36,7 +38,7 @@
 					<RouterLink
 						@click="closeModal"
 						:to="{
-							name: film.mediaType === 'movie' ? 'movie-details' : 'tv-details',
+							name: film.mediaType === 'movie' ? routeNames.movieDetails : routeNames.tvDetails,
 							params: { id: film.id },
 						}"
 					>
@@ -58,7 +60,7 @@
 					<RouterLink
 						@click="closeModal"
 						:to="{
-							name: film.mediaType === 'movie' ? 'movie-details' : 'tv-details',
+							name: film.mediaType === 'movie' ? routeNames.movieDetails : routeNames.tvDetails,
 							params: { id: film.id },
 						}"
 					>

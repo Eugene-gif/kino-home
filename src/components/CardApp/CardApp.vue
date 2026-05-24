@@ -1,8 +1,9 @@
 <script setup lang="ts">
 	import { onImgError } from '@/utils/images';
-	import type { CatalogCardItem } from '@/views/home/homeTypes';
+	import type { CardApp } from './CardApp.types';
+	import { routeNames } from '@/constants/routesData';
 
-	const props = withDefaults(defineProps<CatalogCardItem>(), {
+	const props = withDefaults(defineProps<CardApp>(), {
 		id: '',
 		title: '',
 		rating: '0.0',
@@ -16,7 +17,7 @@
 	<div class="card">
 		<RouterLink
 			:to="{
-				name: props.mediaType === 'movie' ? 'movie-details' : 'tv-details',
+				name: props.mediaType === 'movie' ? routeNames.movieDetails : routeNames.tvDetails,
 				params: { id: props.id },
 			}"
 		>
@@ -27,11 +28,13 @@
 				loading="lazy"
 				decoding="async"
 				@error="onImgError"
+				width="325"
+				height="270"
 			/>
 			<div class="card-text">
 				<div class="card-info">
 					<span class="card-rating">{{ props.rating }}</span>
-					<span class="card-type">{{ props.mediaType === 'movie' ? 'Фильм' : 'Сериал' }}</span>
+					<span class="card-type">• {{ props.mediaType === 'movie' ? 'Фильм' : 'Сериал' }} •</span>
 					<span class="card-genres">
 						<template v-for="(genre, idx) in genreNames" :key="genre + idx">
 							{{ genre && genreNames[idx + 1] ? genre + ', ' : genre }}
@@ -72,26 +75,8 @@
 		}
 
 		.card-type {
-			position: relative;
 			font-weight: 700;
-			padding: 0 15px;
-
-			&::before,
-			&::after {
-				content: '•';
-				position: absolute;
-				top: 0;
-			}
-
-			&::before {
-				left: 0;
-				transform: translateX(75%);
-			}
-
-			&::after {
-				right: 0;
-				transform: translateX(-75%);
-			}
+			margin: 0 10px;
 		}
 
 		.card-title {
@@ -99,6 +84,13 @@
 			font-weight: 600;
 			font-size: 20px;
 			color: #fff;
+		}
+
+		&:hover {
+			.card-title,
+			.card-rating {
+				filter: drop-shadow(0px 1px 10px var(--color-white));
+			}
 		}
 	}
 </style>

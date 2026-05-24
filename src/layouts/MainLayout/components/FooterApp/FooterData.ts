@@ -1,28 +1,12 @@
 import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
+import { mainMenu } from '@/constants/menu';
 
 const FooterData: FooterSectionData[] = [
   {
     title: 'Меню',
     path: '',
     id: 1,
-    links: [
-      {
-        text: 'Главная',
-        path: '/',
-      },
-      {
-        text: 'Фильмы',
-        path: '/movies',
-      },
-      {
-        text: 'Сериалы',
-        path: '/tv',
-      },
-      {
-        text: 'Подборки',
-        path: '/collections',
-      },
-    ],
+    links: mainMenu,
   },
   {
     title: 'Подписка',

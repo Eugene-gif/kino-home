@@ -70,7 +70,7 @@
 			</SwiperSlide>
 		</Swiper>
 
-		<ButtonApp class="btn-next" border="none" round>
+		<ButtonApp class="btn-next" border="none">
 			<template #icon>
 				<IconArrowLeft style="width: 40px" />
 			</template>
@@ -167,22 +167,5 @@
 				display: none;
 			}
 		}
-
-		/* @media (width <= 760px) {
-      .swiper-slide-active,
-			.swiper-slide,
-			.swiper-slide-next,
-			.swiper-slide-next + .swiper-slide {
-				transform: translateX(0%) scale(1);
-				filter: blur(0);
-        opacity: 0;
-			}
-
-      .swiper-slide-active {
-        opacity: 1;
-        transform: translateX(0) scale(1);
-        filter: blur(0px);
-      }
-		} */
 	}
 </style>

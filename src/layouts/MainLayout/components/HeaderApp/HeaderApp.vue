@@ -5,6 +5,8 @@
 	import { useToast } from 'vue-toastification';
 	import { useSearchStore } from '@/stores/search';
 	import { buildImagePath } from '@/utils/images';
+	import { mainMenu } from '@/constants/menu';
+	import { routePaths } from '@/constants/routesData';
 
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 	import ContentModalSearch from './ContentModalSearch.vue';
@@ -114,17 +116,16 @@
 	<header class="header">
 		<div class="header-wrapper">
 			<div class="header-content">
-				<RouterLink class="header-logo" to="/">
+				<RouterLink class="header-logo" :to="routePaths.home">
 					<IconLogo />
 				</RouterLink>
 
 				<div :class="['header-box-content', isOpenBurgerMenu ? 'open' : '']">
 					<nav class="header-nav" aria-label="Основное меню">
 						<ul class="nav-list">
-							<li class="nav-item"><RouterLink to="/">Главная</RouterLink></li>
-							<li class="nav-item"><RouterLink to="/movies">Фильмы</RouterLink></li>
-							<li class="nav-item"><RouterLink to="/tv">Сериалы</RouterLink></li>
-							<li class="nav-item"><RouterLink to="/collections">Коллекции</RouterLink></li>
+							<li v-for="link in mainMenu" :key="link.name" class="nav-item">
+								<RouterLink :to="link.path">{{ link.text }}</RouterLink>
+							</li>
 						</ul>
 					</nav>
 
@@ -163,8 +164,8 @@
 								v-model:text="searchText"
 								@keyup.enter="loadSearch(searchText)"
 							/>
-							<ButtonApp @click="loadSearch(searchText)" blue>Поиск</ButtonApp>
-							<ButtonApp v-if="searchedList.length" @click="clearSearch" red
+							<ButtonApp @click="loadSearch(searchText)" color="blue">Поиск</ButtonApp>
+							<ButtonApp v-if="searchedList.length" @click="clearSearch" color="red"
 								>Очистить поиск</ButtonApp
 							>
 						</div>

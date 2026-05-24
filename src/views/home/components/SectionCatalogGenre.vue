@@ -10,7 +10,8 @@
 		FreeMode,
 	} from 'swiper/modules';
 	import { Swiper, SwiperSlide } from 'swiper/vue';
-	import CardApp from '@/components/Cards/CardApp.vue';
+	import CardApp from '@/components/CardApp/CardApp.vue';
+	import CardAppSkeleton from '@/components/CardApp/CardAppSkeleton.vue';
 	import type { CatalogCardItem } from '@/views/home/homeTypes';
 
 	const props = defineProps<{
@@ -67,15 +68,17 @@
 			:free-mode="{
 				enabled: true,
 				momentum: true,
-				momentumRatio: 0.4, // множитель инерции (больше = дальше едет)
-				momentumVelocityRatio: 1, // множитель скорости инерции
-				momentumBounce: false, // отскок на краях
+				momentumRatio: 0.4,
+				momentumVelocityRatio: 1,
+				momentumBounce: false,
 				sticky: true,
 				minimumVelocity: 0.02,
 			}"
 		>
-			<SwiperSlide v-for="movie in props.movies" :key="movie.id">
+			<SwiperSlide v-for="(movie, idx) in props.movies" :key="movie.id">
+				<CardAppSkeleton v-if="idx === 0" />
 				<CardApp
+					v-else
 					class="swiper-slide-inner"
 					:id="movie.id"
 					:title="movie.title"
@@ -92,11 +95,6 @@
 </template>
 
 <style scoped>
-	.movie-test {
-		border: 1px solid gainsboro;
-		border-radius: 10px;
-		padding: 10px;
-	}
 	.genre {
 		position: relative;
 
