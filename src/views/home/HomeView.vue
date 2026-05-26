@@ -5,7 +5,7 @@
 	import { useGenresStore } from '@/stores/genres';
 	import { useMoviesStore } from '@/stores/movies';
 	import { buildImagePath } from '@/utils/images';
-	import { formatDate } from '@/utils/date';
+	import { formatDateFns } from '@/utils/date';
 
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 	import HeroSlider from '@/views/home/components/SectionHero/HeroSlider.vue';
@@ -40,7 +40,7 @@
 			imageUrl: buildImagePath(movie.poster_path),
 			genreIds: movie.genre_ids ?? [],
 			genreNames: getMovieGenreNamesByIds(movie.genre_ids),
-			date: formatDate(movie.release_date),
+			date: formatDateFns(movie.release_date ?? ''),
 		}));
 	});
 

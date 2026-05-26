@@ -53,11 +53,8 @@
 		object-fit: cover;
 		border-radius: 12px;
 		min-width: 220px;
-	}
-
-	.card-img[src='/no-image.webp'] {
-		object-fit: contain;
-		background-color: black;
+    background-color: #363434;
+    background: url('no-image.webp') center/cover no-repeat;
 	}
 
 	.card-text {

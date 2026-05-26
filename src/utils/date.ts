@@ -1,14 +1,8 @@
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
-const formatDate = (date: string | undefined): string => {
-  if (!date) return '';
+const formatDateFns = (date: string) => {
+  return format(date, 'd MMMM yyyy', { locale: ru });
+}
 
-  const d = new Date(date);
-
-  return d.toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).replace(' г.', '');
-};
-
-export { formatDate };
+export { formatDateFns };

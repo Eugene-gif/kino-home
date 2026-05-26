@@ -1,55 +1,36 @@
 <script setup lang="ts">
-	import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
+	import { computed, watch, onMounted, onUnmounted } from 'vue';
 	import { storeToRefs } from 'pinia';
 	import { useMoviesStore } from '@/stores/movies';
-	import { useToast } from 'vue-toastification';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 
 	const props = defineProps<{
 		id: string;
 	}>();
 
-	const toast = useToast();
 	const moviesStore = useMoviesStore();
 	const { fetchMovieDetails } = moviesStore;
-	const { singleMovieDetails } = storeToRefs(moviesStore);
-
-	const isLoading = ref<boolean>(true);
-	const error = ref<string>('');
+	const { singleMovieDetails, isLoadingMovieDetails, isError } = storeToRefs(moviesStore);
 
 	const movieId = computed(() => Number(props.id));
 	const movieTitle = computed(() => singleMovieDetails.value?.title);
 
-	const loadMovieDetails = async (id: number) => {
-		isLoading.value = true;
-		error.value = '';
-		singleMovieDetails.value = null;
-		try {
-			await fetchMovieDetails(id);
-		} catch {
-			error.value = 'Не удалось загрузить фильм';
-			toast.error(error.value);
-		} finally {
-			isLoading.value = false;
-		}
-	};
-
 	watch(movieId, async () => {
-		await loadMovieDetails(movieId.value);
+		await fetchMovieDetails(movieId.value);
 	});
 
 	onMounted(async () => {
-		loadMovieDetails(movieId.value);
+		fetchMovieDetails(movieId.value);
 	});
 
-  onUnmounted(() => {
-    singleMovieDetails.value = null;
-  });
+	onUnmounted(() => {
+		singleMovieDetails.value = null;
+	});
 </script>
 
 <template>
 	<div class="tv-details">
-		<template v-if="!isLoading && !error">
+		<template v-if="!isLoadingMovieDetails && !isError">
 			<h1 class="title">
 				{{ movieTitle }}
 			</h1>
@@ -57,7 +38,7 @@
 			<div>{{ singleMovieDetails }}</div>
 		</template>
 
-		<div v-else-if="error" class="error-block">Данные не загружены, попробуйте позже</div>
+		<div v-else-if="isError" class="error-block">Данные не загружены, попробуйте позже</div>
 
 		<LoaderApp v-else />
 	</div>

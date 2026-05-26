@@ -19,6 +19,7 @@
     "orval": "orval"
   },
   "dependencies": {
+    "date-fns": "^4.3.0",
     "pinia": "^3.0.4",
     "swiper": "^12.1.2",
     "vue": "^3.5.27",

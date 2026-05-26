@@ -7,6 +7,7 @@ import type {
   MoviePopularList200ResultsItem,
   DiscoverMovie200ResultsItem,
   TvSeriesDetails200,
+  TvSeriesDetailsParams,
   MovieDetails200,
 } from '@/api/types';
 
@@ -29,6 +30,7 @@ export type {
   MoviePopularList200ResultsItem,
   // DiscoverMovie200ResultsItem,
   TvSeriesDetails200,
+  TvSeriesDetailsParams,
   MovieDetails200,
 
   GenreWithMovies,

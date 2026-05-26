@@ -10,3 +10,7 @@ export const IMAGE_SIZES: { small: string, medium: string, large: string } = {
   medium: 'w780',
   large: 'w1280',
 } as const;
+
+export const APPEND_TO_RESPONSE_TV: string = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images'].join(',');
+export const APPEND_TO_RESPONSE_MOVIE: string = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images'].join(',');
+

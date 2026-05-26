@@ -1,26 +1,35 @@
 import { ref } from 'vue';
 import { defineStore, storeToRefs } from 'pinia';
 import { useGenresStore } from '@/stores/genres';
+import { APPEND_TO_RESPONSE_MOVIE } from '@/constants/constants';
+import { useToast } from 'vue-toastification';
 import { moviePopularList, discoverMovie, movieDetails } from '@/api/endpoints';
-import type { MoviePopularList200ResultsItem, MovieDetails200,  GenreWithMovies, AppendOptions } from '@/stores/typesForStores';
+import type { MoviePopularList200ResultsItem, MovieDetails200, GenreWithMovies } from '@/stores/typesForStores';
 
 export const useMoviesStore = defineStore('movies', () => {
+  const toast = useToast();
   const genresStore = useGenresStore();
   const { movies } = storeToRefs(genresStore);
 
   const popularMovies = ref<MoviePopularList200ResultsItem[] | []>([]);
   const moviesByAllGenres = ref<GenreWithMovies[] | []>([]);
+  const isLoadingMovieDetails = ref(false);
+  const isError = ref(false);
   const singleMovieDetails = ref<MovieDetails200 | null>(null);
 
   // Получаем детали фильма по id
-  const fetchMovieDetails = async (id: number, append: AppendOptions[] = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images']) => {
+  const fetchMovieDetails = async (id: number, append: string = APPEND_TO_RESPONSE_MOVIE) => {
+    isLoadingMovieDetails.value = true;
+    isError.value = false;
+    singleMovieDetails.value = null;
     try {
-      const { data } = await movieDetails(id, { append_to_response: append.join(',') });
-      console.log(`fetchMovieDetails(id: ${id}): `, data);
+      const { data } = await movieDetails(id, { append_to_response: append });
       singleMovieDetails.value = data;
-    } catch (err) {
-      console.error(`Failed to fetch movie details(id: ${id})`);
-      throw err;
+    } catch {
+      isError.value = true;
+      toast.error(`Не удалось загрузить фильм: ${id}`);
+    } finally {
+      isLoadingMovieDetails.value = false;
     }
   }
 
@@ -69,6 +78,8 @@ export const useMoviesStore = defineStore('movies', () => {
   return {
     popularMovies,
     moviesByAllGenres,
+    isLoadingMovieDetails,
+    isError,
     singleMovieDetails,
     fetchMovieDetails,
     fetchPopularMovies,

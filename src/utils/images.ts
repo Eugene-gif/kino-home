@@ -12,7 +12,6 @@ const buildImagePath = (
   path: string | null | undefined,
   size: keyof typeof IMAGE_SIZES = 'medium'
 ): string => {
-  
   if (path) return `${IMAGE_BASE_URL}${IMAGE_SIZES[size]}${path}`;
 
   return PLACEHOLDER_IMAGE;

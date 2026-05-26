@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { onImgError } from '@/utils/images';
-	import type { CardApp } from './CardApp.types';
 	import { routeNames } from '@/constants/routesData';
+	import type { CardApp } from './CardApp.types';
 
 	const props = withDefaults(defineProps<CardApp>(), {
 		id: '',
@@ -62,6 +62,7 @@
 			aspect-ratio: 2 / 3;
 			border-radius: 10px;
 			background-color: #363434;
+			background: url('no-image.webp') center/cover no-repeat;
 		}
 
 		.card-info {

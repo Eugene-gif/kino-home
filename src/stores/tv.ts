@@ -1,25 +1,37 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { /*genreMovieList, moviePopularList,*/ tvSeriesDetails } from '@/api/endpoints';
-import type { TvSeriesDetails200, GenreMovieList200GenresItem, AppendOptions } from '@/stores/typesForStores';
+import { tvSeriesDetails } from '@/api/endpoints';
+import { APPEND_TO_RESPONSE_TV } from '@/constants/constants';
+import { useToast } from 'vue-toastification';
+import type { TvSeriesDetails200 } from '@/stores/typesForStores';
+
 
 export const useTvStore = defineStore('tv', () => {
-  const genresTvList = ref<GenreMovieList200GenresItem[] | []>([]);
+  const toast = useToast();
+  // const genresTvList = ref<GenreMovieList200GenresItem[] | []>([]);
+  const isLoadingTvDetails = ref(false);
+  const isError = ref(false);
   const singleTvDetails = ref<TvSeriesDetails200 | null>(null);
 
-  const fetchTvDetails = async (id: number, append: AppendOptions[] = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images']) => {
+  // Получаем детали сериала по id
+  const fetchTvDetails = async (id: number, append: string = APPEND_TO_RESPONSE_TV) => {
+    isLoadingTvDetails.value = true;
+    isError.value = false;
+    singleTvDetails.value = null;
     try {
-      const { data } = await tvSeriesDetails(id, { append_to_response: append.join(',') });
-      console.log(`fetchTvDetails(id: ${id}): `, data);
+      const { data } = await tvSeriesDetails(id, { append_to_response: append });
       singleTvDetails.value = data;
-    } catch (err) {
-      console.error(`Failed to fetch movie details(id: ${id})`);
-      throw err;
+    } catch {
+      isError.value = true;
+      toast.error(`Не удалось загрузить сериал: ${id}`);
+    } finally {
+      isLoadingTvDetails.value = false;
     }
   }
 
   return {
-    genresTvList,
+    isLoadingTvDetails,
+    isError,
     singleTvDetails,
     fetchTvDetails
   }

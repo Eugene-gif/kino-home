@@ -1,56 +1,32 @@
 <script setup lang="ts">
-	import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
+	import { computed, watch, onMounted, onUnmounted } from 'vue';
 	import { storeToRefs } from 'pinia';
 	import { useTvStore } from '@/stores/tv';
-	import { useToast } from 'vue-toastification';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 
 	const props = defineProps<{
 		id: string; // из URL всегда приходит строкой
 	}>();
 
-	const toast = useToast();
 	const tvStore = useTvStore();
 	const { fetchTvDetails } = tvStore;
-	const { singleTvDetails } = storeToRefs(tvStore);
-
-	const isLoading = ref<boolean>(true);
-	const error = ref<string>('');
+	const { singleTvDetails, isLoadingTvDetails, isError } = storeToRefs(tvStore);
 
 	const tvId = computed(() => Number(props.id));
 	const tvTitle = computed(() => singleTvDetails.value?.name);
 
-	const loadTvDetails = async (id: number) => {
-		isLoading.value = true;
-		error.value = '';
-		singleTvDetails.value = null;
-		try {
-			await fetchTvDetails(id);
-		} catch (err) {
-			error.value = 'Не удалось загрузить сериал';
-			toast.error(error.value);
-			console.error(err);
-		} finally {
-			isLoading.value = false;
-		}
-	};
-
 	watch(tvId, async () => {
-		await loadTvDetails(tvId.value);
+		await fetchTvDetails(tvId.value);
 	});
 
-	onMounted(async () => {
-		loadTvDetails(tvId.value);
-	});
+  onMounted(() => fetchTvDetails(tvId.value));
 
-  onUnmounted(() => {
-    singleTvDetails.value = null;
-  });
+  onUnmounted(() => singleTvDetails.value = null);
 </script>
 
 <template>
 	<div class="tv-details">
-		<template v-if="!isLoading && !error">
+		<template v-if="!isLoadingTvDetails && !isError">
 			<h1 class="title">
 				{{ tvTitle }}
 			</h1>
@@ -58,7 +34,7 @@
 			<div>{{ singleTvDetails }}</div>
 		</template>
 
-		<div v-else-if="error" class="error-block">Данные не загружены, попробуйте позже</div>
+		<div v-else-if="isError" class="error-block">Данные не загружены, попробуйте позже</div>
 
 		<LoaderApp v-else />
 	</div>
