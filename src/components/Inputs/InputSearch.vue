@@ -1,13 +1,15 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
-  import IconSearch from '@/assets/icons/IconSearch.vue';
+	import IconSearch from '@/assets/icons/IconSearch.vue';
 
 	const props = defineProps<{
 		text: string;
+		loading: boolean;
 	}>();
 
 	const emit = defineEmits<{
 		(e: 'update:text', value: string): void;
+		(e: 'clear'): void;
 	}>();
 
 	const onInput = (e: Event) => {
@@ -22,6 +24,7 @@
 
 	const clearValue = () => {
 		emit('update:text', '');
+		emit('clear');
 		focus();
 	};
 
@@ -44,7 +47,8 @@
 			class="input"
 			placeholder="Название фильма, сериала, или имя актёра, режисёра..."
 		/>
-		<button v-show="props.text" @click="clearValue" class="close"></button>
+		<span v-if="props.text && loading" class="spinner"></span>
+		<button v-else-if="props.text && !loading" @click="clearValue" class="close"></button>
 	</div>
 </template>
 
@@ -56,7 +60,7 @@
 		justify-content: center;
 		gap: 15px;
 		position: relative;
-    width: 100%;
+		width: 100%;
 
 		.input {
 			width: 100%;
@@ -104,7 +108,6 @@
 		}
 
 		.close {
-			--color-close: #898792;
 			position: absolute;
 			right: 0;
 			width: 30px;
@@ -118,7 +121,7 @@
 				left: 50%;
 				width: 20px;
 				height: 2px;
-				background-color: var(--color-close);
+				background-color: var(--color-btn-base);
 			}
 			&::before {
 				transform: translate(-50%, -50%) rotate(45deg);
@@ -128,16 +131,34 @@
 			}
 
 			&:focus-visible {
-				box-shadow: 0 0 10px 0 #fff;
+				box-shadow: 0 0 10px 0 var(--color-white);
 			}
 
 			&:hover {
-				--color-close: #fff;
+				--color-btn-base: var(--color-white);
 			}
+		}
+
+		.spinner {
+			position: absolute;
+			right: 0;
+			width: 24px;
+			height: 24px;
+			border: 3px solid rgba(255, 255, 255, 0.3);
+			border-top-color: #ffffff;
+			border-radius: 50%;
+			animation: spin 0.6s linear infinite;
+			pointer-events: none;
 		}
 	}
 
 	.input-wrapper:has(.input:focus) {
 		--color: #fff;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
 	}
 </style>

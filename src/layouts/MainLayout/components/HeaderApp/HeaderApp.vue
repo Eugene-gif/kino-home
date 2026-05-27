@@ -2,7 +2,7 @@
 	import { ref, watch, computed, nextTick, onMounted } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import { storeToRefs } from 'pinia';
-	import { useToast } from 'vue-toastification';
+	import { useDebounceFn } from '@vueuse/core';
 	import { useSearchStore } from '@/stores/search';
 	import { buildImagePath } from '@/utils/images';
 	import { mainMenu } from '@/constants/menu';
@@ -21,18 +21,15 @@
 
 	import type { ModalSearchCardItem } from './headerTypes';
 
-	const toast = useToast();
 	const searchStore = useSearchStore();
-	const { fetchSearchMulti, fetchTrendingAll, fetchPersonPopularList, clearSearchedList } =
-		searchStore;
-	const { searchedList, trendingList, personList } = storeToRefs(searchStore);
+	const { fetchSearchMulti, fetchHeaderData } = searchStore;
+	const { isLoading, isSearchLoading, isSearchLoaded, searchedList, trendingList, personList } =
+		storeToRefs(searchStore);
 
 	type InputSearchInstance = {
 		focus: () => void;
 	};
 
-	const isLoading = ref(true);
-	const isLoadedSearch = ref<boolean>(false);
 	const searchText = ref<string>('');
 	const isOpenBurgerMenu = ref<boolean>(false);
 	const isModalSearch = ref<boolean>(false);
@@ -64,6 +61,11 @@
 		}));
 	});
 
+	const debouncedSearch = useDebounceFn((query: string) => {
+		if (!query.trim()) return;
+		fetchSearchMulti(query);
+	}, 500);
+
 	watch(isModalSearch, async (value: boolean): Promise<void> => {
 		if (value) {
 			await nextTick();
@@ -71,45 +73,22 @@
 		}
 	});
 
+	watch(searchText, () => {
+		if (!searchText.value) clearSearch();
+	});
+
 	const clearSearch = () => {
 		searchText.value = '';
-		clearSearchedList();
-		isLoadedSearch.value = false;
+		searchedList.value = [];
+		isSearchLoaded.value = false;
 	};
 
 	const closeModalSearch = () => {
 		isModalSearch.value = false;
-		isLoadedSearch.value = false;
+		clearSearch();
 	};
 
-	const loadSearch = async (str: string) => {
-		if (!str.trim()) return;
-
-		try {
-			isLoading.value = true;
-			await fetchSearchMulti(str);
-		} finally {
-			isLoading.value = false;
-			isLoadedSearch.value = true;
-		}
-	};
-
-	const loadHeaderData = async () => {
-		const results = await Promise.allSettled([fetchTrendingAll(), fetchPersonPopularList()]);
-
-		results.forEach((result, index) => {
-			const names = ['трендов', 'популярных персон'];
-
-			if (result.status === 'rejected') {
-				toast.error(`Ошибка загрузки ${names[index]}`);
-				console.error(`Ошибка загрузки ${names[index]}:`, result.reason);
-			}
-		});
-
-		isLoading.value = false;
-	};
-
-	onMounted(loadHeaderData);
+	onMounted(fetchHeaderData);
 </script>
 
 <template>
@@ -162,12 +141,10 @@
 							<InputSearch
 								ref="inputSearchRef"
 								v-model:text="searchText"
-								@keyup.enter="loadSearch(searchText)"
+								:loading="isSearchLoading"
+								@input="debouncedSearch(searchText)"
+								@clear="clearSearch"
 							/>
-							<ButtonApp @click="loadSearch(searchText)" color="blue">Поиск</ButtonApp>
-							<ButtonApp v-if="searchedList.length" @click="clearSearch" color="red"
-								>Очистить поиск</ButtonApp
-							>
 						</div>
 					</template>
 
@@ -175,7 +152,7 @@
 						<ContentModalSearch
 							v-if="!isLoading"
 							:lenSearchedList="uiSearchedList.length"
-							:isLoadedSearch="isLoadedSearch"
+							:isLoadedSearch="isSearchLoaded"
 							:uiTrendingList="uiTrendingList"
 							:uiPersonList="uiPersonList"
 							:uiSearchedList="uiSearchedList"

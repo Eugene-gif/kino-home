@@ -1,6 +1,4 @@
-<script setup lang="ts">
-	// console.log('init input');
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<div class="input"></div>

@@ -30,7 +30,6 @@
 			if (isOpen) {
 				document.addEventListener('keydown', onEsc);
 				document.body.style.overflow = 'hidden';
-				// document.body.inert = true;
 			} else {
 				document.removeEventListener('keydown', onEsc);
 				document.body.style.overflow = '';
@@ -92,8 +91,7 @@
 	}
 
 	.search {
-    max-width: 900px;
-    margin-top: 20px;
+		margin-top: 20px;
 	}
 
 	.content {
