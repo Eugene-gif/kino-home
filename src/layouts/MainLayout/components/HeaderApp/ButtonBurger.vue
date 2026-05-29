@@ -36,11 +36,10 @@
 
 <style scoped>
 	.button-burger {
-		--color-btn: #898792;
 		--transition: all 0.1s ease-in-out;
 
-		border: 1px solid var(--color-btn);
-		color: var(--color-btn);
+		border: 1px solid var(--color-btn-base);
+		color: var(--color-btn-base);
 		border-radius: 10px;
 		height: 50px;
 		min-width: 50px;
@@ -61,12 +60,12 @@
 
 		&:hover,
 		&:focus-visible {
-			box-shadow: 0 0 10px #fff;
+			box-shadow: 0 0 10px var(--color-white);
 		}
 
 		&:active {
-			--color-btn: #fff;
-			box-shadow: 0 0 20px #fff;
+			--color-btn-base: var(--color-white);
+			box-shadow: 0 0 20px var(--color-white);
 		}
 
 		.label {
@@ -90,7 +89,7 @@
 		.label span {
 			width: 30px;
 			height: 4px;
-			background-color: var(--color-btn);
+			background-color: var(--color-btn-base);
 			border-radius: 100px;
 			transition: 0.3s ease;
 		}

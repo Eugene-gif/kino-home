@@ -16,5 +16,17 @@
 </template>
 
 <style scoped>
-	@import './MainLayout.css';
+	.layout {
+		display: flex;
+		min-height: 100dvh;
+		flex-direction: column;
+
+		.main {
+			max-width: 1400px;
+			width: 100%;
+			flex: 1 0 auto;
+			padding: 20px 20px 0 20px;
+			margin: var(--header-ident-base) auto 0 auto;
+		}
+	}
 </style>

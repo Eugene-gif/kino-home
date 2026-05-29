@@ -1,36 +1,19 @@
 <script setup lang="ts">
-	import SvgIcon from '@/components/SvgIcon/SvgIcon.vue';
-
 	interface PropsButtonApp {
-		/*text: string; */
-		width?: string;
-		height?: string;
-		color?: string;
-		bgColor?: string;
+		color?: 'red' | 'blue' | '';
 		border?: string | undefined;
-		iconName?: string;
-		iconSize?: string;
 		round?: boolean | string;
 	}
 
 	const props = withDefaults(defineProps<PropsButtonApp>(), {
-		width: '',
-		height: '',
 		color: '',
-		bgColor: '',
 		border: '',
-		iconName: '',
-		iconSize: '',
 		round: false,
 	});
 
-	const { /*text,*/ width, height, color, bgColor, border, round } = props;
+	const { color, border, round } = props;
 
 	const buttonStyle = {
-		width: width,
-		height: height,
-		color: color,
-		backgroundColor: bgColor,
 		border: border,
 		borderRadius:
 			typeof round === 'boolean' && round
@@ -42,20 +25,23 @@
 </script>
 
 <template>
-	<button class="button" :style="buttonStyle">
+	<button
+		class="button"
+		:class="[color, border === 'none' ? 'no-border' : '']"
+		:style="buttonStyle"
+	>
 		<slot></slot>
-		<SvgIcon v-if="iconName" class="icon" :name="iconName" :width="iconSize" :height="iconSize" />
+		<slot name="icon"></slot>
 		<slot name="textRight"></slot>
 	</button>
 </template>
 
 <style scoped>
 	.button {
-		--color-btn: #898792;
 		--transition: all 0.1s ease-in-out;
 
-		border: 1px solid var(--color-btn);
-		color: var(--color-btn);
+		border: 1px solid var(--color-btn-base);
+		color: var(--color-btn-base);
 		border-radius: 10px;
 		height: 50px;
 		min-width: 50px;
@@ -75,12 +61,33 @@
 
 		&:hover,
 		&:focus-visible {
-			box-shadow: 0 0 10px #fff;
+			box-shadow: 0 0 10px var(--color-white);
 		}
 
 		&:active {
-			--color-btn: #fff;
-			box-shadow: 0 0 20px #fff;
+			--color-btn: var(--color-white);
+			box-shadow: 0 0 20px var(--color-white);
+		}
+
+		&.no-border:hover {
+			box-shadow: none;
+			filter: drop-shadow(0px 1px 10px var(--color-white));
+		}
+
+		&.no-border:active {
+			box-shadow: none;
+		}
+
+		&.red {
+			color: var(--color-white);
+			background-color: var(--color-btn-red);
+			border: 1px solid var(--color-btn-red);
+		}
+
+		&.blue {
+			color: var(--color-white);
+			background-color: var(--color-btn-blue);
+			border: 1px solid var(--color-btn-blue);
 		}
 	}
 </style>
