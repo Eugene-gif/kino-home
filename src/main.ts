@@ -4,6 +4,7 @@ import { createPinia } from 'pinia';
 import Toast, { POSITION } from 'vue-toastification';
 import "vue-toastification/dist/index.css";
 import { useGenresStore } from '@/stores/genres';
+import { useCountriesStore } from '@/stores/countries';
 
 import App from './App.vue';
 import router from './router';
@@ -25,7 +26,8 @@ app.use(Toast, {
 (async () => {
   try {
     const genresStore = useGenresStore(pinia);
-    await genresStore.initGenres();
+    const countriesStore = useCountriesStore(pinia);
+    Promise.allSettled([genresStore.initGenres(), countriesStore.initCountries()]);
   } catch (err) {
     console.error('Critical init error:', err);
   } finally {
