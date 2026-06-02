@@ -4,7 +4,7 @@ import { useGenresStore } from '@/stores/genres';
 import { APPEND_TO_RESPONSE_MOVIE } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
 import { moviePopularList, discoverMovie, movieDetails } from '@/api/endpoints';
-import type { MoviePopularList200ResultsItem, MovieDetails200, GenreWithMovies } from '@/stores/typesForStores';
+import type { MoviePopularList200ResultsItem, MovieDetailsFull, GenreWithMovies } from '@/stores/typesForStores';
 
 export const useMoviesStore = defineStore('movies', () => {
   const toast = useToast();
@@ -15,19 +15,19 @@ export const useMoviesStore = defineStore('movies', () => {
   const moviesByAllGenres = ref<GenreWithMovies[] | []>([]);
   const isLoadingMovieDetails = ref(false);
   const isError = ref(false);
-  const singleMovieDetails = ref<MovieDetails200 | null>(null);
+  const detailsMovie = ref<MovieDetailsFull | null>(null);
 
   // Получаем детали фильма по id
   const fetchMovieDetails = async (id: number, append: string = APPEND_TO_RESPONSE_MOVIE) => {
     isLoadingMovieDetails.value = true;
-    isError.value = false;
-    singleMovieDetails.value = null;
+    detailsMovie.value = null;
     try {
       const { data } = await movieDetails(id, { append_to_response: append });
-      singleMovieDetails.value = data;
-    } catch {
-      isError.value = true;
+      detailsMovie.value = data;
+    } catch (err) {
       toast.error(`Не удалось загрузить фильм: ${id}`);
+      isError.value = true;
+      throw err;
     } finally {
       isLoadingMovieDetails.value = false;
     }
@@ -35,11 +35,8 @@ export const useMoviesStore = defineStore('movies', () => {
 
   // Список популярных фильмов
   const fetchPopularMovies = async () => {
-    const { data, status } = await moviePopularList();
-
-    if (status >= 200 && status < 300) {
-      popularMovies.value = data.results ?? [];
-    }
+    const { data } = await moviePopularList();
+    popularMovies.value = data.results ?? [];
   }
 
   // Список фильмов по жанру
@@ -76,11 +73,11 @@ export const useMoviesStore = defineStore('movies', () => {
 
 
   return {
+    isError,
     popularMovies,
     moviesByAllGenres,
     isLoadingMovieDetails,
-    isError,
-    singleMovieDetails,
+    detailsMovie,
     fetchMovieDetails,
     fetchPopularMovies,
     fetchMoviesByGenre,
