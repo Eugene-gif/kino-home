@@ -1,9 +1,9 @@
 <script setup lang="ts">
 	import { onImgError } from '@/utils/images';
 	import { routeNames } from '@/constants/routesData';
-	import type { CardApp } from './CardApp.types';
+	import type { CardAppType } from './CardApp.types';
 
-	const props = withDefaults(defineProps<CardApp>(), {
+	const props = withDefaults(defineProps<CardAppType>(), {
 		id: '',
 		title: '',
 		rating: '0.0',
@@ -36,9 +36,7 @@
 					<span class="card-rating">{{ props.rating }}</span>
 					<span class="card-type">• {{ props.mediaType === 'movie' ? 'Фильм' : 'Сериал' }} •</span>
 					<span class="card-genres">
-						<template v-for="(genre, idx) in genreNames" :key="genre + idx">
-							{{ genre && genreNames[idx + 1] ? genre + ', ' : genre }}
-						</template>
+						{{ genreNames.join(', ') }}
 					</span>
 				</div>
 				<div class="card-title">{{ props.title }}</div>

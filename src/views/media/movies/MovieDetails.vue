@@ -3,10 +3,11 @@
 	import { storeToRefs } from 'pinia';
 	import { useMoviesStore } from '@/stores/movies';
 	import { useCountriesStore } from '@/stores/countries';
+	import { useGenresStore } from '@/stores/genres.ts';
 	import { priceWithSymbol } from '@/utils/priceWithSymbol';
 	import { formatDateFns, formatDateFnsYear, formatMinutesInHours } from '@/utils/date';
 	import { buildImagePath } from '@/utils/images';
-  import MovieDetailsSlider from './MovieDetailsSlider.vue';
+	import MovieDetailsSlider from './MovieDetailsSlider.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconPlay from '@/assets/icons/IconPlay.vue';
 	import IconCopy from '@/assets/icons/IconCopy.vue';
@@ -16,6 +17,9 @@
 	const props = defineProps<{
 		id: string;
 	}>();
+
+	const genresStore = useGenresStore();
+	const { getMovieGenreNamesByIds } = genresStore;
 
 	const countriesStore = useCountriesStore();
 	const { countriesMap } = storeToRefs(countriesStore);
@@ -48,9 +52,21 @@
 			director:
 				detailsMovie.value?.credits?.crew?.find((el) => el.job === 'Director')?.name ??
 				'Нет данных',
-			actors: detailsMovie.value?.credits?.cast?.map((el) => el.name).join(', ') ?? 'Нет данных',
+			actors: countActors.value,
 			reviews: detailsMovie.value?.reviews?.results?.map((review) => review) ?? [],
 		};
+	});
+
+	const countActors = computed(() => {
+		if (!detailsMovie.value?.credits?.cast?.length) return 'Нет данных';
+
+		const actors = detailsMovie.value?.credits?.cast;
+		return (
+			actors
+				.slice(0, 10)
+				.map((el) => el.name)
+				.join(', ') + (actors.length > 10 ? ' и др.' : '')
+		);
 	});
 
 	const aboutList = computed(() => [
@@ -91,6 +107,17 @@
 			value: movie.value.time,
 		},
 	]);
+
+	const recommendationsList = computed(() => {
+		return detailsMovie.value?.recommendations?.results?.map((el) => ({
+			id: el.id,
+			title: el.title,
+			rating: el.vote_average.toFixed(1),
+			imageUrl: buildImagePath(el.poster_path),
+			genreNames: getMovieGenreNamesByIds(el.genre_ids),
+			mediaType: el.media_type,
+		}));
+	});
 
 	watch(movieId, async () => {
 		await fetchMovieDetails(movieId.value);
@@ -145,6 +172,7 @@
 			<section class="about section">
 				<div class="about__header">
 					<h3 class="about__title section__title">О фильме</h3>
+					<p class="about__tagline">{{ movie.tagline }}</p>
 					<p class="about__text">{{ movie.overview }}</p>
 				</div>
 
@@ -169,7 +197,7 @@
 
 			<section class="similar section">
 				<h3 class="similar__title section__title">Если вам понравился "{{ movie.title }}"</h3>
-        <MovieDetailsSlider :title="''" :movies="[]" />
+				<MovieDetailsSlider :movies="recommendationsList" />
 			</section>
 		</div>
 
@@ -205,8 +233,7 @@
 			z-index: -1;
 			background-image:
 				linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 30%, rgba(20, 16, 37, 1) 100%),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 25%),
-				var(--bg-url);
+				linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 25%), var(--bg-url);
 			background-size: cover;
 			background-position: center top;
 			background-repeat: no-repeat;
@@ -267,11 +294,16 @@
 				max-width: var(--wrapper-width);
 			}
 
+			.about__tagline,
 			.about__text {
 				font-weight: 500;
 				font-size: 18px;
 				line-height: 140%;
 			}
+      .about__tagline {
+        margin-bottom: 30px;
+      }
+			
 
 			.about__list {
 				position: absolute;
@@ -320,6 +352,10 @@
 				justify-content: center;
 				align-items: center;
 			}
+		}
+
+		.similar.section {
+			max-width: 100%;
 		}
 
 		@media (width <= 1120px) {

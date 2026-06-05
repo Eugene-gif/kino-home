@@ -12,11 +12,12 @@
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import CardApp from '@/components/CardApp/CardApp.vue';
 	import CardAppSkeleton from '@/components/CardApp/CardAppSkeleton.vue';
-	import type { CatalogCardItem } from '@/views/home/homeTypes';
+	// import type { CatalogCardItem } from '@/views/home/homeTypes';
+  import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
 	const props = defineProps<{
 		genreTitle?: string;
-		movies?: CatalogCardItem[];
+		movies?: CardAppType[];
 	}>();
 
 	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Mousewheel, FreeMode];

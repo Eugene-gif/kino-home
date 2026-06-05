@@ -16,10 +16,10 @@
 	import HeroCard from './HeroCard.vue';
 
 	import type { Swiper as SwiperType } from 'swiper';
-	import type { HeroSliderItem } from '@/views/home/homeTypes';
+  import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
 	interface Props {
-		heroItems: HeroSliderItem[];
+		heroItems: CardAppType[];
 	}
 
 	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Autoplay, Keyboard, Mousewheel];

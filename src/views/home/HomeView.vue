@@ -16,7 +16,8 @@
 	import SectionCatalog from '@/views/home/components/SectionCatalog.vue';
 	import SectionCatalogGenre from '@/views/home/components/SectionCatalogGenre.vue';
 
-	import type { HeroSliderItem, CatalogGenreWithMovies } from '@/views/home/homeTypes';
+	import type { CatalogGenreWithMovies } from '@/views/home/homeTypes';
+	import type { CardAppType } from '@/components/CardApp/CardApp.types';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 
 	const toast = useToast();
@@ -32,14 +33,14 @@
 	const isLoadingMoviesByAllGenres = ref(false);
 	const isError = ref(false);
 
-	const heroSliderItems = computed<HeroSliderItem[]>(() => {
+	const heroSliderItems = computed<CardAppType[]>(() => {
 		return popularMovies.value.map((movie) => ({
 			id: movie.id,
 			title: movie.title ?? 'Без имени',
 			rating: movie.vote_average ?? 0,
 			imageUrl: buildImagePath(movie.poster_path),
 			genreIds: movie.genre_ids ?? [],
-			genreNames: getMovieGenreNamesByIds(movie.genre_ids),
+			genreNames: getMovieGenreNamesByIds(movie.genre_ids ?? []),
 			date: formatDateFns(movie.release_date ?? ''),
 		}));
 	});
@@ -56,7 +57,7 @@
 							title: film.title ?? 'Без имени',
 							rating: film.vote_average?.toFixed(1) ?? '0.0',
 							imageUrl: buildImagePath(film.poster_path),
-							genreNames: getMovieGenreNamesByIds(film.genre_ids),
+							genreNames: getMovieGenreNamesByIds(film.genre_ids ?? []),
 							mediaType: 'movie',
 						};
 					}) ?? [],

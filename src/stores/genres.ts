@@ -58,7 +58,7 @@ export const useGenresStore = defineStore('genres', () => {
     }
   }
 
-  const getMovieGenreNamesByIds = (ids: number[] | undefined): string[] => {
+  const getMovieGenreNamesByIds = (ids: number[]): string[] => {
     if (!ids?.length) return [];
     return ids
       .map((id) => moviesMap.value[String(id)])

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 	import { onImgError } from '@/utils/images';
-	import type { HeroSliderItem } from '@/views/home/homeTypes';
+  import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
-	const props = withDefaults(defineProps<HeroSliderItem>(), {
+	const props = withDefaults(defineProps<CardAppType>(), {
 		id: '',
 		title: '',
-		rating: 0,
+		rating: '0.0',
 		imageUrl: '',
 		genreIds: () => [],
 		genreNames: () => [],
