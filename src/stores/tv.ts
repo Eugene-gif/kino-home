@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { tvSeriesDetails } from '@/api/endpoints';
 import { APPEND_TO_RESPONSE_TV } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
-import type { TvSeriesDetails200 } from '@/stores/typesForStores';
+import type { TvDetailsFull } from '@/stores/typesForStores';
 
 
 export const useTvStore = defineStore('tv', () => {
@@ -11,16 +11,16 @@ export const useTvStore = defineStore('tv', () => {
   // const genresTvList = ref<GenreMovieList200GenresItem[] | []>([]);
   const isLoadingTvDetails = ref(false);
   const isError = ref(false);
-  const singleTvDetails = ref<TvSeriesDetails200 | null>(null);
+  const detailsTv = ref<TvDetailsFull | null>(null);
 
   // Получаем детали сериала по id
   const fetchTvDetails = async (id: number, append: string = APPEND_TO_RESPONSE_TV) => {
     isLoadingTvDetails.value = true;
     isError.value = false;
-    singleTvDetails.value = null;
+    detailsTv.value = null;
     try {
       const { data } = await tvSeriesDetails(id, { append_to_response: append });
-      singleTvDetails.value = data;
+      detailsTv.value = data;
     } catch {
       isError.value = true;
       toast.error(`Не удалось загрузить сериал: ${id}`);
@@ -32,7 +32,7 @@ export const useTvStore = defineStore('tv', () => {
   return {
     isLoadingTvDetails,
     isError,
-    singleTvDetails,
+    detailsTv,
     fetchTvDetails
   }
 });

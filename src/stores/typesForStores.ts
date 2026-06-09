@@ -1,3 +1,4 @@
+// import { reviewDetails } from './../api/endpoints';
 // import { MovieRecommendations200 } from './../api/types/movieRecommendations200';
 import type {
   GenreMovieList200GenresItem,
@@ -11,11 +12,15 @@ import type {
   TvSeriesDetailsParams,
   MovieDetails200,
   MovieCredits200,
+  TvSeriesCredits200,
+  TvSeriesReviews200,
   MovieReviews200,
   MovieSimilar200,
   // MovieRecommendations200,
   MovieImages200,
   ConfigurationCountries200Item,
+  TvSeriesRecommendations200,
+  TvSeriesImages200,
   // MovieDetails200
 } from '@/api/types';
 
@@ -63,6 +68,14 @@ interface MovieDetailsFull extends MovieDetails200 {
   images?: MovieImages200;
 }
 
+interface TvDetailsFull extends TvSeriesDetails200 {
+  credits?: TvSeriesCredits200;
+  reviews?: TvSeriesReviews200;
+  similar?: TvSeriesCredits200;
+  recommendations?: TvSeriesRecommendations200;
+  images?: TvSeriesImages200;
+}
+
 export type {
   GenreMovieList200GenresItem,
   GenreTvList200GenresItem,
@@ -74,6 +87,7 @@ export type {
   TvSeriesDetails200,
   TvSeriesDetailsParams,
   MovieDetailsFull,
+  TvDetailsFull,
   ConfigurationCountries200Item,
 
   GenreWithMovies,

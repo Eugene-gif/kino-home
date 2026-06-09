@@ -3,6 +3,7 @@
 @import 'swiper/css';
 
 :root {
+  interpolate-size: allow-keywords;
   --font-family-base: 'Roboto', sans-serif;
   --font-size-base: 16px;
   --font-weight-base: 400;

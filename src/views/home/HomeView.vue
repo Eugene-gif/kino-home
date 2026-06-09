@@ -23,7 +23,7 @@
 	const toast = useToast();
 
 	const genresStore = useGenresStore();
-	const { getMovieGenreNamesByIds } = genresStore;
+	const { getGenreNamesByIds } = genresStore;
 
 	const moviesStore = useMoviesStore();
 	const { fetchMoviesByAllGenres, fetchHomeData } = moviesStore;
@@ -40,7 +40,7 @@
 			rating: movie.vote_average ?? 0,
 			imageUrl: buildImagePath(movie.poster_path),
 			genreIds: movie.genre_ids ?? [],
-			genreNames: getMovieGenreNamesByIds(movie.genre_ids ?? []),
+			genreNames: getGenreNamesByIds(movie.genre_ids ?? []),
 			date: formatDateFns(movie.release_date ?? ''),
 		}));
 	});
@@ -57,7 +57,7 @@
 							title: film.title ?? 'Без имени',
 							rating: film.vote_average?.toFixed(1) ?? '0.0',
 							imageUrl: buildImagePath(film.poster_path),
-							genreNames: getMovieGenreNamesByIds(film.genre_ids ?? []),
+							genreNames: getGenreNamesByIds(film.genre_ids ?? []),
 							mediaType: 'movie',
 						};
 					}) ?? [],

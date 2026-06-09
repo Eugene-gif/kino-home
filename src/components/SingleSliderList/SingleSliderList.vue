@@ -12,11 +12,11 @@
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import CardApp from '@/components/CardApp/CardApp.vue';
 	import CardAppSkeleton from '@/components/CardApp/CardAppSkeleton.vue';
-  import type { CardAppType } from '@/components/CardApp/CardApp.types';
+	import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
 	const props = defineProps<{
 		title?: string;
-		movies?: CardAppType[];
+		items?: CardAppType[];
 	}>();
 
 	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Mousewheel, FreeMode];
@@ -46,6 +46,7 @@
 <template>
 	<section class="slider">
 		<h3 v-if="props.title" class="slider-title">{{ props.title }}</h3>
+
 		<Swiper
 			:modules="modules"
 			:slides-per-view="4"
@@ -75,14 +76,14 @@
 				minimumVelocity: 0.02,
 			}"
 		>
-			<template v-if="!props.movies?.length">
+			<template v-if="!props.items?.length">
 				<SwiperSlide v-for="num in 4" :key="num">
 					<CardAppSkeleton />
 				</SwiperSlide>
 			</template>
 
 			<template v-else>
-				<SwiperSlide v-for="movie in props.movies" :key="movie.id">
+				<SwiperSlide v-for="movie in props.items" :key="movie.id">
 					<CardApp
 						class="swiper-slide-inner"
 						:id="movie.id"
@@ -95,6 +96,7 @@
 				</SwiperSlide>
 			</template>
 		</Swiper>
+
 		<button ref="prevEl" class="btn-prev">←</button>
 		<button ref="nextEl" class="btn-next">→</button>
 	</section>
