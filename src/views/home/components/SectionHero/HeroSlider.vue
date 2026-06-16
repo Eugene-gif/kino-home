@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import { nextTick } from 'vue';
 	import {
 		Navigation,
 		Pagination,
@@ -9,20 +8,18 @@
 		Autoplay,
 		Keyboard,
 		Mousewheel,
+		FreeMode,
 	} from 'swiper/modules';
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconArrowLeft from '@/assets/icons/IconArrowLeft.vue';
 	import HeroCard from './HeroCard.vue';
 
-	import type { Swiper as SwiperType } from 'swiper';
-  import type { CardAppType } from '@/components/CardApp/CardApp.types';
+	import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
 	interface Props {
 		heroItems: CardAppType[];
 	}
-
-	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Autoplay, Keyboard, Mousewheel];
 
 	const props = withDefaults(defineProps<Props>(), {
 		heroItems: () => [],
@@ -30,13 +27,17 @@
 
 	const { heroItems } = props;
 
-	const onSwiper = async (swiper: SwiperType) => {
-		await nextTick();
-
-		swiper.navigation.destroy();
-		swiper.navigation.init();
-		swiper.navigation.update();
-	};
+	const modules = [
+		Navigation,
+		Pagination,
+		Scrollbar,
+		A11y,
+		Thumbs,
+		Autoplay,
+		Keyboard,
+		Mousewheel,
+		FreeMode,
+	];
 </script>
 
 <template>
@@ -49,13 +50,22 @@
 				nextEl: '.btn-next',
 				prevEl: '.btn-prev',
 			}"
-			:loop="true"
+			:loop="heroItems.length >= 4"
 			:pagination="{ clickable: true }"
 			:scrollbar="{ draggable: true }"
 			:keyboard="{
 				enabled: true,
 			}"
-			@swiper="onSwiper"
+			:autoplay="{ delay: 5000 }"
+			:free-mode="{
+				enabled: true,
+				momentum: true,
+				momentumRatio: 0.4,
+				momentumVelocityRatio: 1,
+				momentumBounce: false,
+				sticky: true,
+				minimumVelocity: 0.02,
+			}"
 		>
 			<SwiperSlide v-for="item in heroItems" :key="item.id">
 				<HeroCard

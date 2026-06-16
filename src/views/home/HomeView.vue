@@ -1,9 +1,8 @@
 <script setup lang="ts">
-	import { ref, computed, onMounted } from 'vue';
+	import { ref, computed, onMounted, useId } from 'vue';
 	import { storeToRefs } from 'pinia';
-	import { useToast } from 'vue-toastification';
 	import { useGenresStore } from '@/stores/genres';
-	import { useMoviesStore } from '@/stores/movies';
+	import { useMoviesStore } from '@/stores/movies/movies';
 	import { buildImagePath } from '@/utils/images';
 	import { formatDateFns } from '@/utils/date';
 
@@ -14,26 +13,24 @@
 	import SectionTariffs from '@/views/home/components/SectionTariffs.vue';
 	import SectionDiscounts from '@/views/home/components/SectionDiscounts.vue';
 	import SectionCatalog from '@/views/home/components/SectionCatalog.vue';
-	import SectionCatalogGenre from '@/views/home/components/SectionCatalogGenre.vue';
+	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 
-	import type { CatalogGenreWithMovies } from '@/views/home/homeTypes';
-	import type { CardAppType } from '@/components/CardApp/CardApp.types';
+	import type { GenreWithMoviesType } from '@/stores/typesForStores';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
-
-	const toast = useToast();
 
 	const genresStore = useGenresStore();
 	const { getGenreNamesByIds } = genresStore;
 
 	const moviesStore = useMoviesStore();
-	const { fetchMoviesByAllGenres, fetchHomeData } = moviesStore;
-	const { popularMovies, moviesByAllGenres } = storeToRefs(moviesStore);
+	const { fetchMoviesByAllGenres, fetchHomeData, hideAndScrollGenreWithMovies } = moviesStore;
+	const { popularMovies, uiGenreWithMovies, isLoadingGenreWithMovies, isLoadingPopularMovies } =
+		storeToRefs(moviesStore);
 
 	const isLoading = ref(true);
-	const isLoadingMoviesByAllGenres = ref(false);
 	const isError = ref(false);
+	const blockId = useId();
 
-	const heroSliderItems = computed<CardAppType[]>(() => {
+	const heroSliderItems = computed<GenreWithMoviesType[]>(() => {
 		return popularMovies.value.map((movie) => ({
 			id: movie.id,
 			title: movie.title ?? 'Без имени',
@@ -45,49 +42,14 @@
 		}));
 	});
 
-	const catalogSlidersList = computed<CatalogGenreWithMovies[]>(() => {
-		return moviesByAllGenres.value.map((genre) => {
-			return {
-				id: genre.id,
-				name: genre.name ?? 'Без имени жанра',
-				movies:
-					genre.movies?.map((film) => {
-						return {
-							id: film.id,
-							title: film.title ?? 'Без имени',
-							rating: film.vote_average?.toFixed(1) ?? '0.0',
-							imageUrl: buildImagePath(film.poster_path),
-							genreNames: getGenreNamesByIds(film.genre_ids ?? []),
-							mediaType: 'movie',
-						};
-					}) ?? [],
-			};
-		});
-	});
-
 	const loadHomeData = async () => {
-		try {
-			const results = await fetchHomeData();
-
-			const labels = ['популярных фильмов', 'фильмов по жанрам'];
-
-			const failed = results
-				.map((r, i) => (r.status === 'rejected' ? labels[i] : null))
-				.filter((x): x is string => x !== null);
-
-			if (failed.length) {
-				toast.error(`Ошибка загрузки данных`);
-				isError.value = true;
-			}
-		} finally {
-			isLoading.value = false;
-		}
+		isLoading.value = true;
+		await fetchHomeData();
+		isLoading.value = false;
 	};
 
-	const loadMoviesByAllGenre = async () => {
-		isLoadingMoviesByAllGenres.value = true;
+	const loadFullList = async () => {
 		await fetchMoviesByAllGenres();
-		isLoadingMoviesByAllGenres.value = false;
 	};
 
 	onMounted(loadHomeData);
@@ -97,32 +59,39 @@
 	<div class="home">
 		<h1 class="visually-hidden title">Главная страница</h1>
 
-		<SectionHero v-if="!isLoading && !isError">
+		<SectionHero v-if="!isLoadingPopularMovies && !isError">
 			<template #heroSlider>
 				<HeroSlider :heroItems="heroSliderItems" />
 			</template>
 		</SectionHero>
+
 		<div v-else-if="isError">Данные не загружены, попробуйте позже</div>
+
 		<LoaderApp v-else />
 
 		<SectionAdvantages />
 
-		<SectionCatalog v-if="!isLoading && !isError">
-			<template #genres>
-				<SectionCatalogGenre
-					v-for="genre in catalogSlidersList"
-					:key="genre.id"
-					:genreTitle="genre.name"
-					:movies="genre.movies"
-				/>
-				<LoaderApp v-if="isLoadingMoviesByAllGenres" />
-			</template>
-			<template #button>
-				<ButtonApp v-if="catalogSlidersList.length < 6" @click="loadMoviesByAllGenre">
-					Посмотреть всё
-				</ButtonApp>
-			</template>
-		</SectionCatalog>
+		<div v-if="!isLoading && !isError" :id="blockId" class="section-wrapper">
+			<SectionCatalog :title="'Каталог фильмов и сериалов'">
+				<template #genres>
+					<SingleSliderList
+						v-for="genre in uiGenreWithMovies"
+						:key="genre.id"
+						:title="genre.name"
+						:items="genre.movies"
+					/>
+					<LoaderApp v-if="isLoadingGenreWithMovies" />
+				</template>
+
+				<template v-if="!isLoadingGenreWithMovies" #button>
+					<ButtonApp v-if="uiGenreWithMovies.length < 6" @click="loadFullList">
+						Посмотреть всё
+					</ButtonApp>
+
+					<ButtonApp v-else @click="hideAndScrollGenreWithMovies(blockId)">Скрыть</ButtonApp>
+				</template>
+			</SectionCatalog>
+		</div>
 
 		<div v-else-if="isError">Данные не загружены, попробуйте позже</div>
 		<LoaderApp v-else />
@@ -132,4 +101,8 @@
 	</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+	.section-wrapper {
+		margin-bottom: 80px;
+	}
+</style>

@@ -17,6 +17,7 @@
 	const props = defineProps<{
 		title?: string;
 		items?: CardAppType[];
+    loading?: boolean;
 	}>();
 
 	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Mousewheel, FreeMode];
@@ -76,7 +77,7 @@
 				minimumVelocity: 0.02,
 			}"
 		>
-			<template v-if="!props.items?.length">
+			<template v-if="!props.items?.length && !props.loading">
 				<SwiperSlide v-for="num in 4" :key="num">
 					<CardAppSkeleton />
 				</SwiperSlide>

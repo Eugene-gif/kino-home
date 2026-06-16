@@ -1,8 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	const { title } = defineProps<{
+		title?: string;
+	}>();
+</script>
 
 <template>
 	<section class="catalog">
-		<h2 class="title">Каталог фильмов и сериалов</h2>
+		<h2 v-if="title" class="title">{{ title }}</h2>
 		<div class="genres-list">
 			<slot name="genres"></slot>
 		</div>
@@ -13,17 +17,13 @@
 </template>
 
 <style scoped>
-	.catalog {
-		margin-bottom: 80px;
+	.title {
+		margin-bottom: 60px;
+		color: #fff;
+		text-wrap: balance;
+		font-weight: 700;
+		font-size: 32px;
 	}
-
-  .title {
-    margin-bottom: 60px;
-    color: #fff;
-    text-wrap: balance;
-    font-weight: 700;
-    font-size: 32px;
-  }
 
 	.genres-list {
 		display: flex;
@@ -31,7 +31,7 @@
 		gap: 40px;
 	}
 
-  .buttons-block {
-    margin-top: 20px;
-  }
+	.buttons-block {
+		margin-top: 30px;
+	}
 </style>

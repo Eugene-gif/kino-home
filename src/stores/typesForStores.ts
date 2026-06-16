@@ -1,5 +1,3 @@
-// import { reviewDetails } from './../api/endpoints';
-// import { MovieRecommendations200 } from './../api/types/movieRecommendations200';
 import type {
   GenreMovieList200GenresItem,
   GenreTvList200GenresItem,
@@ -16,15 +14,13 @@ import type {
   TvSeriesReviews200,
   MovieReviews200,
   MovieSimilar200,
-  // MovieRecommendations200,
   MovieImages200,
   ConfigurationCountries200Item,
   TvSeriesRecommendations200,
   TvSeriesImages200,
-  // MovieDetails200
 } from '@/api/types';
 
-interface GenreWithMovies {
+interface GenreWithMoviesType {
   id?: number;
   name?: string;
   movies?: DiscoverMovie200ResultsItem[];
@@ -80,17 +76,15 @@ export type {
   GenreMovieList200GenresItem,
   GenreTvList200GenresItem,
   SearchMulti200ResultsItem,
-  // TrendingAll200ResultsItem,
   PersonPopularList200ResultsItem,
   MoviePopularList200ResultsItem,
-  // DiscoverMovie200ResultsItem,
   TvSeriesDetails200,
   TvSeriesDetailsParams,
   MovieDetailsFull,
   TvDetailsFull,
   ConfigurationCountries200Item,
 
-  GenreWithMovies,
+  GenreWithMoviesType,
   ExtendedTrendingAll200ResultsItem,
   AppendOptions,
 }
