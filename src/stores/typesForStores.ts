@@ -6,6 +6,7 @@ import type {
   PersonPopularList200ResultsItem,
   MoviePopularList200ResultsItem,
   DiscoverMovie200ResultsItem,
+  DiscoverTv200ResultsItem,
   TvSeriesDetails200,
   TvSeriesDetailsParams,
   MovieDetails200,
@@ -25,6 +26,12 @@ interface GenreWithMoviesType {
   name?: string;
   movies?: DiscoverMovie200ResultsItem[];
 };
+
+interface GenreWithTvType {
+  id?: number;
+  name?: string;
+  tvs?: DiscoverTv200ResultsItem[];
+}
 
 type ExtendedTrendingAll200ResultsItem = TrendingAll200ResultsItem & { name?: string };
 
@@ -85,6 +92,7 @@ export type {
   ConfigurationCountries200Item,
 
   GenreWithMoviesType,
+  GenreWithTvType,
   ExtendedTrendingAll200ResultsItem,
   AppendOptions,
 }

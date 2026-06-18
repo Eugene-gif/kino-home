@@ -23,11 +23,15 @@
 
 	const moviesStore = useMoviesStore();
 	const { fetchMoviesByAllGenres, fetchHomeData, hideAndScrollGenreWithMovies } = moviesStore;
-	const { popularMovies, uiGenreWithMovies, isLoadingGenreWithMovies, isLoadingPopularMovies } =
-		storeToRefs(moviesStore);
+	const {
+		popularMovies,
+		uiGenreWithMovies,
+		isLoadingGenreWithMovies,
+		isLoadingPopularMovies,
+		isError,
+	} = storeToRefs(moviesStore);
 
 	const isLoading = ref(true);
-	const isError = ref(false);
 	const blockId = useId();
 
 	const heroSliderItems = computed<GenreWithMoviesType[]>(() => {
@@ -59,15 +63,17 @@
 	<div class="home">
 		<h1 class="visually-hidden title">Главная страница</h1>
 
-		<SectionHero v-if="!isLoadingPopularMovies && !isError">
+		<SectionHero>
 			<template #heroSlider>
-				<HeroSlider :heroItems="heroSliderItems" />
+				<HeroSlider v-if="!isLoadingPopularMovies && !isError" :heroItems="heroSliderItems" />
+				<div v-else-if="isError" class="hero-error">Данные не загружены, попробуйте позже</div>
+				<LoaderApp v-else class="hero-loader" />
 			</template>
 		</SectionHero>
-
-		<div v-else-if="isError">Данные не загружены, попробуйте позже</div>
-
-		<LoaderApp v-else />
+		<div>
+			isLoadingPopularMovies: {{ isLoadingPopularMovies }}<br />
+			isError: {{ isError }}
+		</div>
 
 		<SectionAdvantages />
 
@@ -104,5 +110,17 @@
 <style scoped>
 	.section-wrapper {
 		margin-bottom: 80px;
+	}
+
+	.hero-loader {
+		height: 578px;
+	}
+
+	.hero-error {
+		margin: 80px auto;
+		text-align: center;
+		font-size: 36px;
+		font-weight: 700;
+		max-width: 400px;
 	}
 </style>

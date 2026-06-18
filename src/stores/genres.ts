@@ -20,6 +20,7 @@ export const useGenresStore = defineStore('genres', () => {
       movies.value = cachedMovies;
       tv.value = cachedTv;
       console.log('✅ Genres loaded from cache (valid)');
+      // console.log(tv.value);
       return;
     }
 
