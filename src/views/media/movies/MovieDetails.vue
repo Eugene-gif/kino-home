@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	import { computed, watch, onMounted, onUnmounted } from 'vue';
 	import { storeToRefs } from 'pinia';
-	import { useMoviesStore } from '@/stores/movies/movies';
+	import { useMoviesStore } from '@/stores/movies';
 	import { useCountriesStore } from '@/stores/countries';
 	import { useGenresStore } from '@/stores/genres.ts';
 	import { priceWithSymbol } from '@/utils/priceWithSymbol';

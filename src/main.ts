@@ -5,6 +5,8 @@ import Toast, { POSITION } from 'vue-toastification';
 import "vue-toastification/dist/index.css";
 import { useGenresStore } from '@/stores/genres';
 import { useCountriesStore } from '@/stores/countries';
+import FloatingVue from 'floating-vue'
+import 'floating-vue/dist/style.css'
 
 import App from './App.vue';
 import router from './router';
@@ -16,12 +18,13 @@ app.use(pinia);
 app.use(router);
 app.use(Toast, {
   position: POSITION.TOP_CENTER,
-  timeout: 5000,
+  timeout: 4000,
   maxToasts: 5,
   newestOnTop: true,
   closeOnClick: true,
   pauseOnHover: true,
 });
+app.use(FloatingVue);
 
 (async () => {
   try {

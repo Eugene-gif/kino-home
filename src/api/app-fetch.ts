@@ -1,6 +1,4 @@
-const ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN as string;
-const DEFAULT_LANGUAGE = 'ru-RU';
-const API_BASE_URL = 'https://api.themoviedb.org/3';
+import { ACCESS_TOKEN, DEFAULT_LANGUAGE, API_BASE_URL } from "@/constants/constants";
 
 const getBody = <T>(c: Response | Request): Promise<T> => {
   const contentType = c.headers.get('content-type');

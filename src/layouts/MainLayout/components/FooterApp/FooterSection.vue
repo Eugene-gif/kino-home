@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { useAuthStore } from '@/stores/auth';
+	import { storeToRefs } from 'pinia';
 	import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
 	import type { Component } from 'vue';
 
@@ -8,6 +10,9 @@
 	import IconSocialFb from '@/assets/icons/IconSocialFb.vue';
 	import IconSocialVk from '@/assets/icons/IconSocialVk.vue';
 	import IconSocialInsta from '@/assets/icons/IconSocialInsta.vue';
+
+	const authStore = useAuthStore();
+	const { isAuth } = storeToRefs(authStore);
 
 	const footerIcons: Record<string, Component> = {
 		mail: IconMail,
@@ -31,7 +36,11 @@
 		<div class="section__content content">
 			<div class="content--inner">
 				<ul v-if="props.links.length" class="content__list">
-					<li v-for="link in props.links" :key="link.path" class="content__item">
+					<li
+						v-for="link in isAuth ? props.links : props.links.filter((el) => !el?.isAuth)"
+						:key="link.path"
+						class="content__item"
+					>
 						<a v-if="link.isSimpleLink" :href="link.path" target="_blank" rel="noopener noreferrer">
 							<component v-if="link.icon" :is="footerIcons[link.icon]" class="content__icon" />
 							{{ link.text }}

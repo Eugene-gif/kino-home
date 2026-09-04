@@ -2,7 +2,7 @@
 	import { ref, computed, onMounted, useId } from 'vue';
 	import { storeToRefs } from 'pinia';
 	import { useGenresStore } from '@/stores/genres';
-	import { useMoviesStore } from '@/stores/movies/movies';
+	import { useMoviesStore } from '@/stores/movies';
 	import { buildImagePath } from '@/utils/images';
 	import { formatDateFns } from '@/utils/date';
 

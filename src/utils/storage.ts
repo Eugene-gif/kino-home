@@ -1,7 +1,5 @@
 
-import { APP_PREFIX, DEFAULT_TTL } from "@/constants/constants";
-// const APP_PREFIX = 'kino_app__';
-// const DEFAULT_TTL = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
+import { APP_PREFIX, DEFAULT_TTL, STORAGE_KEYS } from "@/constants/constants";
 
 interface CachedItem<T> {
   data: T;
@@ -62,4 +60,4 @@ const removeFromStorage = (key: string): void => {
   }
 }
 
-export { getFromStorage, saveToStorage, getCachedItem, setCachedItem, removeFromStorage };
+export { getFromStorage, saveToStorage, getCachedItem, setCachedItem, removeFromStorage, STORAGE_KEYS };

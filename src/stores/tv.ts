@@ -15,7 +15,6 @@ export const useTvStore = defineStore('tv', () => {
   const { getGenreNamesByIds } = genresStore;
 
   const genreWithTvs = ref<GenreWithTvType[] | []>([]);
-  // const genresTvList = ref<GenreMovieList200GenresItem[] | []>([]);
   const isLoadingGenreWithTvs = ref(false);
   const isLoadingTvDetails = ref(false);
   const isError = ref(false);

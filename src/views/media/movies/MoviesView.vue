@@ -2,7 +2,7 @@
 <script setup lang="ts">
 	import { storeToRefs } from 'pinia';
 	import { ref, useId, onMounted } from 'vue';
-	import { useMoviesStore } from '@/stores/movies/movies';
+	import { useMoviesStore } from '@/stores/movies';
 	import SectionCatalog from '@/views/home/components/SectionCatalog.vue';
 	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';

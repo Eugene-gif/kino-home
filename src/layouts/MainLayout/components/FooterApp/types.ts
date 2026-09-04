@@ -4,6 +4,7 @@ type Link = {
   isSimpleLink?: boolean;
   icon?: string;
   hasIconAndText?: boolean;
+  isAuth?: boolean;
 };
 
 type FooterSectionData = {
