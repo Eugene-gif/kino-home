@@ -3,7 +3,10 @@
 	import { routePaths } from '@/constants/routesData';
 	import { useAuthStore } from '@/stores/auth';
 	import { storeToRefs } from 'pinia';
+	import { useToast } from 'vue-toastification';
 	import InputApp from '@/components/Inputs/InputApp.vue';
+	import InputPassword from '@/components/Inputs/InputPassword.vue';
+	import LabelApp from '@/components/Inputs/LabelApp.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconMail from '@/assets/icons/IconMail.vue';
 	import IconArrowRight from '@/assets/icons/IconArrowRight.vue';
@@ -12,11 +15,18 @@
 	const { email, password, isLoading } = storeToRefs(authStore);
 	const { signIn } = authStore;
 
+	const toast = useToast();
+
 	const isDisabled = computed(() => {
 		return !email.value || !password.value;
 	});
 
 	const submitForm = async () => {
+		if (password.value.length < 6) {
+			toast.error('Пароль не может быть меньше 6 символов');
+			return;
+		}
+
 		await signIn();
 	};
 </script>
@@ -26,19 +36,30 @@
 		<h1 class="title">Войти</h1>
 
 		<form class="form" @submit.prevent="submitForm">
-			<InputApp v-model="email" label="Почта" placeholder="Введите email" autocomplete="email">
-				<template #iconLeft>
-					<IconMail />
-				</template>
-			</InputApp>
+			<div class="form-input">
+				<LabelApp text="Почта" id="login-email" />
 
-			<InputApp
-				v-model="password"
-				label="Пароль"
-				placeholder="Введите пароль"
-				password
-				autocomplete="current-password"
-			/>
+				<InputApp v-model="email" id="login-email" placeholder="Введите email" autocomplete="email">
+					<template #iconLeft>
+						<IconMail />
+					</template>
+				</InputApp>
+			</div>
+
+			<div class="form-input">
+				<LabelApp text="Пароль" id="login-password" />
+
+				<InputPassword
+					v-model="password"
+					id="login-password"
+					placeholder="Введите пароль"
+					autocomplete="current-password"
+				>
+					<template #iconLeft>
+						<IconMail />
+					</template>
+				</InputPassword>
+			</div>
 
 			<p class="form-text">
 				Ещё нет аккаунта?
@@ -81,7 +102,7 @@
 	.form {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: 20px;
 	}
 
 	.form-text {
@@ -98,5 +119,11 @@
 
 	.form-button {
 		width: 100%;
+	}
+
+	.form-input {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
 	}
 </style>

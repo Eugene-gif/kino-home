@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { routeNames, routePaths } from '@/constants/routesData';
-import MainLayout from '@/layouts/MainLayout/MainLayout.vue';
-import AuthLayout from '@/layouts/AuthLayout/AuthLayout.vue';
+import MainLayout from '@/layouts/MainLayout.vue';
+import AuthLayout from '@/layouts/AuthLayout.vue';
 const HomeView = () => import('@/views/home/HomeView.vue');
 const CollectionsView = () => import('@/views/collections/CollectionsView.vue');
 const TvListView = () => import('@/views/media/tv/TvView.vue');

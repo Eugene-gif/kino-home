@@ -5,6 +5,8 @@
 	import { useAuthStore } from '@/stores/auth';
 	import { storeToRefs } from 'pinia';
 	import InputApp from '@/components/Inputs/InputApp.vue';
+	import LabelApp from '@/components/Inputs/LabelApp.vue';
+	import InputPassword from '@/components/Inputs/InputPassword.vue';
 	import IconPen from '@/assets/icons/IconPen.vue';
 	import IconMail from '@/assets/icons/IconMail.vue';
 	import IconArrowRight from '@/assets/icons/IconArrowRight.vue';
@@ -23,14 +25,10 @@
 	const submitForm = async () => {
 		if (password.value.length < 6) {
 			toast.error('Пароль должен быть более 6 символов');
+			return;
 		}
 
 		await signUp();
-		console.log('Отправка формы: ', {
-			name: userName.value,
-			email: email.value,
-			password: password.value,
-		});
 	};
 </script>
 
@@ -39,25 +37,45 @@
 		<h1 class="title">Регистрация</h1>
 
 		<form class="form" @submit.prevent="submitForm">
-			<InputApp v-model="userName" label="Имя" placeholder="Введите ваше имя">
-				<template #iconLeft>
-					<IconPen />
-				</template>
-			</InputApp>
+			<div class="form-input">
+				<LabelApp text="Имя" id="register-name" />
 
-			<InputApp v-model="email" label="Почта" placeholder="Введите email" autocomplete="email">
-				<template #iconLeft>
-					<IconMail />
-				</template>
-			</InputApp>
+				<InputApp v-model="userName" id="register-name" placeholder="Введите ваше имя">
+					<template #iconLeft>
+						<IconPen />
+					</template>
+				</InputApp>
+			</div>
 
-			<InputApp
-				v-model="password"
-				label="Пароль"
-				placeholder="Придумайте пароль"
-				password
-				autocomplete="current-password"
-			/>
+			<div class="form-input">
+				<LabelApp text="Почта" id="register-email" />
+
+				<InputApp
+					v-model="email"
+					id="register-email"
+					placeholder="Введите email"
+					autocomplete="email"
+				>
+					<template #iconLeft>
+						<IconMail />
+					</template>
+				</InputApp>
+			</div>
+
+			<div class="form-input">
+				<LabelApp text="Пароль" id="login-password" />
+
+				<InputPassword
+					v-model="password"
+					id="login-password"
+					placeholder="Придумайте пароль"
+					autocomplete="current-password"
+				>
+					<template #iconLeft>
+						<IconMail />
+					</template>
+				</InputPassword>
+			</div>
 
 			<p class="form-text">
 				Уже есть аккаунт?
@@ -97,7 +115,7 @@
 	.form {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		gap: 20px;
 	}
 
 	.form-text {
@@ -114,5 +132,11 @@
 
 	.form-button {
 		width: 100%;
+	}
+
+	.form-input {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
 	}
 </style>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-	import { ref } from 'vue';
+	import { ref, computed } from 'vue';
+	import VisibilitySwitch from './VisibilitySwitch.vue';
+	import IconKey from '@/assets/icons/IconKey.vue';
 
-	const { type, placeholder, inputName } = defineProps<{
-		type?: 'text' | 'email';
+	const { placeholder, inputName, autocomplete, id } = defineProps<{
 		placeholder?: string;
 		inputName?: string;
 		autocomplete?: string;
@@ -12,6 +13,11 @@
 	const text = defineModel();
 
 	const inputRef = ref<HTMLInputElement | null>(null);
+	const isVisiblePassword = ref<boolean>(false);
+
+	const currentType = computed(() => {
+		return isVisiblePassword.value ? 'text' : 'password';
+	});
 
 	const focus = () => {
 		inputRef.value?.focus();
@@ -21,22 +27,22 @@
 <template>
 	<div class="input-wrapper" @click="focus">
 		<div class="icon icon-left">
-			<slot name="iconLeft"> </slot>
+			<IconKey />
 		</div>
 
 		<input
-			:id="id"
-			ref="inputRef"
 			v-model="text"
-			class="input"
+			ref="inputRef"
+			:id="id"
 			:name="inputName"
-			:type="type"
+			:type="currentType"
 			:placeholder="placeholder"
 			:autocomplete
+			class="input"
 		/>
 
 		<div class="icon icon-right">
-			<slot name="iconRight"> </slot>
+			<VisibilitySwitch v-model="isVisiblePassword" />
 		</div>
 	</div>
 </template>

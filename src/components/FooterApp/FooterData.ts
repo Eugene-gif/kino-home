@@ -1,4 +1,4 @@
-import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
+import type { FooterSectionData } from '@/components/FooterApp/types';
 import { menuLink } from '@/constants/menu';
 
 const FooterData: FooterSectionData[] = [

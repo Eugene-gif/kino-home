@@ -83,11 +83,6 @@ export const useAuthStore = defineStore('auth', () => {
 
 
   const signUp = async () => {
-    if (password.value.length < 6) {
-      toast.error('Пароль не может быть меньше 6 символов');
-      return;
-    }
-
     try {
       isLoading.value = true;
 

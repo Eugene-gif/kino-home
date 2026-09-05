@@ -4,6 +4,7 @@ export interface CardAppType {
   rating?: string | number;
   imageUrl?: string;
   genreNames?: string[];
+  genreStringNames?: string;
   mediaType?: string;
   genreIds?: number[];
   date?: string;

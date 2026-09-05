@@ -144,12 +144,10 @@
 
 	watch(movieId, async () => {
 		await fetchMovieDetails(movieId.value);
-		console.log('detailsMovie: ', detailsMovie.value);
 	});
 
 	onMounted(async () => {
 		await fetchMovieDetails(movieId.value);
-		console.log('detailsMovie: ', detailsMovie.value);
 	});
 
 	onUnmounted(() => {

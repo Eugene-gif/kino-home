@@ -20,7 +20,7 @@
 	import IconUserDelete from '@/assets/icons/IconUserDelete.vue';
 	import IconUserLogin from '@/assets/icons/IconUserLogin.vue';
 	import IconUserRegister from '@/assets/icons/IconUserRegister.vue';
-	import type { ModalSearchCardItem } from './headerTypes';
+	import type { ModalSearchCardItem } from './headerTypes.ts';
 
 	const authStore = useAuthStore();
 	const { isAuth, user } = storeToRefs(authStore);
@@ -72,6 +72,10 @@
 		}));
 	});
 
+	const uiMenuLink = computed(() => {
+		return isAuth.value ? menuLink : menuLink.filter((el) => !el?.isAuth);
+	});
+
 	const debouncedSearch = useDebounceFn((query: string) => {
 		if (!query.trim()) return;
 		fetchSearchMulti(query);
@@ -113,10 +117,7 @@
 				<div :class="['header-box-content', isOpenBurgerMenu ? 'open' : '']">
 					<nav class="header-nav" aria-label="Основное меню">
 						<ul class="nav-list">
-							<template
-								v-for="link in isAuth ? menuLink : menuLink.filter((el) => !el?.isAuth)"
-								:key="link.name"
-							>
+							<template v-for="link in uiMenuLink" :key="link.name">
 								<li class="nav-item">
 									<RouterLink :to="link.path">{{ link.text }}</RouterLink>
 								</li>

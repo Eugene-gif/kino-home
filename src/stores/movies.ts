@@ -4,6 +4,7 @@ import { useGenresStore } from '@/stores/genres';
 import { APPEND_TO_RESPONSE_MOVIE } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
 import { moviePopularList, discoverMovie, movieDetails } from '@/api/endpoints';
+import { transformArrayInString } from '@/utils/transformArrayInString';
 import { buildImagePath } from '@/utils/images';
 import type { MoviePopularList200ResultsItem, MovieDetailsFull } from '@/stores/typesForStores';
 import type { GenreWithMoviesType } from '@/stores/typesForStores';
@@ -35,6 +36,7 @@ export const useMoviesStore = defineStore('movies', () => {
               rating: Number(film?.vote_average ?? 0).toFixed(1),
               imageUrl: buildImagePath(film.poster_path),
               genreNames: getGenreNamesByIds(film.genre_ids ?? []),
+              genreStringNames: transformArrayInString(getGenreNamesByIds(film.genre_ids ?? [])),
               mediaType: 'movie',
             };
           }) ?? [],
@@ -98,7 +100,6 @@ export const useMoviesStore = defineStore('movies', () => {
 
     try {
       const genres = limit ? movies.value.slice(0, limit) : movies.value;
-      // console.log('genres: ', genres, 'movies.value: ', movies.value);
       const results = await Promise.allSettled(genres.map((genre) => fetchMoviesByGenre(genre.id)));
 
       genreWithMovies.value = genres.map((genre, i) => {

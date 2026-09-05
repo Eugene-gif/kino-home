@@ -63,7 +63,10 @@ const route = {
   }
 } as const;
 
+const AUTH_PATHES: string[] = [routePaths.auth, routePaths.register, routePaths.login];
+
 export {
+  AUTH_PATHES,
   routeNames,
   routePaths,
   route

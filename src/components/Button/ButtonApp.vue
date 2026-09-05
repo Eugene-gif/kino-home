@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
 	import IconLoading from '@/assets/icons/IconLoading.vue';
 
 	interface PropsButtonApp {
@@ -26,15 +27,19 @@
 					? ''
 					: round,
 	};
+
+	const buttonClasses = computed(() => {
+		return [border === 'none' ? 'no-border' : ''];
+	});
 </script>
 
 <template>
 	<RouterLink
 		v-if="href"
 		class="button"
-		:class="[border === 'none' ? 'no-border' : '']"
+		:class="buttonClasses"
 		:style="buttonStyle"
-		:to="href ?? '/'"
+		:to="href"
 	>
 		<slot></slot>
 		<slot name="icon"></slot>
@@ -44,7 +49,7 @@
 	<button
 		v-else
 		class="button"
-		:class="[border === 'none' ? 'no-border' : '']"
+		:class="buttonClasses"
 		:style="buttonStyle"
 		:disabled="disabled || loading"
 	>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-	import HeaderApp from './components/HeaderApp/HeaderApp.vue';
-	import FooterApp from './components/FooterApp/FooterApp.vue';
+	import HeaderApp from '@/components/HeaderApp/HeaderApp.vue';
+	import FooterApp from '@/components/FooterApp/FooterApp.vue';
 </script>
 
 <template>

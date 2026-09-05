@@ -70,10 +70,6 @@
 				<LoaderApp v-else class="hero-loader" />
 			</template>
 		</SectionHero>
-		<div>
-			isLoadingPopularMovies: {{ isLoadingPopularMovies }}<br />
-			isError: {{ isError }}
-		</div>
 
 		<SectionAdvantages />
 

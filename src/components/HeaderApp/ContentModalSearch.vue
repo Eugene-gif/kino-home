@@ -1,10 +1,7 @@
 <script setup lang="ts">
 	import { routeNames } from '@/constants/routesData';
 
-	import type {
-		ModalSearchCardItem,
-		PersonCardItem,
-	} from '@/layouts/MainLayout/components/HeaderApp/headerTypes';
+	import type { ModalSearchCardItem, PersonCardItem } from '@/components/HeaderApp/headerTypes';
 
 	interface PropsContentModalSearch {
 		uiTrendingList: ModalSearchCardItem[];

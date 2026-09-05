@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { routeNames, routePaths } from '@/constants/routesData';
+import { routeNames, routePaths, AUTH_PATHES } from '@/constants/routesData';
 import { routes } from './routes';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from 'vue-toastification';
@@ -26,7 +26,7 @@ router.beforeEach((to) => {
   }
 
   // Если мы авторизованы и стучимся на auth то отправляем на home
-  if (!requiresAuth && isAuth && (to.path === routePaths.auth || to.path === routePaths.register || to.path === routePaths.login)) {
+  if (!requiresAuth && isAuth && AUTH_PATHES.includes(to.path)) {
     return { name: routeNames.home };
   }
 })

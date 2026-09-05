@@ -134,12 +134,10 @@
 
 	watch(tvId, async () => {
 		await fetchTvDetails(tvId.value);
-		console.log('detailsTv: ', detailsTv.value);
 	});
 
 	onMounted(async () => {
 		await fetchTvDetails(tvId.value);
-		console.log('detailsTv: ', detailsTv.value);
 	});
 
 	onUnmounted(() => (detailsTv.value = null));

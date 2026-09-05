@@ -17,7 +17,7 @@
 	const props = defineProps<{
 		title?: string;
 		items?: CardAppType[];
-    loading?: boolean;
+		loading?: boolean;
 	}>();
 
 	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Mousewheel, FreeMode];
@@ -91,7 +91,7 @@
 						:title="movie.title"
 						:rating="movie.rating"
 						:imageUrl="movie.imageUrl"
-						:genreNames="movie.genreNames"
+						:genreStringNames="movie.genreStringNames"
 						:mediaType="movie.mediaType"
 					/>
 				</SwiperSlide>
