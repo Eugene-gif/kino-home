@@ -10,6 +10,7 @@
 	import { useAuthStore } from '@/stores/auth';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 	import ContentModalSearch from './ContentModalSearch.vue';
+	import UserAvatar from '@/components/HeaderApp/UserAvatar.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconSearch from '@/assets/icons/IconSearch.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
@@ -135,6 +136,7 @@
 
 						<li class="options-item options-item-popover">
 							<ButtonApp
+								v-if="!isAuth"
 								:disabled="isPopoverAuth"
 								class="button-popover"
 								@click="() => (isPopoverAuth = true)"
@@ -143,6 +145,13 @@
 									<IconUser />
 								</template>
 							</ButtonApp>
+
+							<UserAvatar
+								v-else
+								:name="user?.name ?? ''"
+								:disabled="isPopoverAuth"
+								@click="() => (isPopoverAuth = true)"
+							/>
 
 							<Transition>
 								<div v-if="isPopoverAuth" ref="popoverRef" class="popover">

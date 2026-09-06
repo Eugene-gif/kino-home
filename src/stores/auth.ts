@@ -118,7 +118,7 @@ export const useAuthStore = defineStore('auth', () => {
     removeFromStorage(STORAGE_KEYS.SESSION);
     session.value = null;
     user.value = null;
-    router.push(routePaths.login);
+    router.push(routePaths.home);
     toast.info('Вы вышли из профиля');
   }
 
