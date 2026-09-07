@@ -1,17 +1,22 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
+	import IconLoading from '@/assets/icons/IconLoading.vue';
+
 	interface PropsButtonApp {
-		color?: 'red' | 'blue' | '';
 		border?: string | undefined;
 		round?: boolean | string;
+		disabled?: boolean;
+		loading?: boolean;
+		href?: string;
 	}
 
 	const props = withDefaults(defineProps<PropsButtonApp>(), {
-		color: '',
 		border: '',
 		round: false,
+		disabled: false,
 	});
 
-	const { color, border, round } = props;
+	const { border, round } = props;
 
 	const buttonStyle = {
 		border: border,
@@ -22,14 +27,33 @@
 					? ''
 					: round,
 	};
+
+	const buttonClasses = computed(() => {
+		return [border === 'none' ? 'no-border' : ''];
+	});
 </script>
 
 <template>
-	<button
+	<RouterLink
+		v-if="href"
 		class="button"
-		:class="[color, border === 'none' ? 'no-border' : '']"
+		:class="buttonClasses"
 		:style="buttonStyle"
+		:to="href"
 	>
+		<slot></slot>
+		<slot name="icon"></slot>
+		<slot name="textRight"></slot>
+	</RouterLink>
+
+	<button
+		v-else
+		class="button"
+		:class="buttonClasses"
+		:style="buttonStyle"
+		:disabled="disabled || loading"
+	>
+		<IconLoading v-show="loading" />
 		<slot></slot>
 		<slot name="icon"></slot>
 		<slot name="textRight"></slot>
@@ -59,12 +83,12 @@
 			transition: var(--transition);
 		}
 
-		&:hover,
+		&:hover:not([disabled]),
 		&:focus-visible {
 			box-shadow: 0 0 10px var(--color-white);
 		}
 
-		&:active {
+		&:active:not([disabled]) {
 			--color-btn: var(--color-white);
 			box-shadow: 0 0 20px var(--color-white);
 		}
@@ -88,6 +112,17 @@
 			color: var(--color-white);
 			background-color: var(--color-btn-blue);
 			border: 1px solid var(--color-btn-blue);
+		}
+
+		&.green {
+			color: var(--color-white);
+			background-color: var(--color-btn-green);
+			border: 1px solid var(--color-btn-green);
+		}
+
+		&[disabled] {
+			opacity: 0.6;
+			cursor: default;
 		}
 	}
 </style>

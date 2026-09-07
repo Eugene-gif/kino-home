@@ -1,25 +1,63 @@
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { defineStore, storeToRefs } from 'pinia';
 import { useGenresStore } from '@/stores/genres';
 import { APPEND_TO_RESPONSE_MOVIE } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
 import { moviePopularList, discoverMovie, movieDetails } from '@/api/endpoints';
-import type { MoviePopularList200ResultsItem, MovieDetailsFull, GenreWithMovies } from '@/stores/typesForStores';
+import { transformArrayInString } from '@/utils/transformArrayInString';
+import { buildImagePath } from '@/utils/images';
+import type { MoviePopularList200ResultsItem, MovieDetailsFull } from '@/stores/typesForStores';
+import type { GenreWithMoviesType } from '@/stores/typesForStores';
 
 export const useMoviesStore = defineStore('movies', () => {
   const toast = useToast();
   const genresStore = useGenresStore();
   const { movies } = storeToRefs(genresStore);
+  const { getGenreNamesByIds } = genresStore;
 
   const popularMovies = ref<MoviePopularList200ResultsItem[] | []>([]);
-  const moviesByAllGenres = ref<GenreWithMovies[] | []>([]);
-  const isLoadingMovieDetails = ref(false);
-  const isError = ref(false);
+  const genreWithMovies = ref<GenreWithMoviesType[] | []>([]);
   const detailsMovie = ref<MovieDetailsFull | null>(null);
+  const isLoadingMovieDetails = ref(false);
+  const isLoadingGenreWithMovies = ref(false);
+  const isLoadingPopularMovies = ref(false);
+  const isError = ref(false);
+
+  const uiGenreWithMovies = computed(() => {
+    return genreWithMovies.value.map((genre) => {
+      return {
+        id: genre.id,
+        name: genre.name ?? 'Без имени жанра',
+        movies:
+          genre.movies?.map((film) => {
+            return {
+              id: film.id,
+              title: film.title ?? 'Без имени',
+              rating: Number(film?.vote_average ?? 0).toFixed(1),
+              imageUrl: buildImagePath(film.poster_path),
+              genreNames: getGenreNamesByIds(film.genre_ids ?? []),
+              genreStringNames: transformArrayInString(getGenreNamesByIds(film.genre_ids ?? [])),
+              mediaType: 'movie',
+            };
+          }) ?? [],
+      };
+    });
+  });
+
+  const hideAndScrollGenreWithMovies = (blockId: string) => {
+    genreWithMovies.value = genreWithMovies.value.slice(0, 3);
+    const el = document.getElementById(blockId);
+
+    el?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   // Получаем детали фильма по id
   const fetchMovieDetails = async (id: number, append: string = APPEND_TO_RESPONSE_MOVIE) => {
     isLoadingMovieDetails.value = true;
+    isError.value = false;
     detailsMovie.value = null;
     try {
       const { data } = await movieDetails(id, { append_to_response: append });
@@ -35,8 +73,17 @@ export const useMoviesStore = defineStore('movies', () => {
 
   // Список популярных фильмов
   const fetchPopularMovies = async () => {
-    const { data } = await moviePopularList();
-    popularMovies.value = data.results ?? [];
+    isLoadingPopularMovies.value = true;
+    try {
+      const { data } = await moviePopularList();
+      popularMovies.value = data.results ?? [];
+      isError.value = false;
+    } catch {
+      toast.error('Ошибка загрузки популярных фильмов.');
+      isError.value = true;
+    } finally {
+      isLoadingPopularMovies.value = false;
+    }
   }
 
   // Список фильмов по жанру
@@ -48,19 +95,29 @@ export const useMoviesStore = defineStore('movies', () => {
 
   // Списки фильмов по всем жанрам
   const fetchMoviesByAllGenres = async (limit?: number) => {
-    const genres = limit ? movies.value.slice(0, limit) : movies.value;
-    const results = await Promise.allSettled(genres.map((genre) => fetchMoviesByGenre(genre.id)));
+    isLoadingGenreWithMovies.value = true;
+    isError.value = false;
 
-    moviesByAllGenres.value = genres.map((genre, i) => {
-      const result = results[i];
+    try {
+      const genres = limit ? movies.value.slice(0, limit) : movies.value;
+      const results = await Promise.allSettled(genres.map((genre) => fetchMoviesByGenre(genre.id)));
 
-      if (result?.status === 'fulfilled') {
-        return { ...genre, movies: result.value };
-      }
+      genreWithMovies.value = genres.map((genre, i) => {
+        const result = results[i];
 
-      console.error(`Failed to fetch movies by all genres "${genre.name}(id: ${genre.id})":`, result?.reason);
-      return { ...genre, movies: [] };
-    });
+        if (result?.status === 'fulfilled') {
+          return { ...genre, movies: result.value };
+        }
+
+        console.error(`Failed to fetchMoviesByAllGenres: "${genre.name}(id: ${genre.id})":`, result?.reason);
+        return { ...genre, movies: [] };
+      });
+    } catch {
+      toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
+      isError.value = true;
+    } finally {
+      isLoadingGenreWithMovies.value = false;
+    }
   }
 
   // единая точка входа для HomeView
@@ -71,13 +128,16 @@ export const useMoviesStore = defineStore('movies', () => {
     ]);
   };
 
-
   return {
     isError,
     popularMovies,
-    moviesByAllGenres,
+    genreWithMovies,
+    uiGenreWithMovies,
     isLoadingMovieDetails,
+    isLoadingGenreWithMovies,
+    isLoadingPopularMovies,
     detailsMovie,
+    hideAndScrollGenreWithMovies,
     fetchMovieDetails,
     fetchPopularMovies,
     fetchMoviesByGenre,

@@ -1,12 +1,12 @@
-import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
-import { mainMenu } from '@/constants/menu';
+import type { FooterSectionData } from '@/components/FooterApp/types';
+import { menuLink } from '@/constants/menu';
 
 const FooterData: FooterSectionData[] = [
   {
     title: 'Меню',
     path: '',
     id: 1,
-    links: mainMenu,
+    links: menuLink,
   },
   {
     title: 'Подписка',

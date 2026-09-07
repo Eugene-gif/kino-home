@@ -1,5 +1,8 @@
 <script setup lang="ts">
-	import type { FooterSectionData } from '@/layouts/MainLayout/components/FooterApp/types.ts';
+	import { computed } from 'vue';
+	import { useAuthStore } from '@/stores/auth';
+	import { storeToRefs } from 'pinia';
+	import type { FooterSectionData } from '@/components/FooterApp/types';
 	import type { Component } from 'vue';
 
 	import IconChevron from '@/assets/icons/IconChevron.vue';
@@ -8,6 +11,9 @@
 	import IconSocialFb from '@/assets/icons/IconSocialFb.vue';
 	import IconSocialVk from '@/assets/icons/IconSocialVk.vue';
 	import IconSocialInsta from '@/assets/icons/IconSocialInsta.vue';
+
+	const authStore = useAuthStore();
+	const { isAuth } = storeToRefs(authStore);
 
 	const footerIcons: Record<string, Component> = {
 		mail: IconMail,
@@ -18,6 +24,10 @@
 	};
 
 	const { props } = defineProps<{ props: FooterSectionData }>();
+
+	const uiLinks = computed(() => {
+		return isAuth.value ? props.links : props.links.filter((el) => !el?.isAuth);
+	});
 </script>
 
 <template>
@@ -31,7 +41,7 @@
 		<div class="section__content content">
 			<div class="content--inner">
 				<ul v-if="props.links.length" class="content__list">
-					<li v-for="link in props.links" :key="link.path" class="content__item">
+					<li v-for="link in uiLinks" :key="link.path" class="content__item">
 						<a v-if="link.isSimpleLink" :href="link.path" target="_blank" rel="noopener noreferrer">
 							<component v-if="link.icon" :is="footerIcons[link.icon]" class="content__icon" />
 							{{ link.text }}

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import FooterSection from '@/layouts/MainLayout/components/FooterApp/FooterSection.vue';
+	import FooterSection from '@/components/FooterApp/FooterSection.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import { FooterData } from './FooterData';
 </script>
@@ -11,21 +11,21 @@
 				<IconLogo class="footer-logo" />
 				<div class="footer-list">
 					<FooterSection
-						class="footer-section"
 						v-for="section in FooterData"
 						:key="section.id"
 						:props="section"
+						class="footer-section"
 					/>
 				</div>
 			</div>
-      <div class="footer-copyright">© КиноДом 2026</div>
+			<div class="footer-copyright">© КиноДом 2026</div>
 		</div>
 	</footer>
 </template>
 
 <style scoped>
 	.footer {
-		margin-top: 20px;
+		margin-top: 60px;
 		width: 100%;
 		border-top: 1px solid #3a354d;
 
@@ -54,13 +54,13 @@
 			flex-wrap: wrap;
 		}
 
-    .footer-copyright {
-      margin-top: 30px;
-    }
+		.footer-copyright {
+			margin-top: 30px;
+		}
 
-    .footer-section:nth-last-of-type(2) {
-      margin-left: auto;
-    }
+		.footer-section:nth-last-of-type(2) {
+			margin-left: auto;
+		}
 
 		@media (width <= 1068px) {
 			.footer-section:last-of-type {
@@ -91,16 +91,16 @@
 		}
 
 		@media (width <= 768px) {
-      .footer-content {
-        flex-direction: column;
-        row-gap: 15px;
-      }
-      .footer-list {
-        display: flex;
-        row-gap: 10px;
-        flex-direction: column;
-        width: 100%;
-      }
+			.footer-content {
+				flex-direction: column;
+				row-gap: 15px;
+			}
+			.footer-list {
+				display: flex;
+				row-gap: 10px;
+				flex-direction: column;
+				width: 100%;
+			}
 		}
 	}
 </style>

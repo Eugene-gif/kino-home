@@ -1,15 +1,24 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
 	import { onImgError } from '@/utils/images';
 	import { routeNames } from '@/constants/routesData';
-	import type { CardApp } from './CardApp.types';
+	import type { CardAppType } from './CardApp.types';
 
-	const props = withDefaults(defineProps<CardApp>(), {
+	const props = withDefaults(defineProps<CardAppType>(), {
 		id: '',
 		title: '',
 		rating: '0.0',
 		imageUrl: '',
-		genreNames: () => [],
+		genreStringNames: '',
 		mediaType: '',
+	});
+
+	const linkName = computed(() => {
+		return props.mediaType === 'movie' ? routeNames.movieDetails : routeNames.tvDetails;
+	});
+
+	const cardType = computed(() => {
+		return props.mediaType === 'movie' ? 'Фильм' : 'Сериал';
 	});
 </script>
 
@@ -17,7 +26,7 @@
 	<div class="card">
 		<RouterLink
 			:to="{
-				name: props.mediaType === 'movie' ? routeNames.movieDetails : routeNames.tvDetails,
+				name: linkName,
 				params: { id: props.id },
 			}"
 		>
@@ -34,11 +43,9 @@
 			<div class="card-text">
 				<div class="card-info">
 					<span class="card-rating">{{ props.rating }}</span>
-					<span class="card-type">• {{ props.mediaType === 'movie' ? 'Фильм' : 'Сериал' }} •</span>
+					<span class="card-type">• {{ cardType }} •</span>
 					<span class="card-genres">
-						<template v-for="(genre, idx) in genreNames" :key="genre + idx">
-							{{ genre && genreNames[idx + 1] ? genre + ', ' : genre }}
-						</template>
+						{{ props.genreStringNames }}
 					</span>
 				</div>
 				<div class="card-title">{{ props.title }}</div>

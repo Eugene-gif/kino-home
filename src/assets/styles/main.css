@@ -3,21 +3,27 @@
 @import 'swiper/css';
 
 :root {
+  interpolate-size: allow-keywords;
   --font-family-base: 'Roboto', sans-serif;
   --font-size-base: 16px;
   --font-weight-base: 400;
   --line-height-base: 1.2;
   --text-color-base: #898792;
   --header-ident-base: 90px;
+  --header-bg: #141026;
+  --header-mobile-bg: #320722;
+  
   --color-red: #ed0a32;
   --color-white: #fff;
   --color-dark: #141025;
   --color-second-dark: #1a0335;
   --color-grey: #cfd0d9;
+  --color-grey-dark: #898792;
 
   --color-btn-base: #898792;
   --color-btn-blue: #9747ff;
   --color-btn-red: #ed0a32;
+  --color-btn-green: #13af65;
 }
 
 html {

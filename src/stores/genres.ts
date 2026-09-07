@@ -3,12 +3,8 @@ import { defineStore } from 'pinia';
 import { mapToRecord } from '@/utils/mapToRecord';
 import { getCachedItem, setCachedItem } from '@/utils/storage';
 import { genreMovieList, genreTvList } from '@/api/endpoints';
+import { STORAGE_KEYS } from '@/constants/constants';
 import type { GenreMovieList200GenresItem, GenreTvList200GenresItem } from '@/stores/typesForStores';
-
-const STORAGE_KEYS = {
-  MOVIES: 'genres_movies',
-  TV: 'genres_tv'
-}
 
 export const useGenresStore = defineStore('genres', () => {
   const movies = ref<GenreMovieList200GenresItem[]>([]);
@@ -58,10 +54,12 @@ export const useGenresStore = defineStore('genres', () => {
     }
   }
 
-  const getMovieGenreNamesByIds = (ids: number[] | undefined): string[] => {
+  const getGenreNamesByIds = (ids: number[], mediaType: 'tv' | 'movie' = 'movie'): string[] => {
     if (!ids?.length) return [];
+    const listMap = mediaType === 'tv' ? tvMap : moviesMap;
+
     return ids
-      .map((id) => moviesMap.value[String(id)])
+      .map((id) => listMap.value[String(id)])
       .filter(Boolean) as string[];
   };
 
@@ -73,6 +71,6 @@ export const useGenresStore = defineStore('genres', () => {
     initGenres,
     fetchGenresMovies,
     fetchGenresTv,
-    getMovieGenreNamesByIds
+    getGenreNamesByIds
   }
 });

@@ -9,16 +9,14 @@
 </template>
 
 <style scoped>
-	/* Container for loader */
 	.loader {
 		display: flex;
 		gap: 8px;
 		justify-content: center;
 		align-items: center;
-		height: 60px;
+		height: 50px;
 	}
 
-	/* Individual squares */
 	.loader-square {
 		width: 22px;
 		height: 22px;
@@ -29,7 +27,6 @@
 		position: relative;
 	}
 
-	/* Splash effect */
 	.loader-square::after {
 		content: '';
 		position: absolute;
@@ -42,7 +39,6 @@
 		animation: splash 1.2s infinite ease-in-out;
 	}
 
-	/* Animations for each square */
 	.loader-square:nth-child(1) {
 		animation-delay: -0.4s;
 	}

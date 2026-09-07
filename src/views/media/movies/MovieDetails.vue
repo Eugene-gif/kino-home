@@ -3,11 +3,18 @@
 	import { storeToRefs } from 'pinia';
 	import { useMoviesStore } from '@/stores/movies';
 	import { useCountriesStore } from '@/stores/countries';
+	import { useGenresStore } from '@/stores/genres.ts';
 	import { priceWithSymbol } from '@/utils/priceWithSymbol';
-	import { formatDateFns, formatDateFnsYear, formatMinutesInHours } from '@/utils/date';
+	import {
+		formatDateFns,
+		formatDateFnsWithTime,
+		formatDateFnsYear,
+		formatMinutesInHours,
+	} from '@/utils/date';
 	import { buildImagePath } from '@/utils/images';
-  import MovieDetailsSlider from './MovieDetailsSlider.vue';
+	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
+	import ReviewItem from '@/components/ReviewItem/ReviewItem.vue';
 	import IconPlay from '@/assets/icons/IconPlay.vue';
 	import IconCopy from '@/assets/icons/IconCopy.vue';
 	import IconHeart from '@/assets/icons/IconHeart.vue';
@@ -16,6 +23,9 @@
 	const props = defineProps<{
 		id: string;
 	}>();
+
+	const genresStore = useGenresStore();
+	const { getGenreNamesByIds } = genresStore;
 
 	const countriesStore = useCountriesStore();
 	const { countriesMap } = storeToRefs(countriesStore);
@@ -48,9 +58,21 @@
 			director:
 				detailsMovie.value?.credits?.crew?.find((el) => el.job === 'Director')?.name ??
 				'Нет данных',
-			actors: detailsMovie.value?.credits?.cast?.map((el) => el.name).join(', ') ?? 'Нет данных',
+			actors: actorsList.value,
 			reviews: detailsMovie.value?.reviews?.results?.map((review) => review) ?? [],
 		};
+	});
+
+	const actorsList = computed(() => {
+		if (!detailsMovie.value?.credits?.cast?.length) return 'Нет данных';
+
+		const actors = detailsMovie.value?.credits?.cast;
+		return (
+			actors
+				.slice(0, 10)
+				.map((el) => el.name)
+				.join(', ') + (actors.length > 10 ? ' и др.' : '')
+		);
 	});
 
 	const aboutList = computed(() => [
@@ -92,11 +114,41 @@
 		},
 	]);
 
+	const reviewsList = computed(() =>
+		detailsMovie.value?.reviews?.results?.map((review) => {
+			return {
+				id: review.id,
+				avatar: buildImagePath(review?.author_details?.avatar_path),
+				name:
+					review.author ||
+					review.author_details?.name ||
+					review.author_details?.username ||
+					'Неизвестный пользователь',
+				content: review.content ?? 'Нет данных',
+				date: formatDateFnsWithTime(review.updated_at ?? review.created_at ?? ''),
+				rating: String(review.author_details?.rating),
+			};
+		}),
+	);
+
+	const recommendationsList = computed(() => {
+		return detailsMovie.value?.recommendations?.results?.map((el) => ({
+			id: el.id,
+			title: el.title,
+			rating: el.vote_average.toFixed(1),
+			imageUrl: buildImagePath(el.poster_path),
+			genreNames: getGenreNamesByIds(el.genre_ids ?? [], 'movie'),
+			mediaType: el.media_type,
+		}));
+	});
+
 	watch(movieId, async () => {
 		await fetchMovieDetails(movieId.value);
 	});
 
-	onMounted(() => fetchMovieDetails(movieId.value));
+	onMounted(async () => {
+		await fetchMovieDetails(movieId.value);
+	});
 
 	onUnmounted(() => {
 		detailsMovie.value = null;
@@ -104,12 +156,13 @@
 </script>
 
 <template>
-	<div class="page-details tv">
+	<div class="page-details movie">
 		<div v-if="!isLoadingMovieDetails && !isError" class="page-details-container">
 			<section class="header" :style="{ '--bg-url': `url(${movie.backdropPath})` }">
 				<h1 class="header__title">
 					{{ movie.title }}
 				</h1>
+				<p class="header__tagline">{{ movie.tagline }}</p>
 
 				<div class="header__info">
 					<span class="header__info-rating">{{ movie.rating }}</span>
@@ -159,17 +212,23 @@
 			<section class="reviews section">
 				<h3 class="reviews__title section__title">Рецензии</h3>
 				<ul v-if="movie.reviews.length" class="reviews__list">
-					<li v-for="review in movie.reviews" :key="review.id" class="reviews__item">
-						{{ review }}
-					</li>
+					<ReviewItem
+						v-for="review in reviewsList"
+						:key="review.id"
+						:avatar="review.avatar"
+						:name="review.name"
+						:date="review.date"
+						:rating="review.rating"
+						:content="review.content"
+					/>
 				</ul>
 
-				<div class="reviews__no-list">Список пуст</div>
+				<div v-else class="reviews__no-list">Список пуст</div>
 			</section>
 
 			<section class="similar section">
 				<h3 class="similar__title section__title">Если вам понравился "{{ movie.title }}"</h3>
-        <MovieDetailsSlider :title="''" :movies="[]" />
+				<SingleSliderList :items="recommendationsList" />
 			</section>
 		</div>
 
@@ -205,8 +264,7 @@
 			z-index: -1;
 			background-image:
 				linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 30%, rgba(20, 16, 37, 1) 100%),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 25%),
-				var(--bg-url);
+				linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 25%), var(--bg-url);
 			background-size: cover;
 			background-position: center top;
 			background-repeat: no-repeat;
@@ -218,6 +276,13 @@
 			line-height: 100%;
 			letter-spacing: 0.01em;
 			color: #fff;
+			margin-bottom: 20px;
+		}
+
+		.header__tagline {
+			font-weight: 500;
+			font-size: 18px;
+			line-height: 140%;
 			margin-bottom: 30px;
 		}
 
@@ -267,10 +332,14 @@
 				max-width: var(--wrapper-width);
 			}
 
+			.about__tagline,
 			.about__text {
 				font-weight: 500;
 				font-size: 18px;
 				line-height: 140%;
+			}
+			.about__tagline {
+				margin-bottom: 30px;
 			}
 
 			.about__list {
@@ -313,13 +382,24 @@
 			}
 		}
 
+		/* section reviews */
 		.reviews {
+			.reviews__list {
+				display: flex;
+				flex-direction: column;
+				gap: 40px;
+			}
+
 			.reviews__no-list {
 				font-size: 32px;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 			}
+		}
+
+		.similar.section {
+			max-width: 100%;
 		}
 
 		@media (width <= 1120px) {

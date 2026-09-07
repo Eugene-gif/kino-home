@@ -2,24 +2,30 @@
 	import { ref, watch, computed, nextTick, onMounted } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import { storeToRefs } from 'pinia';
-	import { useDebounceFn } from '@vueuse/core';
+	import { useDebounceFn, onClickOutside } from '@vueuse/core';
 	import { useSearchStore } from '@/stores/search';
 	import { buildImagePath } from '@/utils/images';
-	import { mainMenu } from '@/constants/menu';
+	import { menuLink } from '@/constants/menu';
 	import { routePaths } from '@/constants/routesData';
-
+	import { useAuthStore } from '@/stores/auth';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 	import ContentModalSearch from './ContentModalSearch.vue';
+	import UserAvatar from '@/components/HeaderApp/UserAvatar.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconSearch from '@/assets/icons/IconSearch.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ButtonBurger from './ButtonBurger.vue';
 	import ModalSearch from '@/components/Modals/ModalSearch.vue';
 	import InputSearch from '@/components/Inputs/InputSearch.vue';
-	import IconBell from '@/assets/icons/IconBell.vue';
 	import IconUser from '@/assets/icons/IconUser.vue';
+	import IconUserDelete from '@/assets/icons/IconUserDelete.vue';
+	import IconUserLogin from '@/assets/icons/IconUserLogin.vue';
+	import IconUserRegister from '@/assets/icons/IconUserRegister.vue';
+	import type { ModalSearchCardItem } from './headerTypes.ts';
 
-	import type { ModalSearchCardItem } from './headerTypes';
+	const authStore = useAuthStore();
+	const { isAuth, user } = storeToRefs(authStore);
+	const { signOut } = authStore;
 
 	const searchStore = useSearchStore();
 	const { fetchSearchMulti, fetchHeaderData } = searchStore;
@@ -34,6 +40,12 @@
 	const isOpenBurgerMenu = ref<boolean>(false);
 	const isModalSearch = ref<boolean>(false);
 	const inputSearchRef = ref<InputSearchInstance | null>(null);
+	const isPopoverAuth = ref<boolean>(false);
+	const popoverRef = ref(null);
+
+	onClickOutside(popoverRef, () => {
+		isPopoverAuth.value = false;
+	});
 
 	const uiTrendingList = computed<ModalSearchCardItem[] | []>(() => {
 		return trendingList.value.map((movie) => ({
@@ -59,6 +71,10 @@
 			name: person.name,
 			profession: person.known_for_department,
 		}));
+	});
+
+	const uiMenuLink = computed(() => {
+		return isAuth.value ? menuLink : menuLink.filter((el) => !el?.isAuth);
 	});
 
 	const debouncedSearch = useDebounceFn((query: string) => {
@@ -102,9 +118,11 @@
 				<div :class="['header-box-content', isOpenBurgerMenu ? 'open' : '']">
 					<nav class="header-nav" aria-label="Основное меню">
 						<ul class="nav-list">
-							<li v-for="link in mainMenu" :key="link.name" class="nav-item">
-								<RouterLink :to="link.path">{{ link.text }}</RouterLink>
-							</li>
+							<template v-for="link in uiMenuLink" :key="link.name">
+								<li class="nav-item">
+									<RouterLink :to="link.path">{{ link.text }}</RouterLink>
+								</li>
+							</template>
 						</ul>
 					</nav>
 
@@ -115,17 +133,61 @@
 								<template #textRight>Поиск</template>
 							</ButtonApp>
 						</li>
-						<li class="options-item">
-							<ButtonApp border="none" iconSize="22px">
-								<template #icon><IconBell /></template>
-							</ButtonApp>
-						</li>
-						<li class="options-item">
-							<ButtonApp>
+
+						<li class="options-item options-item-popover">
+							<ButtonApp
+								v-if="!isAuth"
+								:disabled="isPopoverAuth"
+								class="button-popover"
+								@click="() => (isPopoverAuth = true)"
+							>
 								<template #icon>
 									<IconUser />
 								</template>
 							</ButtonApp>
+
+							<UserAvatar
+								v-else
+								:name="user?.name ?? ''"
+								:disabled="isPopoverAuth"
+								@click="() => (isPopoverAuth = true)"
+							/>
+
+							<Transition>
+								<div v-if="isPopoverAuth" ref="popoverRef" class="popover">
+									<span class="arrow"></span>
+
+									<div class="content">
+										<template v-if="!isAuth">
+											<ButtonApp :href="routePaths.register">
+												<template #icon><IconUserRegister /></template>
+												<template #textRight>Регистрация</template>
+											</ButtonApp>
+
+											<ButtonApp :href="routePaths.login">
+												<template #icon><IconUserLogin /></template>
+												<template #textRight>Войти</template>
+											</ButtonApp>
+										</template>
+
+										<template v-else>
+											<div class="block">
+												<span class="block__text">Пользователь: </span
+												><span class="block__value">{{ user?.name ?? 'Нет имени' }}</span>
+											</div>
+
+											<div class="block">
+												<span class="block__text">Почта: </span>
+												<span class="block__value">{{ user?.email ?? 'Нет почты' }}</span>
+											</div>
+											<ButtonApp @click="signOut">
+												<template #icon><IconUserDelete /></template>
+												<template #textRight>Выйти</template>
+											</ButtonApp>
+										</template>
+									</div>
+								</div>
+							</Transition>
 						</li>
 					</ul>
 				</div>
@@ -236,6 +298,66 @@
 		align-items: center;
 		gap: 16px;
 		margin-left: auto;
+	}
+
+	.options-item-popover {
+		position: relative;
+	}
+
+	.popover {
+		position: absolute;
+		background-color: var(--color-second-dark);
+		border: 1px solid var(--color-btn-base);
+		color: #fff;
+		padding: 20px;
+		border-radius: 10px;
+		top: 110%;
+		right: 0;
+
+		.arrow {
+			content: '';
+			position: absolute;
+			right: 12px;
+			top: -20px;
+			width: 0;
+			height: 0;
+			border-left: 15px solid transparent;
+			border-right: 15px solid transparent;
+			border-bottom: 20px solid var(--color-btn-base);
+			&::after {
+				content: '';
+				position: absolute;
+
+				left: -14px;
+				top: 1px;
+				width: 0;
+				height: 0;
+
+				border-left: 14px solid transparent;
+				border-right: 14px solid transparent;
+				border-bottom: 19px solid var(--color-second-dark);
+			}
+		}
+
+		.content {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+
+			.block {
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+				margin-bottom: 15px;
+				color: var(--text-color-base);
+			}
+
+			.block__value {
+				font-size: 24px;
+				font-weight: 600;
+				color: var(--color-white);
+			}
+		}
 	}
 
 	.router-link-exact-active {

@@ -12,11 +12,12 @@
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import CardApp from '@/components/CardApp/CardApp.vue';
 	import CardAppSkeleton from '@/components/CardApp/CardAppSkeleton.vue';
-	import type { CatalogCardItem } from '@/views/home/homeTypes';
+	import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
 	const props = defineProps<{
 		title?: string;
-		movies?: CatalogCardItem[];
+		items?: CardAppType[];
+		loading?: boolean;
 	}>();
 
 	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Mousewheel, FreeMode];
@@ -45,7 +46,8 @@
 
 <template>
 	<section class="slider">
-		<h3 class="slider-title">{{ props.title }}</h3>
+		<h3 v-if="props.title" class="slider-title">{{ props.title }}</h3>
+
 		<Swiper
 			:modules="modules"
 			:slides-per-view="4"
@@ -75,20 +77,27 @@
 				minimumVelocity: 0.02,
 			}"
 		>
-			<SwiperSlide v-for="(movie, idx) in props.movies" :key="movie.id">
-				<CardAppSkeleton v-if="idx === 0" />
-				<CardApp
-					v-else
-					class="swiper-slide-inner"
-					:id="movie.id"
-					:title="movie.title"
-					:rating="movie.rating"
-					:imageUrl="movie.imageUrl"
-					:genreNames="movie.genreNames"
-					:mediaType="movie.mediaType"
-				/>
-			</SwiperSlide>
+			<template v-if="!props.items?.length && !props.loading">
+				<SwiperSlide v-for="num in 4" :key="num">
+					<CardAppSkeleton />
+				</SwiperSlide>
+			</template>
+
+			<template v-else>
+				<SwiperSlide v-for="movie in props.items" :key="movie.id">
+					<CardApp
+						class="swiper-slide-inner"
+						:id="movie.id"
+						:title="movie.title"
+						:rating="movie.rating"
+						:imageUrl="movie.imageUrl"
+						:genreStringNames="movie.genreStringNames"
+						:mediaType="movie.mediaType"
+					/>
+				</SwiperSlide>
+			</template>
 		</Swiper>
+
 		<button ref="prevEl" class="btn-prev">←</button>
 		<button ref="nextEl" class="btn-next">→</button>
 	</section>

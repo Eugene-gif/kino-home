@@ -44,10 +44,6 @@
 </template>
 
 <style scoped>
-	.discounts {
-		margin-bottom: 80px;
-	}
-
 	.title {
 		margin-bottom: 60px;
 		color: #fff;

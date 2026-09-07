@@ -1,17 +1,17 @@
 <script setup lang="ts"></script>
 
 <template>
-	<div class="auth">
+	<div class="auth-layout">
 		<RouterView />
 	</div>
 </template>
 
 <style scoped>
-	.auth {
-		border: 2px solid grey;
-		border-radius: 20px;
-		padding: 50px;
+	.auth-layout {
+		display: flex;
 		justify-content: center;
 		align-items: center;
+		height: 100dvh;
+    padding: 20px;
 	}
 </style>

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 	import { routeNames } from '@/constants/routesData';
 
-	import type {
-		ModalSearchCardItem,
-		PersonCardItem,
-	} from '@/layouts/MainLayout/components/HeaderApp/headerTypes';
+	import type { ModalSearchCardItem, PersonCardItem } from '@/components/HeaderApp/headerTypes';
 
 	interface PropsContentModalSearch {
 		uiTrendingList: ModalSearchCardItem[];
@@ -164,11 +161,4 @@
 		font-size: 10px;
 		font-weight: 400;
 	}
-
-	/* .found {
-		font-size: 14px;
-		padding: 15px;
-		border-radius: 10px;
-		border: 1px solid #3a354d;
-	} */
 </style>

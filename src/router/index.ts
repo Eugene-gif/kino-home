@@ -1,34 +1,34 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { routeNames, routePaths, AUTH_PATHES } from '@/constants/routesData';
 import { routes } from './routes';
+import { useAuthStore } from '@/stores/auth';
+import { useToast } from 'vue-toastification';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
-// Далее будем брать из pinia + localStorage
-function getIsAuth(): boolean {
-  return true;
-}
+const toast = useToast();
 
-router.beforeEach((to, from, next) => {
-  const isAuth = getIsAuth(); // Есть ключ
-  const isAuthRequired = to.meta.requiresAuth === true; // Требуется ли авторизация для роута
+router.beforeEach((to) => {
+  const authStore = useAuthStore();
+  const isAuth = authStore.isAuth;
+  const requiresAuth = to.meta.requiresAuth;
 
-  const params = { to, from, next };
-
-  console.log(isAuthRequired, isAuth, params);
-
-  if (isAuthRequired && !isAuth) {
-    // Требуется авторизация и нет ключа
-    console.log('Требуется авторизация и нет ключа направляем на логин');
-    next({ name: 'login' });
-  } else if (!isAuthRequired && isAuth && ['login', 'register'].includes(to.name as string)) {
-    console.log('Уже вошёл, но лезет на login, направляем на главную');
-    next({ name: 'home' });
-  } else {
-    next();
+  if (!isAuth && to.path === routePaths.auth) {
+    return { name: routeNames.login };
   }
-});
+
+  if (requiresAuth && !isAuth && to.name === routeNames.collections) {
+    toast.info('Войдите в аккаунт, чтобы получить доступ к коллекциям');
+    return { name: routeNames.login };
+  }
+
+  // Если мы авторизованы и стучимся на auth то отправляем на home
+  if (!requiresAuth && isAuth && AUTH_PATHES.includes(to.path)) {
+    return { name: routeNames.home };
+  }
+})
 
 export default router;

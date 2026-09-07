@@ -19,8 +19,10 @@
     "orval": "orval"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "@vueuse/core": "^14.3.0",
     "date-fns": "^4.3.0",
+    "floating-vue": "^5.2.2",
     "pinia": "^3.0.4",
     "swiper": "^12.1.2",
     "vue": "^3.5.27",
