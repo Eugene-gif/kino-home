@@ -18,8 +18,8 @@ app.use(pinia);
 app.use(router);
 app.use(Toast, {
   position: POSITION.TOP_CENTER,
-  timeout: 4000,
-  maxToasts: 5,
+  timeout: 3000,
+  maxToasts: 3,
   newestOnTop: true,
   closeOnClick: true,
   pauseOnHover: true,

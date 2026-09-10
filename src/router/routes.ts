@@ -3,7 +3,7 @@ import { routeNames, routePaths } from '@/constants/routesData';
 import MainLayout from '@/layouts/MainLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 const HomeView = () => import('@/views/home/HomeView.vue');
-const CollectionsView = () => import('@/views/collections/CollectionsView.vue');
+const FavoriteView = () => import('@/views/favorite/FavoriteView.vue');
 const TvListView = () => import('@/views/media/tv/TvView.vue');
 const MoviesListView = () => import('@/views/media/movies/MoviesView.vue');
 const MovieDetails = () => import('@/views/media/movies/MovieDetails.vue');
@@ -24,9 +24,9 @@ export const routes: RouteRecordRaw[] = [
         component: HomeView,
       },
       {
-        path: routePaths.collections,
-        name: routeNames.collections,
-        component: CollectionsView,
+        path: routePaths.favorite,
+        name: routeNames.favorite,
+        component: FavoriteView,
         meta: { requiresAuth: true },
       },
       {

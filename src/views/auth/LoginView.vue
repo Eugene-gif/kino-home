@@ -4,6 +4,7 @@
 	import { useAuthStore } from '@/stores/auth';
 	import { storeToRefs } from 'pinia';
 	import { useToast } from 'vue-toastification';
+	import FormField from '@/components/Inputs/FormField.vue';
 	import InputApp from '@/components/Inputs/InputApp.vue';
 	import InputPassword from '@/components/Inputs/InputPassword.vue';
 	import LabelApp from '@/components/Inputs/LabelApp.vue';
@@ -36,22 +37,21 @@
 		<h1 class="title">Войти</h1>
 
 		<form class="form" @submit.prevent="submitForm">
-			<div class="form-input">
-				<LabelApp text="Почта" id="login-email" />
+			<FormField>
+				<LabelApp text="Почта" />
 
-				<InputApp v-model="email" id="login-email" placeholder="Введите email" autocomplete="email">
+				<InputApp v-model="email" placeholder="Введите email" autocomplete="email">
 					<template #iconLeft>
 						<IconMail />
 					</template>
 				</InputApp>
-			</div>
+			</FormField>
 
-			<div class="form-input">
-				<LabelApp text="Пароль" id="login-password" />
+			<FormField>
+				<LabelApp text="Пароль" />
 
 				<InputPassword
 					v-model="password"
-					id="login-password"
 					placeholder="Введите пароль"
 					autocomplete="current-password"
 				>
@@ -59,7 +59,7 @@
 						<IconMail />
 					</template>
 				</InputPassword>
-			</div>
+			</FormField>
 
 			<p class="form-text">
 				Ещё нет аккаунта?
@@ -85,45 +85,5 @@
 </template>
 
 <style scoped>
-	.login {
-		max-width: 500px;
-		width: 100%;
-		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-
-		.nav-link {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-		}
-	}
-
-	.form {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-	}
-
-	.form-text {
-		margin: 20px 0;
-		font-size: 20px;
-		font-weight: 400;
-	}
-
-	.form-nav-link {
-		font-weight: 500;
-		color: white;
-		text-decoration: underline;
-	}
-
-	.form-button {
-		width: 100%;
-	}
-
-	.form-input {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-	}
+	@import './auth-style.css';
 </style>

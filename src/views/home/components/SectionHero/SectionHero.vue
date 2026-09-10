@@ -10,7 +10,7 @@
 				Ежедневно пополняемая библиотека с лучшими фильмами и сериалами — в дубляже и
 				оригинале.Целый месяц бесплатно!
 			</p>
-			<ButtonApp class="hero-btn"> Смотреть бесплатно </ButtonApp>
+			<ButtonApp disabled class="hero-btn"> Смотреть бесплатно </ButtonApp>
 		</div>
 
 		<div class="hero-slider">

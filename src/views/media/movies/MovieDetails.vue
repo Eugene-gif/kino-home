@@ -1,9 +1,11 @@
 <script setup lang="ts">
-	import { computed, watch, onMounted, onUnmounted } from 'vue';
+	import { computed, watch, onUnmounted } from 'vue';
 	import { storeToRefs } from 'pinia';
 	import { useMoviesStore } from '@/stores/movies';
 	import { useCountriesStore } from '@/stores/countries';
 	import { useGenresStore } from '@/stores/genres.ts';
+	import { useAuthStore } from '@/stores/auth';
+	import { useFavoriteStore } from '@/stores/favorite';
 	import { priceWithSymbol } from '@/utils/priceWithSymbol';
 	import {
 		formatDateFns,
@@ -15,9 +17,9 @@
 	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ReviewItem from '@/components/ReviewItem/ReviewItem.vue';
-	import IconPlay from '@/assets/icons/IconPlay.vue';
 	import IconCopy from '@/assets/icons/IconCopy.vue';
 	import IconHeart from '@/assets/icons/IconHeart.vue';
+	import IconHeartFavorite from '@/assets/icons/IconHeartFavorite.vue';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 
 	const props = defineProps<{
@@ -33,6 +35,13 @@
 	const moviesStore = useMoviesStore();
 	const { fetchMovieDetails } = moviesStore;
 	const { detailsMovie, isLoadingMovieDetails, isError } = storeToRefs(moviesStore);
+
+	const authStore = useAuthStore();
+	const { isAuth } = storeToRefs(authStore);
+
+	const favoriteStore = useFavoriteStore();
+	const { currentFavoriteItem, addedFavorite, isLoadingFavoriteById } = storeToRefs(favoriteStore);
+	const { addFavoriteItem, deleteFavoriteItem, getFavoriteItem } = favoriteStore;
 
 	const movieId = computed(() => Number(props.id));
 	const movie = computed(() => {
@@ -142,15 +151,16 @@
 		}));
 	});
 
-	watch(movieId, async () => {
-		await fetchMovieDetails(movieId.value);
-	});
+	const getDataMovie = async () => {
+		let getItemFromFavoriteList = null;
+		if (isAuth) getItemFromFavoriteList = getFavoriteItem(movieId.value);
+		Promise.allSettled([getItemFromFavoriteList, fetchMovieDetails(movieId.value)]);
+	};
 
-	onMounted(async () => {
-		await fetchMovieDetails(movieId.value);
-	});
+	watch(movieId, getDataMovie, { immediate: true });
 
 	onUnmounted(() => {
+		currentFavoriteItem.value = null;
 		detailsMovie.value = null;
 	});
 </script>
@@ -172,13 +182,6 @@
 				</div>
 
 				<div class="header__btns">
-					<ButtonApp color="red">
-						Смотреть фильм
-						<template #icon>
-							<IconPlay />
-						</template>
-					</ButtonApp>
-
 					<ButtonApp>Трейлер</ButtonApp>
 
 					<ButtonApp @click="() => console.log('Копировать')">
@@ -187,10 +190,20 @@
 						</template>
 					</ButtonApp>
 
-					<ButtonApp @click="() => console.log('Добавить в избранное')">
-						<template #icon>
-							<IconHeart />
+					<ButtonApp
+						v-if="isAuth"
+						:loading="isLoadingFavoriteById"
+						@click="
+							() => (!addedFavorite ? addFavoriteItem(movie, 'movie') : deleteFavoriteItem(movieId))
+						"
+					>
+						<template v-if="!isLoadingFavoriteById" #icon>
+							<IconHeart v-if="!addedFavorite" />
+							<IconHeartFavorite v-else />
 						</template>
+						<template #textRight>{{
+							!addedFavorite ? 'Добавить в избранное' : 'В избранном'
+						}}</template>
 					</ButtonApp>
 				</div>
 			</section>

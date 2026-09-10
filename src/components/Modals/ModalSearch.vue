@@ -50,7 +50,7 @@
 				</ButtonApp>
 			</section>
 
-			<section class="search">
+			<section v-if="$slots.search" class="search">
 				<slot name="search"></slot>
 			</section>
 

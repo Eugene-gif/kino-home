@@ -23,7 +23,7 @@
 </script>
 
 <template>
-	<div class="card">
+	<div class="card" :class="$slots.favorite ? 'favorite-card' : ''">
 		<RouterLink
 			:to="{
 				name: linkName,
@@ -51,19 +51,27 @@
 				<div class="card-title">{{ props.title }}</div>
 			</div>
 		</RouterLink>
+		<div v-if="$slots.favorite" class="favorite-block">
+			<slot name="favorite"></slot>
+		</div>
 	</div>
 </template>
 
 <style scoped>
+	.card {
+		--max-width: 340px;
+	}
+
 	.card a {
 		display: flex;
 		flex-direction: column;
-		max-width: 335px;
+		max-width: var(--max-width);
 		gap: 10px;
 
 		.card-img {
 			max-width: 100%;
 			max-height: 270px;
+			width: 100%;
 			object-fit: cover;
 			user-select: none;
 			aspect-ratio: 2 / 3;
@@ -99,6 +107,27 @@
 			.card-rating {
 				filter: drop-shadow(0px 1px 10px var(--color-white));
 			}
+		}
+	}
+
+	.card.favorite-card {
+		position: relative;
+		max-width: var(--max-width);
+
+		a .card-img {
+			aspect-ratio: 4 / 3;
+		}
+
+		.favorite-block {
+			position: absolute;
+			top: 1px;
+			right: 0;
+			width: 100%;
+			height: 50px;
+			border-radius: 10px 10px 0 0;
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
 		}
 	}
 </style>

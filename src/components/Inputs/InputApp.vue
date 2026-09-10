@@ -1,7 +1,7 @@
 <script setup lang="ts">
-	import { ref } from 'vue';
+	import { ref, inject } from 'vue';
 
-	const { type, placeholder, inputName } = defineProps<{
+	const { type, placeholder, inputName, id } = defineProps<{
 		type?: 'text' | 'email';
 		placeholder?: string;
 		inputName?: string;
@@ -12,6 +12,8 @@
 	const text = defineModel();
 
 	const inputRef = ref<HTMLInputElement | null>(null);
+
+	const inputId = id ?? inject<string>('field-id');
 
 	const focus = () => {
 		inputRef.value?.focus();
@@ -25,7 +27,7 @@
 		</div>
 
 		<input
-			:id="id"
+			:id="inputId"
 			ref="inputRef"
 			v-model="text"
 			class="input"

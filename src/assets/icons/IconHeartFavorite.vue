@@ -19,4 +19,7 @@
 
 <style scoped>
 	@import './icon.css';
+	.icon {
+		color: var(--color-red);
+	}
 </style>

@@ -5,6 +5,7 @@ import { tvSeriesDetails, discoverTv } from '@/api/endpoints';
 import { APPEND_TO_RESPONSE_TV } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
 import { buildImagePath } from '@/utils/images';
+import { transformArrayInString } from '@/utils/transformArrayInString';
 import type { TvDetailsFull } from '@/stores/typesForStores';
 import type { GenreWithTvType } from '@/stores/typesForStores';
 
@@ -33,6 +34,7 @@ export const useTvStore = defineStore('tv', () => {
               rating: Number(tv?.vote_average ?? 0).toFixed(1),
               imageUrl: buildImagePath(tv.poster_path),
               genreNames: getGenreNamesByIds(tv.genre_ids ?? []),
+              genreStringNames: transformArrayInString(getGenreNamesByIds(tv.genre_ids ?? [])),
               mediaType: 'tv',
             };
           }) ?? [],

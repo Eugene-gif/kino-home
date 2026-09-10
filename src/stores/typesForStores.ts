@@ -79,18 +79,59 @@ interface TvDetailsFull extends TvSeriesDetails200 {
   images?: TvSeriesImages200;
 }
 
+/*_____ Favorite _____*/
+interface FavoriteItem {
+  id?: string;
+  user_id?: string;
+  content_id: number;
+  has_watched?: boolean;
+  created_at?: Date;
+  content: ContentFavoriteItem;
+}
+
+type ContentFavoriteItem = {
+  id: number;
+  title?: string;
+  tagline?: string;
+  overview: string;
+  rating: string;
+  backdropPath: string;
+  firstAirDate?: string;
+  lastAirDate?: string;
+  firstDateYear?: string;
+  lastDateYear?: string;
+  genres: string;
+  budget?: string;
+  cash?: string;
+  releaseDate?: string;
+  year?: string;
+  time?: string;
+  seasons?: unknown;
+  numOfSeasons?: number;
+  countries: string;
+  director: string;
+  actors: string;
+  reviews?: unknown;
+  mediaType?: 'tv' | 'movie';
+}
+
 export type {
   GenreMovieList200GenresItem,
   GenreTvList200GenresItem,
   SearchMulti200ResultsItem,
   PersonPopularList200ResultsItem,
   MoviePopularList200ResultsItem,
+  MovieDetails200,
   TvSeriesDetails200,
   TvSeriesDetailsParams,
   MovieDetailsFull,
   TvDetailsFull,
   ConfigurationCountries200Item,
+  DiscoverMovie200ResultsItem,
+  DiscoverTv200ResultsItem,
 
+  FavoriteItem,
+  ContentFavoriteItem,
   GenreWithMoviesType,
   GenreWithTvType,
   ExtendedTrendingAll200ResultsItem,
