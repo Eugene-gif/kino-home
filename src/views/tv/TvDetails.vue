@@ -1,16 +1,14 @@
 <script setup lang="ts">
-	import { computed, watch, onMounted, onUnmounted } from 'vue';
+	import { ref, computed, watch, onUnmounted } from 'vue';
 	import { storeToRefs } from 'pinia';
-	import { useMoviesStore } from '@/stores/movies';
+	import { useTvStore } from '@/stores/tv';
 	import { useCountriesStore } from '@/stores/countries';
 	import { useGenresStore } from '@/stores/genres.ts';
-	import { priceWithSymbol } from '@/utils/priceWithSymbol';
-	import {
-		formatDateFns,
-		formatDateFnsWithTime,
-		formatDateFnsYear,
-		formatMinutesInHours,
-	} from '@/utils/date';
+	import { useAuthStore } from '@/stores/auth';
+	import { useFavoriteStore } from '@/stores/favorite';
+	import { useClipboard } from '@vueuse/core';
+	import { useToast } from 'vue-toastification';
+	import { formatDateFns, formatDateFnsWithTime, formatDateFnsYear } from '@/utils/date';
 	import { buildImagePath } from '@/utils/images';
 	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
@@ -18,7 +16,9 @@
 	import IconPlay from '@/assets/icons/IconPlay.vue';
 	import IconCopy from '@/assets/icons/IconCopy.vue';
 	import IconHeart from '@/assets/icons/IconHeart.vue';
+	import IconHeartFavorite from '@/assets/icons/IconHeartFavorite.vue';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
+	import ModalVideo from '@/components/Modals/ModalVideo.vue';
 
 	const props = defineProps<{
 		id: string;
@@ -30,43 +30,54 @@
 	const countriesStore = useCountriesStore();
 	const { countriesMap } = storeToRefs(countriesStore);
 
-	const moviesStore = useMoviesStore();
-	const { fetchMovieDetails } = moviesStore;
-	const { detailsMovie, isLoadingMovieDetails, isError } = storeToRefs(moviesStore);
+	const tvStore = useTvStore();
+	const { fetchTvDetails } = tvStore;
+	const { detailsTv, isLoadingTvDetails, isError } = storeToRefs(tvStore);
 
-	const movieId = computed(() => Number(props.id));
-	const movie = computed(() => {
+	const authStore = useAuthStore();
+	const { isAuth } = storeToRefs(authStore);
+
+	const favoriteStore = useFavoriteStore();
+	const { currentFavoriteItem, addedFavorite, isLoadingFavoriteById } = storeToRefs(favoriteStore);
+	const { addFavoriteItem, deleteFavoriteItem, getFavoriteItem } = favoriteStore;
+
+	const toast = useToast();
+
+	const { copy, copied } = useClipboard();
+
+	const tvId = computed(() => Number(props.id));
+	const tv = computed(() => {
 		return {
-			id: movieId.value,
-			title: detailsMovie.value?.title,
-			tagline: detailsMovie.value?.tagline,
-			overview: detailsMovie.value?.overview ?? 'Без описания',
-			rating: detailsMovie.value?.vote_average?.toFixed(1) ?? '0.0',
-			backdropPath: buildImagePath(detailsMovie.value?.backdrop_path),
-			budget: priceWithSymbol(detailsMovie.value?.budget ?? 0),
-			cash: priceWithSymbol(detailsMovie.value?.revenue ?? 0),
-			releaseDate: formatDateFns(String(detailsMovie.value?.release_date ?? '')),
-			year: formatDateFnsYear(String(detailsMovie.value?.release_date ?? '')),
-			time: formatMinutesInHours(detailsMovie.value?.runtime ?? 0),
-			genres: detailsMovie.value?.genres?.map((el) => el.name).join(', ') ?? '',
+			id: tvId.value,
+			title: detailsTv.value?.name,
+			tagline: detailsTv.value?.tagline,
+			overview: detailsTv.value?.overview ?? 'Без описания',
+			rating: detailsTv.value?.vote_average?.toFixed(1) ?? '0.0',
+			backdropPath: buildImagePath(detailsTv.value?.backdrop_path),
+			firstAirDate: formatDateFns(String(detailsTv.value?.first_air_date ?? '')), // первый эфир
+			lastAirDate: formatDateFns(String(detailsTv.value?.last_air_date ?? '')), // последний эфир
+			firstDateYear: formatDateFnsYear(String(detailsTv.value?.first_air_date ?? '')),
+			lastDateYear: formatDateFnsYear(String(detailsTv.value?.last_air_date ?? '')),
+			genres: detailsTv.value?.genres?.map((el) => el.name).join(', ') ?? '',
+			seasons: detailsTv.value?.seasons,
+			numOfSeasons: detailsTv.value?.number_of_seasons,
 			countries:
-				detailsMovie.value?.production_countries
+				detailsTv.value?.production_countries
 					?.map((country) =>
 						country.iso_3166_1 ? countriesMap.value[country.iso_3166_1]?.native_name : 'Нет данных',
 					)
 					.join(', ') ?? '',
 			director:
-				detailsMovie.value?.credits?.crew?.find((el) => el.job === 'Director')?.name ??
-				'Нет данных',
+				detailsTv.value?.credits?.crew?.find((el) => el.job === 'Director')?.name ?? 'Нет данных',
 			actors: actorsList.value,
-			reviews: detailsMovie.value?.reviews?.results?.map((review) => review) ?? [],
+			reviews: detailsTv.value?.reviews?.results?.map((review) => review) ?? [],
 		};
 	});
 
 	const actorsList = computed(() => {
-		if (!detailsMovie.value?.credits?.cast?.length) return 'Нет данных';
+		if (!detailsTv.value?.credits?.cast?.length) return 'Нет данных';
 
-		const actors = detailsMovie.value?.credits?.cast;
+		const actors = detailsTv.value?.credits?.cast;
 		return (
 			actors
 				.slice(0, 10)
@@ -78,44 +89,40 @@
 	const aboutList = computed(() => [
 		{
 			name: 'Рейтинг IMDb',
-			value: movie.value.rating,
+			value: tv.value.rating,
 		},
 		{
 			name: 'Жанр',
-			value: movie.value.genres,
+			value: tv.value.genres,
 		},
 		{
 			name: 'Режиссёр',
-			value: movie.value.director,
+			value: tv.value.director,
 		},
 		{
 			name: 'Актёрский состав',
-			value: movie.value.actors,
+			value: tv.value.actors,
 		},
 		{
 			name: 'Страна',
-			value: movie.value.countries,
+			value: tv.value.countries,
 		},
 		{
-			name: 'Дата релиза',
-			value: movie.value.releaseDate,
+			name: 'Первый эфир',
+			value: tv.value.firstAirDate,
 		},
 		{
-			name: 'Бюджет',
-			value: movie.value.budget,
+			name: 'Последний эфир',
+			value: tv.value.lastAirDate,
 		},
 		{
-			name: 'Сборы',
-			value: movie.value.cash,
-		},
-		{
-			name: 'Время',
-			value: movie.value.time,
+			name: 'Количество сезонов',
+			value: tv.value.numOfSeasons,
 		},
 	]);
 
 	const reviewsList = computed(() =>
-		detailsMovie.value?.reviews?.results?.map((review) => {
+		detailsTv.value?.reviews?.results?.map((review) => {
 			return {
 				id: review.id,
 				avatar: buildImagePath(review?.author_details?.avatar_path),
@@ -132,73 +139,107 @@
 	);
 
 	const recommendationsList = computed(() => {
-		return detailsMovie.value?.recommendations?.results?.map((el) => ({
-			id: el.id,
-			title: el.title,
-			rating: el.vote_average.toFixed(1),
+		return detailsTv.value?.recommendations?.results?.map((el) => ({
+			id: el.id ?? 0,
+			title: el.name ?? '',
+			rating: Number(el.vote_average).toFixed(1),
 			imageUrl: buildImagePath(el.poster_path),
-			genreNames: getGenreNamesByIds(el.genre_ids ?? [], 'movie'),
-			mediaType: el.media_type,
+			genreNames: getGenreNamesByIds(el.genre_ids ?? [], 'tv'),
+			mediaType: el.media_type ?? 'tv',
 		}));
 	});
 
-	watch(movieId, async () => {
-		await fetchMovieDetails(movieId.value);
+	const videoList = computed(() => {
+		return detailsTv.value?.videos?.results?.map((el) => {
+			return {
+				id: el.id,
+				key: el.key,
+			};
+		});
 	});
 
-	onMounted(async () => {
-		await fetchMovieDetails(movieId.value);
-	});
+	const videoKey = computed(() => videoList.value?.[1]?.key ?? videoList.value?.[0]?.key);
+
+	const isModalPlayer = ref<boolean>(false);
+	const closeModalPlayer = () => {
+		isModalPlayer.value = false;
+	};
+	const openModalPlayer = () => {
+		isModalPlayer.value = true;
+	};
+
+	const copyCurrentUrl = () => {
+		const currentUrl = window.location.href;
+		copy(currentUrl);
+		if (copied) toast.success(`Ссылка скопирована в буфер обмена`);
+		else toast.error('Ошибка копирования, попробуйте позже');
+	};
+
+	const getDataTv = async () => {
+		let getItemFromFavoriteList = null;
+		if (isAuth) getItemFromFavoriteList = getFavoriteItem(tvId.value);
+		await Promise.allSettled([getItemFromFavoriteList, fetchTvDetails(tvId.value)]);
+	};
+
+	watch(tvId, getDataTv, { immediate: true });
 
 	onUnmounted(() => {
-		detailsMovie.value = null;
+		currentFavoriteItem.value = null;
+		detailsTv.value = null;
 	});
 </script>
 
 <template>
-	<div class="page-details movie">
-		<div v-if="!isLoadingMovieDetails && !isError" class="page-details-container">
-			<section class="header" :style="{ '--bg-url': `url(${movie.backdropPath})` }">
+	<div class="page-details tv">
+		<div v-if="!isLoadingTvDetails && !isError" class="page-details-container">
+			<section class="header" :style="{ '--bg-url': `url(${tv.backdropPath})` }">
 				<h1 class="header__title">
-					{{ movie.title }}
+					{{ tv.title }}
 				</h1>
-				<p class="header__tagline">{{ movie.tagline }}</p>
+				<p class="header__tagline">{{ tv.tagline }}</p>
 
 				<div class="header__info">
-					<span class="header__info-rating">{{ movie.rating }}</span>
+					<span class="header__info-rating">{{ tv.rating }}</span>
 					<span class="header__info-text">
-						• {{ movie.year }}, {{ movie.genres }} • {{ movie.countries }} • {{ movie.time }}</span
+						• {{ tv.firstDateYear }}, {{ tv.genres }} • {{ tv.countries }} • Сезонов:
+						{{ tv.numOfSeasons }}</span
 					>
 				</div>
 
 				<div class="header__btns">
-					<ButtonApp color="red">
-						Смотреть фильм
+					<ButtonApp v-if="videoKey" @click="openModalPlayer" v-tooltip.top="`Смотреть YouTube`">
 						<template #icon>
 							<IconPlay />
 						</template>
+						<template #textRight> Смотреть </template>
 					</ButtonApp>
 
-					<ButtonApp>Трейлер</ButtonApp>
-
-					<ButtonApp @click="() => console.log('Копировать')">
+					<ButtonApp @click="copyCurrentUrl">
 						<template #icon>
 							<IconCopy />
 						</template>
 					</ButtonApp>
 
-					<ButtonApp @click="() => console.log('Добавить в избранное')">
-						<template #icon>
-							<IconHeart />
+					<ButtonApp
+						v-if="isAuth"
+						:loading="isLoadingFavoriteById"
+						@click="() => (!addedFavorite ? addFavoriteItem(tv, 'tv') : deleteFavoriteItem(tvId))"
+					>
+						<template v-if="!isLoadingFavoriteById" #icon>
+							<IconHeart v-if="!addedFavorite" />
+							<IconHeartFavorite v-else />
 						</template>
+						<template #textRight>{{
+							!addedFavorite ? 'Добавить в избранное' : 'В избранном'
+						}}</template>
 					</ButtonApp>
 				</div>
 			</section>
 
 			<section class="about section">
 				<div class="about__header">
-					<h3 class="about__title section__title">О фильме</h3>
-					<p class="about__text">{{ movie.overview }}</p>
+					<h3 class="about__title section__title">О сериале</h3>
+					<p class="about__text">{{ tv.overview }}</p>
 				</div>
 
 				<ul class="about__list">
@@ -211,7 +252,7 @@
 
 			<section class="reviews section">
 				<h3 class="reviews__title section__title">Рецензии</h3>
-				<ul v-if="movie.reviews.length" class="reviews__list">
+				<ul v-if="tv.reviews.length" class="reviews__list">
 					<ReviewItem
 						v-for="review in reviewsList"
 						:key="review.id"
@@ -227,13 +268,22 @@
 			</section>
 
 			<section class="similar section">
-				<h3 class="similar__title section__title">Если вам понравился "{{ movie.title }}"</h3>
+				<h3 class="similar__title section__title">Если вам понравился "{{ tv.title }}"</h3>
 				<SingleSliderList :items="recommendationsList" />
 			</section>
 		</div>
 
 		<div v-else-if="isError" class="error-block">Данные не загружены, попробуйте позже</div>
 		<LoaderApp v-else />
+
+		<Transition name="modal-video" mode="out-in">
+			<ModalVideo
+				v-if="isModalPlayer"
+				:videoKey="videoKey"
+				:isOpen="isModalPlayer"
+				@close="closeModalPlayer"
+			/>
+		</Transition>
 	</div>
 </template>
 
@@ -332,14 +382,10 @@
 				max-width: var(--wrapper-width);
 			}
 
-			.about__tagline,
 			.about__text {
 				font-weight: 500;
 				font-size: 18px;
 				line-height: 140%;
-			}
-			.about__tagline {
-				margin-bottom: 30px;
 			}
 
 			.about__list {
@@ -461,5 +507,21 @@
 		justify-content: center;
 		align-items: center;
 		margin: auto;
+	}
+
+	/* ========================================== */
+	/* анимации для Transition                    */
+	/* ========================================== */
+	.modal-video-enter-active,
+	.modal-video-leave-active {
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease;
+	}
+
+	.modal-video-enter-from,
+	.modal-video-leave-to {
+		opacity: 0;
+		transform: translateY(10px);
 	}
 </style>

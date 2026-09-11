@@ -1,6 +1,8 @@
 <script setup lang="ts">
+	import { computed } from 'vue';
 	import { onImgError } from '@/utils/images';
-  import type { CardAppType } from '@/components/CardApp/CardApp.types';
+	import { routeNames } from '@/constants/routesData';
+	import type { CardAppType } from '@/components/CardApp/CardApp.types';
 
 	const props = withDefaults(defineProps<CardAppType>(), {
 		id: '',
@@ -11,27 +13,33 @@
 		genreNames: () => [],
 		date: '',
 	});
+
+	const linkName = computed(() => {
+		return routeNames.movieDetails;
+	});
 </script>
 
 <template>
 	<div class="hero-card card">
-		<div class="card-content">
-			<img class="card-img" :src="props.imageUrl" :alt="props.title" @error="onImgError" />
-			<div class="card-text">
-				<h4 class="card-title">{{ props.title }}</h4>
-				<div class="card-info">
-					<div v-for="genre in props.genreNames" :key="genre" class="card-label">
-						{{ genre }}
+		<RouterLink :to="{ name: linkName, params: { id: props.id } }">
+			<div class="card-content">
+				<img class="card-img" :src="props.imageUrl" :alt="props.title" @error="onImgError" />
+				<div class="card-text">
+					<h4 class="card-title">{{ props.title }}</h4>
+					<div class="card-info">
+						<div v-for="genre in props.genreNames" :key="genre" class="card-label">
+							{{ genre }}
+						</div>
+						<div class="card-date">{{ props.date }}</div>
 					</div>
-					<div class="card-date">{{ props.date }}</div>
 				</div>
 			</div>
-		</div>
+		</RouterLink>
 	</div>
 </template>
 
 <style scoped>
-	.card {
+	.card a {
 		border-radius: 12px;
 		max-width: 380px;
 		width: 380px;
@@ -53,8 +61,8 @@
 		object-fit: cover;
 		border-radius: 12px;
 		min-width: 220px;
-    background-color: #363434;
-    background: url('no-image.webp') center/cover no-repeat;
+		background-color: #363434;
+		background: url('no-image.webp') center/cover no-repeat;
 	}
 
 	.card-text {

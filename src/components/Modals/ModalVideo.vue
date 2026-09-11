@@ -1,16 +1,20 @@
 <script setup lang="ts">
-	import { watch } from 'vue';
+	import { onUnmounted, watch } from 'vue';
+	import { VueYtframe } from 'vue3-ytframe';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconClose from '@/assets/icons/IconClose.vue';
 
 	const props = defineProps<{
 		isOpen: boolean;
+		videoKey?: string;
 	}>();
 
 	const emit = defineEmits<{
 		(e: 'close'): void;
 	}>();
+
+	const testKey = 'O-b2VfmmbyA';
 
 	const closeModal = () => {
 		emit('close');
@@ -35,7 +39,13 @@
 				document.body.style.overflow = '';
 			}
 		},
+		{ immediate: true },
 	);
+
+	onUnmounted(() => {
+		document.removeEventListener('keydown', onEsc);
+		document.body.style.overflow = '';
+	});
 </script>
 
 <template>
@@ -50,12 +60,12 @@
 				</ButtonApp>
 			</section>
 
-			<section v-if="$slots.search" class="search">
-				<slot name="search"></slot>
-			</section>
-
 			<section class="content">
-				<slot name="content"></slot>
+				<VueYtframe
+					class="player"
+					:videoId="videoKey ?? testKey"
+					:playerVars="{ autoplay: 1, rel: 0 }"
+				/>
 			</section>
 		</div>
 	</div>
@@ -90,15 +100,10 @@
 		flex-shrink: 0;
 	}
 
-	.search {
-		margin-top: 20px;
-	}
-
 	.content {
-		flex: 1 1 auto;
-		min-height: 0;
-		overflow-y: auto;
 		overscroll-behavior: contain;
 		margin-top: 32px;
+		padding: 30px;
+		height: 60dvh;
 	}
 </style>

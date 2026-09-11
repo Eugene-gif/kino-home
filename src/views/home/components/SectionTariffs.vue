@@ -69,7 +69,7 @@
 				</div>
 
 				<div class="card-action">
-					<ButtonApp class="red">Оформить подписку</ButtonApp>
+					<ButtonApp disabled class="red">Оформить подписку</ButtonApp>
 					<div class="card-price">{{ card.price }}<span>₽</span></div>
 				</div>
 			</li>

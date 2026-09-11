@@ -4,6 +4,7 @@
 	import { useToast } from 'vue-toastification';
 	import { useAuthStore } from '@/stores/auth';
 	import { storeToRefs } from 'pinia';
+	import FormField from '@/components/Inputs/FormField.vue';
 	import InputApp from '@/components/Inputs/InputApp.vue';
 	import LabelApp from '@/components/Inputs/LabelApp.vue';
 	import InputPassword from '@/components/Inputs/InputPassword.vue';
@@ -37,37 +38,31 @@
 		<h1 class="title">Регистрация</h1>
 
 		<form class="form" @submit.prevent="submitForm">
-			<div class="form-input">
-				<LabelApp text="Имя" id="register-name" />
+			<FormField>
+				<LabelApp text="Имя" />
 
-				<InputApp v-model="userName" id="register-name" placeholder="Введите ваше имя">
+				<InputApp v-model="userName" placeholder="Введите ваше имя">
 					<template #iconLeft>
 						<IconPen />
 					</template>
 				</InputApp>
-			</div>
+			</FormField>
 
-			<div class="form-input">
-				<LabelApp text="Почта" id="register-email" />
+			<FormField>
+				<LabelApp text="Почта" />
 
-				<InputApp
-					v-model="email"
-					id="register-email"
-					placeholder="Введите email"
-					autocomplete="email"
-				>
+				<InputApp v-model="email" placeholder="Введите email" autocomplete="email">
 					<template #iconLeft>
 						<IconMail />
 					</template>
 				</InputApp>
-			</div>
+			</FormField>
 
-			<div class="form-input">
-				<LabelApp text="Пароль" id="login-password" />
+			<FormField>
+				<LabelApp text="Пароль" />
 
 				<InputPassword
 					v-model="password"
-					id="login-password"
 					placeholder="Придумайте пароль"
 					autocomplete="current-password"
 				>
@@ -75,7 +70,7 @@
 						<IconMail />
 					</template>
 				</InputPassword>
-			</div>
+			</FormField>
 
 			<p class="form-text">
 				Уже есть аккаунт?
@@ -98,45 +93,5 @@
 </template>
 
 <style scoped>
-	.register {
-		max-width: 500px;
-		width: 100%;
-		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-
-		.nav-link {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-		}
-	}
-
-	.form {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-	}
-
-	.form-text {
-		margin: 20px 0;
-		font-size: 20px;
-		font-weight: 400;
-	}
-
-	.form-nav-link {
-		font-weight: 500;
-		color: white;
-		text-decoration: underline;
-	}
-
-	.form-button {
-		width: 100%;
-	}
-
-	.form-input {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-	}
+	@import './auth-style.css';
 </style>
