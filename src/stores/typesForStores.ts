@@ -16,6 +16,8 @@ import type {
   MovieReviews200,
   MovieSimilar200,
   MovieImages200,
+  MovieVideos200,
+  TvSeriesVideos200,
   ConfigurationCountries200Item,
   TvSeriesRecommendations200,
   TvSeriesImages200,
@@ -69,6 +71,7 @@ interface MovieDetailsFull extends MovieDetails200 {
   similar?: MovieSimilar200;
   recommendations?: MovieDetailsRecommendations200;
   images?: MovieImages200;
+  videos?: MovieVideos200;
 }
 
 interface TvDetailsFull extends TvSeriesDetails200 {
@@ -77,6 +80,7 @@ interface TvDetailsFull extends TvSeriesDetails200 {
   similar?: TvSeriesCredits200;
   recommendations?: TvSeriesRecommendations200;
   images?: TvSeriesImages200;
+  videos?: TvSeriesVideos200;
 }
 
 /*_____ Favorite _____*/

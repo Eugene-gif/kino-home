@@ -13,7 +13,7 @@
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconArrowLeft from '@/assets/icons/IconArrowLeft.vue';
-	import HeroCard from './HeroCard.vue';
+	import HeroCard from '@/views/home/components/HeroCard.vue';
 
 	import type { CardAppType } from '@/components/CardApp/CardApp.types';
 

@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
 import { defineStore, storeToRefs } from 'pinia';
 import { useGenresStore } from '@/stores/genres';
-import { tvSeriesDetails, discoverTv } from '@/api/endpoints';
+import { tvSeriesDetails, discoverTv, tvSeriesVideos } from '@/api/endpoints';
 import { APPEND_TO_RESPONSE_TV } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
 import { buildImagePath } from '@/utils/images';
@@ -60,9 +60,32 @@ export const useTvStore = defineStore('tv', () => {
     try {
       const { data } = await tvSeriesDetails(id, { append_to_response: append });
       detailsTv.value = data;
+
+      if (!data?.videos?.results?.length) {
+        await fetchTvVideos(id);
+      }
     } catch {
       isError.value = true;
       toast.error(`Не удалось загрузить сериал: ${id}`);
+    } finally {
+      isLoadingTvDetails.value = false;
+    }
+  }
+
+  const fetchTvVideos = async (id: number) => {
+    isLoadingTvDetails.value = true;
+    isError.value = false;
+
+    try {
+      const { data } = await tvSeriesVideos(id, { language: 'en-En' });
+
+      if (detailsTv.value) {
+        detailsTv.value.videos = data;
+      }
+    } catch (err) {
+      toast.error(`Не удалось загрузить трейлер`);
+      isError.value = true;
+      throw err;
     } finally {
       isLoadingTvDetails.value = false;
     }

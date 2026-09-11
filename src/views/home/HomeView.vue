@@ -7,8 +7,8 @@
 	import { formatDateFns } from '@/utils/date';
 
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
-	import HeroSlider from '@/views/home/components/SectionHero/HeroSlider.vue';
-	import SectionHero from '@/views/home/components/SectionHero/SectionHero.vue';
+	import HeroSlider from '@/views/home/components/HeroSlider.vue';
+	import SectionHero from '@/views/home/components/SectionHero.vue';
 	import SectionAdvantages from '@/views/home/components/SectionAdvantages.vue';
 	import SectionTariffs from '@/views/home/components/SectionTariffs.vue';
 	import SectionDiscounts from '@/views/home/components/SectionDiscounts.vue';

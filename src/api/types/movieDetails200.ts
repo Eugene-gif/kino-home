@@ -8,6 +8,7 @@ import type { MovieDetails200GenresItem } from './movieDetails200GenresItem';
 import type { MovieDetails200ProductionCompaniesItem } from './movieDetails200ProductionCompaniesItem';
 import type { MovieDetails200ProductionCountriesItem } from './movieDetails200ProductionCountriesItem';
 import type { MovieDetails200SpokenLanguagesItem } from './movieDetails200SpokenLanguagesItem';
+import type { MovieVideos200 } from './movieVideos200';
 
 export type MovieDetails200 = {
   adult?: boolean;
@@ -33,6 +34,7 @@ export type MovieDetails200 = {
   tagline?: string;
   title?: string;
   video?: boolean;
+  videos?: MovieVideos200;
   vote_average?: number;
   vote_count?: number;
 };

@@ -19,7 +19,7 @@ const IMAGE_SIZES: { small: string, medium: string, large: string } = {
 } as const;
 
 const APPEND_TO_RESPONSE_TV: string = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images'].join(',');
-const APPEND_TO_RESPONSE_MOVIE: string = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images'].join(',');
+const APPEND_TO_RESPONSE_MOVIE: string = ['credits', 'aggregate_credits', 'reviews', 'similar', 'recommendations', 'images', 'videos'].join(',');
 
 // for API
 const ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN as string;

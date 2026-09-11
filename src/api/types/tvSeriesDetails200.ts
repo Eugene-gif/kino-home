@@ -12,6 +12,7 @@ import type { TvSeriesDetails200ProductionCompaniesItem } from './tvSeriesDetail
 import type { TvSeriesDetails200ProductionCountriesItem } from './tvSeriesDetails200ProductionCountriesItem';
 import type { TvSeriesDetails200SeasonsItem } from './tvSeriesDetails200SeasonsItem';
 import type { TvSeriesDetails200SpokenLanguagesItem } from './tvSeriesDetails200SpokenLanguagesItem';
+import type { TvSeriesVideos200 } from './tvSeriesVideos200';
 
 export type TvSeriesDetails200 = {
   adult?: boolean;
@@ -46,4 +47,5 @@ export type TvSeriesDetails200 = {
   type?: string;
   vote_average?: number;
   vote_count?: number;
+  videos?: TvSeriesVideos200;
 };

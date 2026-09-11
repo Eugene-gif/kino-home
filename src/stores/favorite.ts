@@ -97,6 +97,7 @@ export const useFavoriteStore = defineStore('favorite', () => {
   const deleteFavoriteItem = async (id: number) => {
     if (!id) return;
     isLoadingDeleteItem.value = true;
+    isLoadingFavoriteById.value = true;
     try {
       const { error } = await supabase
         .from('collections')
@@ -112,6 +113,7 @@ export const useFavoriteStore = defineStore('favorite', () => {
       toast.error('Ошибка удаления');
     } finally {
       isLoadingDeleteItem.value = false;
+      isLoadingFavoriteById.value = false;
       currentFavoriteItem.value = null;
     }
   }
