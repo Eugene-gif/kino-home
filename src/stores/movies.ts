@@ -3,7 +3,7 @@ import { defineStore, storeToRefs } from 'pinia';
 import { useGenresStore } from '@/stores/genres';
 import { APPEND_TO_RESPONSE_MOVIE } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
-import { moviePopularList, discoverMovie, movieDetails } from '@/api/endpoints';
+import { moviePopularList, discoverMovie, movieDetails, movieVideos } from '@/api/endpoints';
 import { transformArrayInString } from '@/utils/transformArrayInString';
 import { buildImagePath } from '@/utils/images';
 import type { MoviePopularList200ResultsItem, MovieDetailsFull } from '@/stores/typesForStores';
@@ -62,8 +62,31 @@ export const useMoviesStore = defineStore('movies', () => {
     try {
       const { data } = await movieDetails(id, { append_to_response: append });
       detailsMovie.value = data;
+
+      if (!data?.videos?.results?.length) {
+        await fetchMovieVideos(id);
+      }
     } catch (err) {
       toast.error(`Не удалось загрузить фильм: ${id}`);
+      isError.value = true;
+      throw err;
+    } finally {
+      isLoadingMovieDetails.value = false;
+    }
+  }
+
+  const fetchMovieVideos = async (id: number) => {
+    isLoadingMovieDetails.value = true;
+    isError.value = false;
+
+    try {
+      const { data } = await movieVideos(id, { language: 'en-En' });
+
+      if (detailsMovie.value) {
+        detailsMovie.value.videos = data;
+      }
+    } catch (err) {
+      toast.error(`Не удалось загрузить трейлер`);
       isError.value = true;
       throw err;
     } finally {

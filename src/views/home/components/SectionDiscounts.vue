@@ -37,7 +37,7 @@
 				<p class="item-text">
 					{{ item.text }}
 				</p>
-				<ButtonApp :class="item.button.class">{{ item.button.text }}</ButtonApp>
+				<ButtonApp disabled :class="item.button.class">{{ item.button.text }}</ButtonApp>
 			</li>
 		</ul>
 	</section>

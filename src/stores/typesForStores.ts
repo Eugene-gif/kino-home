@@ -16,6 +16,8 @@ import type {
   MovieReviews200,
   MovieSimilar200,
   MovieImages200,
+  MovieVideos200,
+  TvSeriesVideos200,
   ConfigurationCountries200Item,
   TvSeriesRecommendations200,
   TvSeriesImages200,
@@ -69,6 +71,7 @@ interface MovieDetailsFull extends MovieDetails200 {
   similar?: MovieSimilar200;
   recommendations?: MovieDetailsRecommendations200;
   images?: MovieImages200;
+  videos?: MovieVideos200;
 }
 
 interface TvDetailsFull extends TvSeriesDetails200 {
@@ -77,6 +80,43 @@ interface TvDetailsFull extends TvSeriesDetails200 {
   similar?: TvSeriesCredits200;
   recommendations?: TvSeriesRecommendations200;
   images?: TvSeriesImages200;
+  videos?: TvSeriesVideos200;
+}
+
+/*_____ Favorite _____*/
+interface FavoriteItem {
+  id?: string;
+  user_id?: string;
+  content_id: number;
+  has_watched?: boolean;
+  created_at?: Date;
+  content: ContentFavoriteItem;
+}
+
+type ContentFavoriteItem = {
+  id: number;
+  title?: string;
+  tagline?: string;
+  overview: string;
+  rating: string;
+  backdropPath: string;
+  firstAirDate?: string;
+  lastAirDate?: string;
+  firstDateYear?: string;
+  lastDateYear?: string;
+  genres: string;
+  budget?: string;
+  cash?: string;
+  releaseDate?: string;
+  year?: string;
+  time?: string;
+  seasons?: unknown;
+  numOfSeasons?: number;
+  countries: string;
+  director: string;
+  actors: string;
+  reviews?: unknown;
+  mediaType?: 'tv' | 'movie';
 }
 
 export type {
@@ -85,12 +125,17 @@ export type {
   SearchMulti200ResultsItem,
   PersonPopularList200ResultsItem,
   MoviePopularList200ResultsItem,
+  MovieDetails200,
   TvSeriesDetails200,
   TvSeriesDetailsParams,
   MovieDetailsFull,
   TvDetailsFull,
   ConfigurationCountries200Item,
+  DiscoverMovie200ResultsItem,
+  DiscoverTv200ResultsItem,
 
+  FavoriteItem,
+  ContentFavoriteItem,
   GenreWithMoviesType,
   GenreWithTvType,
   ExtendedTrendingAll200ResultsItem,

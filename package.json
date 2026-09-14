@@ -27,7 +27,8 @@
     "swiper": "^12.1.2",
     "vue": "^3.5.27",
     "vue-router": "^5.0.1",
-    "vue-toastification": "^2.0.0-rc.5"
+    "vue-toastification": "^2.0.0-rc.5",
+    "vue3-ytframe": "^1.0.0"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",

@@ -34,13 +34,7 @@
 </script>
 
 <template>
-	<RouterLink
-		v-if="href"
-		class="button"
-		:class="buttonClasses"
-		:style="buttonStyle"
-		:to="href"
-	>
+	<RouterLink v-if="href" class="button" :class="buttonClasses" :style="buttonStyle" :to="href">
 		<slot></slot>
 		<slot name="icon"></slot>
 		<slot name="textRight"></slot>
@@ -55,7 +49,7 @@
 	>
 		<IconLoading v-show="loading" />
 		<slot></slot>
-		<slot name="icon"></slot>
+		<slot v-if="!loading" name="icon"></slot>
 		<slot name="textRight"></slot>
 	</button>
 </template>
@@ -83,9 +77,11 @@
 			transition: var(--transition);
 		}
 
-		&:hover:not([disabled]),
-		&:focus-visible {
-			box-shadow: 0 0 10px var(--color-white);
+		@media (hover: hover) {
+			&:hover:not([disabled]),
+			&:focus-visible {
+				box-shadow: 0 0 10px var(--color-white);
+			}
 		}
 
 		&:active:not([disabled]) {
@@ -108,16 +104,42 @@
 			border: 1px solid var(--color-btn-red);
 		}
 
-		&.blue {
+    &.blue {
 			color: var(--color-white);
 			background-color: var(--color-btn-blue);
 			border: 1px solid var(--color-btn-blue);
+		}
+
+		&.violet {
+			color: var(--color-white);
+			background-color: var(--color-btn-violet);
+			border: 1px solid var(--color-btn-violet);
 		}
 
 		&.green {
 			color: var(--color-white);
 			background-color: var(--color-btn-green);
 			border: 1px solid var(--color-btn-green);
+		}
+
+		&.yellow {
+			color: var(--color-white);
+			background-color: var(--color-yellow);
+			border: 1px solid var(--color-yellow);
+		}
+
+		&.sm {
+			height: 40px;
+			min-width: 40px;
+			padding: 0 5px;
+		}
+
+		&.blur {
+			backdrop-filter: blur(20px);
+		}
+
+		&.bg-none {
+			background-color: transparent;
 		}
 
 		&[disabled] {

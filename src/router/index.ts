@@ -20,8 +20,8 @@ router.beforeEach((to) => {
     return { name: routeNames.login };
   }
 
-  if (requiresAuth && !isAuth && to.name === routeNames.collections) {
-    toast.info('Войдите в аккаунт, чтобы получить доступ к коллекциям');
+  if (requiresAuth && !isAuth && to.name === routeNames.favorite) {
+    toast.info('Войдите в аккаунт, чтобы получить доступ к избранному');
     return { name: routeNames.login };
   }
 

@@ -12,17 +12,20 @@
   --header-ident-base: 90px;
   --header-bg: #141026;
   --header-mobile-bg: #320722;
-  
-  --color-red: #ed0a32;
+  --color-red: #cc1a3a;
   --color-white: #fff;
   --color-dark: #141025;
   --color-second-dark: #1a0335;
   --color-grey: #cfd0d9;
   --color-grey-dark: #898792;
+  --color-green: #13af65;
+  --color-yellow: #9a8a50;
+  --color-bright-green: #00ff00;
 
   --color-btn-base: #898792;
-  --color-btn-blue: #9747ff;
-  --color-btn-red: #ed0a32;
+  --color-btn-violet: #8356be;
+  --color-btn-blue: #5660be;
+  --color-btn-red: #cc1a3a;
   --color-btn-green: #13af65;
 }
 

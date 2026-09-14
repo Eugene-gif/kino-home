@@ -1,0 +1,36 @@
+.login,
+.register {
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  .nav-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-text {
+  margin: 20px 0;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.form-nav-link {
+  font-weight: 500;
+  color: white;
+  text-decoration: underline;
+}
+
+.form-button {
+  width: 100%;
+}

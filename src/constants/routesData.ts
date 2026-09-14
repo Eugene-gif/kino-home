@@ -1,6 +1,6 @@
 const routeNames = {
   home: 'home',
-  collections: 'collections',
+  favorite: 'favorite',
   movies: 'movies',
   movieDetails: 'movie-details',
   tv: 'tv',
@@ -13,7 +13,7 @@ const routeNames = {
 
 const routePaths = {
   home: '/',
-  collections: '/collections',
+  favorite: '/favorite',
   movies: '/movies',
   tv: '/tv',
   movieDetails: 'movies/:id',
@@ -29,9 +29,9 @@ const route = {
     path: '/',
     name: 'home',
   },
-  collections: {
-    path: '/collections',
-    name: 'collections',
+  favorite: {
+    path: '/favorite',
+    name: 'favorite',
   },
   movies: {
     path: '/movies',
