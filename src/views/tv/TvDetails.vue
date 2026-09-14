@@ -177,7 +177,7 @@
 
 	const getDataTv = async () => {
 		let getItemFromFavoriteList = null;
-		if (isAuth) getItemFromFavoriteList = getFavoriteItem(tvId.value);
+		if (isAuth.value) getItemFromFavoriteList = getFavoriteItem(tvId.value);
 		await Promise.allSettled([getItemFromFavoriteList, fetchTvDetails(tvId.value)]);
 	};
 
@@ -350,6 +350,7 @@
 
 		.header__btns {
 			display: flex;
+      flex-wrap: wrap;
 			align-items: center;
 			gap: 15px;
 		}
@@ -510,7 +511,7 @@
 	}
 
 	/* ========================================== */
-	/* анимации для Transition                    */
+	/* Анимации                                   */
 	/* ========================================== */
 	.modal-video-enter-active,
 	.modal-video-leave-active {
@@ -522,6 +523,5 @@
 	.modal-video-enter-from,
 	.modal-video-leave-to {
 		opacity: 0;
-		transform: translateY(10px);
 	}
 </style>

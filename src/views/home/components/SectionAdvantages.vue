@@ -94,7 +94,7 @@
     hyphens: auto;
 	}
 
-	@media (width <= 800px) {
+	@media (max-width: 800px) {
 		.list {
 			flex-direction: column;
 			max-width: 300px;

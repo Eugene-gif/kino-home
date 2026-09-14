@@ -187,7 +187,7 @@
 
 	const getDataMovie = async () => {
 		let getItemFromFavoriteList = null;
-		if (isAuth) getItemFromFavoriteList = getFavoriteItem(movieId.value);
+		if (isAuth.value) getItemFromFavoriteList = getFavoriteItem(movieId.value);
 		Promise.allSettled([getItemFromFavoriteList, fetchMovieDetails(movieId.value)]);
 	};
 
@@ -364,6 +364,10 @@
 			flex-wrap: wrap;
 			align-items: center;
 			gap: 15px;
+
+			.button {
+				flex-shrink: 1;
+			}
 		}
 
 		.section {
@@ -526,7 +530,7 @@
 	}
 
 	/* ========================================== */
-	/* анимации для Transition                    */
+	/* Анимации                                   */
 	/* ========================================== */
 	.modal-video-enter-active,
 	.modal-video-leave-active {
@@ -538,6 +542,5 @@
 	.modal-video-enter-from,
 	.modal-video-leave-to {
 		opacity: 0;
-		transform: translateY(10px);
 	}
 </style>

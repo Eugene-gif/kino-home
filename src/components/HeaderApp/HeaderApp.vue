@@ -2,50 +2,40 @@
 	import { ref, watch, computed, nextTick, onMounted } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import { storeToRefs } from 'pinia';
-	import { useDebounceFn, onClickOutside } from '@vueuse/core';
+	import { useScrollLock, useDebounceFn } from '@vueuse/core';
+	import { useDevice } from '@/composables/useDevice.ts';
 	import { useSearchStore } from '@/stores/search';
 	import { buildImagePath } from '@/utils/images';
-	import { menuLink } from '@/constants/menu';
 	import { routePaths } from '@/constants/routesData';
-	import { useAuthStore } from '@/stores/auth';
+	import HeaderMenuDesktop from './HeaderMenuDesktop.vue';
+	import HeaderMenuMobile from './HeaderMenuMobile.vue';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
 	import ContentModalSearch from './ContentModalSearch.vue';
-	import UserAvatar from '@/components/HeaderApp/UserAvatar.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconSearch from '@/assets/icons/IconSearch.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ButtonBurger from './ButtonBurger.vue';
 	import ModalSearch from '@/components/Modals/ModalSearch.vue';
 	import InputSearch from '@/components/Inputs/InputSearch.vue';
-	import IconUser from '@/assets/icons/IconUser.vue';
-	import IconUserDelete from '@/assets/icons/IconUserDelete.vue';
-	import IconUserLogin from '@/assets/icons/IconUserLogin.vue';
-	import IconUserRegister from '@/assets/icons/IconUserRegister.vue';
 	import type { ModalSearchCardItem } from './headerTypes.ts';
-
-	const authStore = useAuthStore();
-	const { isAuth, user } = storeToRefs(authStore);
-	const { signOut } = authStore;
 
 	const searchStore = useSearchStore();
 	const { fetchSearchMulti, fetchHeaderData } = searchStore;
 	const { isLoading, isSearchLoading, isSearchLoaded, searchedList, trendingList, personList } =
 		storeToRefs(searchStore);
 
+	const { isMobile } = useDevice();
+
 	type InputSearchInstance = {
 		focus: () => void;
 	};
 
 	const searchText = ref<string>('');
-	const isOpenBurgerMenu = ref<boolean>(false);
+	const isOpenMobileMenu = ref<boolean>(false);
 	const isModalSearch = ref<boolean>(false);
 	const inputSearchRef = ref<InputSearchInstance | null>(null);
-	const isPopoverAuth = ref<boolean>(false);
-	const popoverRef = ref(null);
 
-	onClickOutside(popoverRef, () => {
-		isPopoverAuth.value = false;
-	});
+	const isLocked = useScrollLock(document.documentElement);
 
 	const uiTrendingList = computed<ModalSearchCardItem[] | []>(() => {
 		return trendingList.value.map((movie) => ({
@@ -73,10 +63,6 @@
 		}));
 	});
 
-	const uiMenuLink = computed(() => {
-		return isAuth.value ? menuLink : menuLink.filter((el) => !el?.isAuth);
-	});
-
 	const debouncedSearch = useDebounceFn((query: string) => {
 		if (!query.trim()) return;
 		fetchSearchMulti(query);
@@ -93,6 +79,10 @@
 		if (!searchText.value) clearSearch();
 	});
 
+	watch(isOpenMobileMenu, (val) => {
+		isLocked.value = val;
+	});
+
 	const clearSearch = () => {
 		searchText.value = '';
 		searchedList.value = [];
@@ -102,6 +92,10 @@
 	const closeModalSearch = () => {
 		isModalSearch.value = false;
 		clearSearch();
+	};
+
+	const closeMobileMenu = () => {
+		isOpenMobileMenu.value = false;
 	};
 
 	onMounted(fetchHeaderData);
@@ -115,83 +109,49 @@
 					<IconLogo />
 				</RouterLink>
 
-				<div :class="['header-box-content', isOpenBurgerMenu ? 'open' : '']">
-					<nav class="header-nav" aria-label="Основное меню">
-						<ul class="nav-list">
-							<template v-for="link in uiMenuLink" :key="link.name">
-								<li class="nav-item">
-									<RouterLink :to="link.path">{{ link.text }}</RouterLink>
-								</li>
+				<HeaderMenuDesktop v-if="!isMobile">
+					<template #searchButton>
+						<ButtonApp
+							@click="
+								() => {
+									closeMobileMenu();
+									isModalSearch = true;
+								}
+							"
+							class="no-border"
+						>
+							<template #icon><IconSearch /></template>
+							<template #textRight>Поиск</template>
+						</ButtonApp>
+					</template>
+				</HeaderMenuDesktop>
+
+				<template v-else>
+					<ButtonBurger class="header-burger" v-model:isOpen="isOpenMobileMenu" />
+
+					<Transition name="slide-right">
+						<HeaderMenuMobile
+							v-if="isOpenMobileMenu"
+							:isOpen="isOpenMobileMenu"
+							@close="closeMobileMenu"
+						>
+							<template #searchButton>
+								<ButtonApp
+									class="mobile-search-button sm no-border"
+									@click="
+										() => {
+											closeMobileMenu();
+											isModalSearch = true;
+										}
+									"
+								>
+									<template #icon><IconSearch /></template>
+									<template #textRight>Поиск</template>
+								</ButtonApp>
 							</template>
-						</ul>
-					</nav>
-
-					<ul class="header-options">
-						<li class="options-item">
-							<ButtonApp @click="() => (isModalSearch = !isModalSearch)" border="none">
-								<template #icon><IconSearch /></template>
-								<template #textRight>Поиск</template>
-							</ButtonApp>
-						</li>
-
-						<li class="options-item options-item-popover">
-							<ButtonApp
-								v-if="!isAuth"
-								:disabled="isPopoverAuth"
-								class="button-popover"
-								@click="() => (isPopoverAuth = true)"
-							>
-								<template #icon>
-									<IconUser />
-								</template>
-							</ButtonApp>
-
-							<UserAvatar
-								v-else
-								:name="user?.name ?? ''"
-								:disabled="isPopoverAuth"
-								@click="() => (isPopoverAuth = true)"
-							/>
-
-							<Transition>
-								<div v-if="isPopoverAuth" ref="popoverRef" class="popover">
-									<span class="arrow"></span>
-
-									<div class="content">
-										<template v-if="!isAuth">
-											<ButtonApp :href="routePaths.register">
-												<template #icon><IconUserRegister /></template>
-												<template #textRight>Регистрация</template>
-											</ButtonApp>
-
-											<ButtonApp :href="routePaths.login">
-												<template #icon><IconUserLogin /></template>
-												<template #textRight>Войти</template>
-											</ButtonApp>
-										</template>
-
-										<template v-else>
-											<div class="block">
-												<span class="block__text">Пользователь: </span
-												><span class="block__value">{{ user?.name ?? 'Нет имени' }}</span>
-											</div>
-
-											<div class="block">
-												<span class="block__text">Почта: </span>
-												<span class="block__value">{{ user?.email ?? 'Нет почты' }}</span>
-											</div>
-											<ButtonApp @click="signOut">
-												<template #icon><IconUserDelete /></template>
-												<template #textRight>Выйти</template>
-											</ButtonApp>
-										</template>
-									</div>
-								</div>
-							</Transition>
-						</li>
-					</ul>
-				</div>
-				<ButtonBurger class="header-burger" v-model:isOpen="isOpenBurgerMenu" />
+						</HeaderMenuMobile>
+					</Transition>
+				</template>
 			</div>
 		</div>
 
@@ -230,7 +190,7 @@
 
 <style scoped>
 	.header {
-		position: fixed;
+		position: sticky;
 		top: 0;
 		left: 0;
 		right: 0;
@@ -255,14 +215,6 @@
 		padding-bottom: 20px;
 	}
 
-	.header-burger {
-		display: none;
-	}
-
-	.header-box-content {
-		display: contents;
-	}
-
 	.header-logo {
 		max-width: 150px;
 		min-width: 150px;
@@ -271,163 +223,52 @@
 		height: 100%;
 	}
 
-	.header-nav {
-		margin-left: 4.5%;
-		flex: 1;
-
-		.nav-list {
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-			gap: 16px;
-		}
-
-		.nav-item {
-			color: #898792;
-		}
-
-		.nav-item.search {
-			flex: 1;
-			min-width: 0;
-		}
-	}
-
-	.header-options {
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		gap: 16px;
-		margin-left: auto;
-	}
-
-	.options-item-popover {
-		position: relative;
-	}
-
-	.popover {
-		position: absolute;
-		background-color: var(--color-second-dark);
-		border: 1px solid var(--color-btn-base);
-		color: #fff;
-		padding: 20px;
-		border-radius: 10px;
-		top: 110%;
-		right: 0;
-
-		.arrow {
-			content: '';
-			position: absolute;
-			right: 12px;
-			top: -20px;
-			width: 0;
-			height: 0;
-			border-left: 15px solid transparent;
-			border-right: 15px solid transparent;
-			border-bottom: 20px solid var(--color-btn-base);
-			&::after {
-				content: '';
-				position: absolute;
-
-				left: -14px;
-				top: 1px;
-				width: 0;
-				height: 0;
-
-				border-left: 14px solid transparent;
-				border-right: 14px solid transparent;
-				border-bottom: 19px solid var(--color-second-dark);
-			}
-		}
-
-		.content {
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-
-			.block {
-				display: flex;
-				flex-direction: column;
-				gap: 5px;
-				margin-bottom: 15px;
-				color: var(--text-color-base);
-			}
-
-			.block__value {
-				font-size: 24px;
-				font-weight: 600;
-				color: var(--color-white);
-			}
-		}
-	}
-
-	.router-link-exact-active {
-		color: #fff;
-	}
-
 	.modal-search-field {
 		display: flex;
 		align-items: center;
 		gap: 15px;
 	}
 
-	@media (width <= 790px) {
-		.header-box-content {
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: flex-start;
-			gap: 10px;
-			position: fixed;
-			top: 0;
-			bottom: 0;
-			right: 0;
-			height: 100dvh;
-			background-color: #3a354d;
-			translate: 100% 0;
-			transition: translate 0.35s ease-in-out;
-			padding: 20px;
-			min-width: 180px;
-			width: 50%;
-			z-index: 8;
-
-			.header-nav {
-				flex: 0;
-			}
-
-			.header-nav,
-			.header-options {
-				margin: 0;
-			}
-
-			.header-nav .nav-list,
-			.header-options {
-				display: flex;
-				flex-direction: column;
-			}
-			&.open {
-				translate: 0 0;
-			}
+	@media (max-width: 800px) {
+		.header-wrapper {
+			padding-top: 10px;
 		}
 
 		.header-content {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
+			padding-bottom: 10px;
 		}
 
 		.header-burger {
 			display: flex;
-			z-index: 10;
+			margin-left: auto;
+			z-index: 12;
+		}
+
+		.mobile-search-button {
+			font-size: 20px;
 		}
 	}
 
-	.v-enter-active,
-	.v-leave-active {
-		transition: opacity 0.35s ease;
+	/* ========================================== */
+	/* Анимации                                   */
+	/* ========================================== */
+	.slide-right-enter-active,
+	.slide-right-leave-active {
+		transition: opacity 0.3s ease;
 	}
 
-	.v-enter-from,
-	.v-leave-to {
+	.slide-right-enter-from :deep(.mobile-menu-overlay),
+	.slide-right-leave-to :deep(.mobile-menu-overlay) {
 		opacity: 0;
+	}
+
+	.slide-right-enter-active :deep(.header-menu-mobile),
+	.slide-right-leave-active :deep(.header-menu-mobile) {
+		transition: transform 0.3s cubic-bezier(0.3, 0.8, 0.3, 1);
+	}
+
+	.slide-right-enter-from :deep(.header-menu-mobile),
+	.slide-right-leave-to :deep(.header-menu-mobile) {
+		transform: translateX(100%);
 	}
 </style>

@@ -5,10 +5,14 @@
 
 <template>
 	<div class="layout">
-		<HeaderApp />
+    <HeaderApp />
 
 		<main class="main">
-			<RouterView />
+			<RouterView v-slot="{ Component }">
+				<Transition name="route-transition" mode="out-in">
+					<component :is="Component" :key="$route.path" />
+				</Transition>
+			</RouterView>
 		</main>
 
 		<FooterApp />
@@ -27,6 +31,21 @@
 			flex: 1 0 auto;
 			padding: 20px 20px 0 20px;
 			margin: var(--header-ident-base) auto 0 auto;
+      @media(max-width: 800px) {
+        --header-ident-base: 20px;
+      }
 		}
+	}
+
+	.route-transition-enter-from,
+	.route-transition-leave-to {
+		opacity: 0;
+	}
+
+	.route-transition-enter-active,
+	.route-transition-leave-active {
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease;
 	}
 </style>

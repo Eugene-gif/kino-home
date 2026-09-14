@@ -1,9 +1,7 @@
 <script setup lang="ts">
-	import { computed } from 'vue';
 	import IconLoading from '@/assets/icons/IconLoading.vue';
 
 	interface PropsButtonApp {
-		border?: string | undefined;
 		round?: boolean | string;
 		disabled?: boolean;
 		loading?: boolean;
@@ -16,10 +14,9 @@
 		disabled: false,
 	});
 
-	const { border, round } = props;
+	const { round } = props;
 
 	const buttonStyle = {
-		border: border,
 		borderRadius:
 			typeof round === 'boolean' && round
 				? '50%'
@@ -27,26 +24,16 @@
 					? ''
 					: round,
 	};
-
-	const buttonClasses = computed(() => {
-		return [border === 'none' ? 'no-border' : ''];
-	});
 </script>
 
 <template>
-	<RouterLink v-if="href" class="button" :class="buttonClasses" :style="buttonStyle" :to="href">
+	<RouterLink v-if="href" class="button" :style="buttonStyle" :to="href">
 		<slot></slot>
 		<slot name="icon"></slot>
 		<slot name="textRight"></slot>
 	</RouterLink>
 
-	<button
-		v-else
-		class="button"
-		:class="buttonClasses"
-		:style="buttonStyle"
-		:disabled="disabled || loading"
-	>
+	<button v-else class="button" :style="buttonStyle" :disabled="disabled || loading">
 		<IconLoading v-show="loading" />
 		<slot></slot>
 		<slot v-if="!loading" name="icon"></slot>
@@ -89,6 +76,10 @@
 			box-shadow: 0 0 20px var(--color-white);
 		}
 
+		&.no-border {
+			border-color: transparent;
+		}
+
 		&.no-border:hover {
 			box-shadow: none;
 			filter: drop-shadow(0px 1px 10px var(--color-white));
@@ -104,7 +95,7 @@
 			border: 1px solid var(--color-btn-red);
 		}
 
-    &.blue {
+		&.blue {
 			color: var(--color-white);
 			background-color: var(--color-btn-blue);
 			border: 1px solid var(--color-btn-blue);
@@ -122,10 +113,16 @@
 			border: 1px solid var(--color-btn-green);
 		}
 
+		&.green-bright {
+			color: var(--color-white);
+			background-color: var(--color-btn-green-bright);
+			border: 1px solid var(--color-btn-green-bright);
+		}
+
 		&.yellow {
 			color: var(--color-white);
-			background-color: var(--color-yellow);
-			border: 1px solid var(--color-yellow);
+			background-color: var(--color-btn-yellow);
+			border: 1px solid var(--color-btn-yellow);
 		}
 
 		&.sm {

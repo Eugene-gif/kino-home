@@ -80,7 +80,7 @@
 			</SwiperSlide>
 		</Swiper>
 
-		<ButtonApp class="btn-next" border="none">
+		<ButtonApp class="btn-next no-border">
 			<template #icon>
 				<IconArrowLeft style="width: 40px" />
 			</template>

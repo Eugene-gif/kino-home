@@ -1,5 +1,7 @@
 <script setup lang="ts">
 	import { onUnmounted, watch } from 'vue';
+	import { useDevice } from '@/composables/useDevice';
+	import { useScrollLock, onKeyStroke } from '@vueuse/core';
 	import { VueYtframe } from 'vue3-ytframe';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
@@ -14,53 +16,48 @@
 		(e: 'close'): void;
 	}>();
 
-	const testKey = 'O-b2VfmmbyA';
-
 	const closeModal = () => {
 		emit('close');
 	};
 
-	const onEsc = (evt: KeyboardEvent): void => {
-		if (props.isOpen && evt.key === 'Escape') {
-			closeModal();
-		}
-	};
+	const { isMobile } = useDevice();
+
+	const testKey = 'O-b2VfmmbyA';
+	const isLocked = useScrollLock(typeof window !== 'undefined' ? document.body : null);
 
 	watch(
 		() => props.isOpen,
-		(isOpen) => {
-			if (!document) return;
-
-			if (isOpen) {
-				document.addEventListener('keydown', onEsc);
-				document.body.style.overflow = 'hidden';
-			} else {
-				document.removeEventListener('keydown', onEsc);
-				document.body.style.overflow = '';
-			}
+		(value) => {
+			isLocked.value = value;
 		},
 		{ immediate: true },
 	);
 
+	onKeyStroke('Escape', (e) => {
+		if (props.isOpen) {
+			e.preventDefault();
+			closeModal();
+		}
+	});
+
 	onUnmounted(() => {
-		document.removeEventListener('keydown', onEsc);
-		document.body.style.overflow = '';
+		isLocked.value = false;
 	});
 </script>
 
 <template>
-	<div class="modal-overlay" @click.self="closeModal">
+	<div v-if="isOpen" class="modal-overlay" @click.self="closeModal">
 		<div class="modal-panel">
 			<section class="header">
 				<IconLogo />
-				<ButtonApp @click="closeModal">
+				<ButtonApp :class="isMobile ? 'sm' : ''" @click="closeModal">
 					<template #icon>
 						<IconClose />
 					</template>
 				</ButtonApp>
 			</section>
 
-			<section class="content">
+			<section class="content" @click.stop>
 				<VueYtframe
 					class="player"
 					:videoId="videoKey ?? testKey"
@@ -75,19 +72,23 @@
 	.modal-overlay {
 		position: fixed;
 		inset: 0;
+		width: 100%;
+		height: 100%;
 		z-index: 12;
 		background-color: rgba(0, 0, 0, 0.6);
 		backdrop-filter: blur(20px);
 		overscroll-behavior: contain;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		overflow: hidden;
 	}
 
 	.modal-panel {
 		background-color: #111;
+		width: 100%;
 		max-width: 1400px;
-		max-height: 90dvh;
-		margin: 0 auto;
 		padding: 20px;
-
 		display: flex;
 		flex-direction: column;
 		min-height: 0;
@@ -101,9 +102,36 @@
 	}
 
 	.content {
-		overscroll-behavior: contain;
 		margin-top: 32px;
-		padding: 30px;
-		height: 60dvh;
+		padding: 10px;
+		flex-grow: 1;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: contain;
+	}
+
+	:deep(.player) {
+		height: 70dvh;
+	}
+
+	@media (max-width: 800px) {
+		.content {
+			padding: 0px;
+		}
+
+		.modal-panel {
+			padding: 10px 20px 20px 20px;
+		}
+	}
+
+	@media screen and (orientation: landscape) and (max-device-width: 1080px) {
+		.modal-panel {
+			padding: 10px 20px 20px 20px;
+		}
+
+		.content {
+			padding: 5px;
+			margin-top: 10px;
+		}
 	}
 </style>
