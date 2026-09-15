@@ -10,6 +10,7 @@
 	import { useToast } from 'vue-toastification';
 	import { formatDateFns, formatDateFnsWithTime, formatDateFnsYear } from '@/utils/date';
 	import { buildImagePath } from '@/utils/images';
+  import { transformArrayInString } from '@/utils/transformArrayInString';
 	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ReviewItem from '@/components/ReviewItem/ReviewItem.vue';
@@ -18,7 +19,7 @@
 	import IconHeart from '@/assets/icons/IconHeart.vue';
 	import IconHeartFavorite from '@/assets/icons/IconHeartFavorite.vue';
 	import LoaderApp from '@/components/Loader/LoaderApp.vue';
-	import ModalVideo from '@/components/Modals/ModalVideo.vue';
+	import ModalVideoPlayer from '@/components/Modals/ModalVideoPlayer.vue';
 
 	const props = defineProps<{
 		id: string;
@@ -145,6 +146,7 @@
 			rating: Number(el.vote_average).toFixed(1),
 			imageUrl: buildImagePath(el.poster_path),
 			genreNames: getGenreNamesByIds(el.genre_ids ?? [], 'tv'),
+      genreStringNames: transformArrayInString(getGenreNamesByIds(el.genre_ids ?? [])),
 			mediaType: el.media_type ?? 'tv',
 		}));
 	});
@@ -276,14 +278,7 @@
 		<div v-else-if="isError" class="error-block">Данные не загружены, попробуйте позже</div>
 		<LoaderApp v-else />
 
-		<Transition name="modal-video" mode="out-in">
-			<ModalVideo
-				v-if="isModalPlayer"
-				:videoKey="videoKey"
-				:isOpen="isModalPlayer"
-				@close="closeModalPlayer"
-			/>
-		</Transition>
+		<ModalVideoPlayer :isOpen="isModalPlayer" :videoKey="videoKey" @close="closeModalPlayer" />
 	</div>
 </template>
 
@@ -350,7 +345,7 @@
 
 		.header__btns {
 			display: flex;
-      flex-wrap: wrap;
+			flex-wrap: wrap;
 			align-items: center;
 			gap: 15px;
 		}
@@ -508,20 +503,5 @@
 		justify-content: center;
 		align-items: center;
 		margin: auto;
-	}
-
-	/* ========================================== */
-	/* Анимации                                   */
-	/* ========================================== */
-	.modal-video-enter-active,
-	.modal-video-leave-active {
-		transition:
-			opacity 0.3s ease,
-			transform 0.3s ease;
-	}
-
-	.modal-video-enter-from,
-	.modal-video-leave-to {
-		opacity: 0;
 	}
 </style>

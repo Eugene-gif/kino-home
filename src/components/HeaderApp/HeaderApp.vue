@@ -2,7 +2,7 @@
 	import { ref, watch, computed, nextTick, onMounted } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import { storeToRefs } from 'pinia';
-	import { useScrollLock, useDebounceFn } from '@vueuse/core';
+	import { useDebounceFn } from '@vueuse/core';
 	import { useDevice } from '@/composables/useDevice.ts';
 	import { useSearchStore } from '@/stores/search';
 	import { buildImagePath } from '@/utils/images';
@@ -13,8 +13,8 @@
 	import ContentModalSearch from './ContentModalSearch.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconSearch from '@/assets/icons/IconSearch.vue';
+	import IconMenu from '@/assets/icons/IconMenu.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
-	import ButtonBurger from './ButtonBurger.vue';
 	import ModalSearch from '@/components/Modals/ModalSearch.vue';
 	import InputSearch from '@/components/Inputs/InputSearch.vue';
 	import type { ModalSearchCardItem } from './headerTypes.ts';
@@ -34,8 +34,6 @@
 	const isOpenMobileMenu = ref<boolean>(false);
 	const isModalSearch = ref<boolean>(false);
 	const inputSearchRef = ref<InputSearchInstance | null>(null);
-
-	const isLocked = useScrollLock(document.documentElement);
 
 	const uiTrendingList = computed<ModalSearchCardItem[] | []>(() => {
 		return trendingList.value.map((movie) => ({
@@ -77,10 +75,6 @@
 
 	watch(searchText, () => {
 		if (!searchText.value) clearSearch();
-	});
-
-	watch(isOpenMobileMenu, (val) => {
-		isLocked.value = val;
 	});
 
 	const clearSearch = () => {
@@ -127,64 +121,56 @@
 				</HeaderMenuDesktop>
 
 				<template v-else>
-					<ButtonBurger class="header-burger" v-model:isOpen="isOpenMobileMenu" />
+					<ButtonApp @click="isOpenMobileMenu = true" class="header-burger sm" :disabled="isOpenMobileMenu">
+						<template #icon><IconMenu /></template>
+					</ButtonApp>
 
-					<Transition name="slide-right">
-						<HeaderMenuMobile
-							v-if="isOpenMobileMenu"
-							:isOpen="isOpenMobileMenu"
-							@close="closeMobileMenu"
-						>
-							<template #searchButton>
-								<ButtonApp
-									class="mobile-search-button sm no-border"
-									@click="
-										() => {
-											closeMobileMenu();
-											isModalSearch = true;
-										}
-									"
-								>
-									<template #icon><IconSearch /></template>
-									<template #textRight>Поиск</template>
-								</ButtonApp>
-							</template>
-						</HeaderMenuMobile>
-					</Transition>
+					<HeaderMenuMobile :isOpen="isOpenMobileMenu" @close="closeMobileMenu">
+						<template #searchButton>
+							<ButtonApp
+								@click="
+									() => {
+										closeMobileMenu();
+										isModalSearch = true;
+									}
+								"
+								class="mobile-search-button sm no-border"
+							>
+								<template #icon><IconSearch /></template>
+								<template #textRight>Поиск</template>
+							</ButtonApp>
+						</template>
+					</HeaderMenuMobile>
 				</template>
 			</div>
 		</div>
 
-		<Teleport to="#app">
-			<Transition>
-				<ModalSearch v-show="isModalSearch" :isOpen="isModalSearch" @close="closeModalSearch">
-					<template #search>
-						<div class="modal-search-field">
-							<InputSearch
-								ref="inputSearchRef"
-								v-model:text="searchText"
-								:loading="isSearchLoading"
-								@input="debouncedSearch(searchText)"
-								@clear="clearSearch"
-							/>
-						</div>
-					</template>
+		<ModalSearch :isOpen="isModalSearch" @close="closeModalSearch">
+			<template #search>
+				<div class="modal-search-field">
+					<InputSearch
+						ref="inputSearchRef"
+						v-model:text="searchText"
+						:loading="isSearchLoading"
+						@input="debouncedSearch(searchText)"
+						@clear="clearSearch"
+					/>
+				</div>
+			</template>
 
-					<template #content>
-						<ContentModalSearch
-							v-if="!isLoading"
-							:lenSearchedList="uiSearchedList.length"
-							:isLoadedSearch="isSearchLoaded"
-							:uiTrendingList="uiTrendingList"
-							:uiPersonList="uiPersonList"
-							:uiSearchedList="uiSearchedList"
-							@closeModal="closeModalSearch"
-						/>
-						<LoaderApp v-else style="min-height: 160px" />
-					</template>
-				</ModalSearch>
-			</Transition>
-		</Teleport>
+			<template #content>
+				<ContentModalSearch
+					v-if="!isLoading"
+					:lenSearchedList="uiSearchedList.length"
+					:isLoadedSearch="isSearchLoaded"
+					:uiTrendingList="uiTrendingList"
+					:uiPersonList="uiPersonList"
+					:uiSearchedList="uiSearchedList"
+					@closeModal="closeModalSearch"
+				/>
+				<LoaderApp v-else style="min-height: 160px" />
+			</template>
+		</ModalSearch>
 	</header>
 </template>
 
@@ -195,7 +181,7 @@
 		left: 0;
 		right: 0;
 		width: 100%;
-		z-index: 10;
+		z-index: 8;
 		background-color: transparent;
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
@@ -229,7 +215,8 @@
 		gap: 15px;
 	}
 
-	@media (max-width: 800px) {
+	@media screen and (max-width: 800px),
+		screen and (orientation: landscape) and (max-height: 480px) {
 		.header-wrapper {
 			padding-top: 10px;
 		}
@@ -238,37 +225,18 @@
 			padding-bottom: 10px;
 		}
 
-		.header-burger {
+		.header-burger.sm {
 			display: flex;
 			margin-left: auto;
-			z-index: 12;
+      padding: 0 3px;
+      .icon {
+        width: 30px;
+        height: 30px;
+      }
 		}
 
 		.mobile-search-button {
 			font-size: 20px;
 		}
-	}
-
-	/* ========================================== */
-	/* Анимации                                   */
-	/* ========================================== */
-	.slide-right-enter-active,
-	.slide-right-leave-active {
-		transition: opacity 0.3s ease;
-	}
-
-	.slide-right-enter-from :deep(.mobile-menu-overlay),
-	.slide-right-leave-to :deep(.mobile-menu-overlay) {
-		opacity: 0;
-	}
-
-	.slide-right-enter-active :deep(.header-menu-mobile),
-	.slide-right-leave-active :deep(.header-menu-mobile) {
-		transition: transform 0.3s cubic-bezier(0.3, 0.8, 0.3, 1);
-	}
-
-	.slide-right-enter-from :deep(.header-menu-mobile),
-	.slide-right-leave-to :deep(.header-menu-mobile) {
-		transform: translateX(100%);
 	}
 </style>

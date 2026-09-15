@@ -90,11 +90,12 @@
 		font-weight: 400;
 		font-size: 16px;
 		line-height: 1.4;
-    text-wrap: pretty;
-    hyphens: auto;
+		text-wrap: pretty;
+		hyphens: auto;
 	}
 
-	@media (max-width: 800px) {
+	@media screen and (max-width: 800px),
+		screen and (orientation: landscape) and (max-height: 480px) {
 		.list {
 			flex-direction: column;
 			max-width: 300px;

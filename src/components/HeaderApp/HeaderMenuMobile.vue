@@ -1,82 +1,101 @@
 <script setup lang="ts">
-	import { computed } from 'vue';
+	import { toRef, computed } from 'vue';
 	import { RouterLink } from 'vue-router';
 	import { storeToRefs } from 'pinia';
 	import { menuLink } from '@/constants/menu';
 	import { routePaths } from '@/constants/routesData';
 	import { useAuthStore } from '@/stores/auth';
+	import { useBodyScrollLock } from '@/composables/useBodyScrollLock';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconUserDelete from '@/assets/icons/IconUserDelete.vue';
 	import IconUserLogin from '@/assets/icons/IconUserLogin.vue';
 	import IconUserRegister from '@/assets/icons/IconUserRegister.vue';
+	import IconClose from '@/assets/icons/IconClose.vue';
+
+	const props = defineProps<{
+		isOpen: boolean;
+	}>();
+
+	const emit = defineEmits<{ (e: 'close'): void }>();
 
 	const authStore = useAuthStore();
 	const { isAuth, user } = storeToRefs(authStore);
 	const { signOut } = authStore;
 
-	const emit = defineEmits<{ (e: 'close'): void }>();
-
-	const uiMenuLink = computed(() => {
-		return isAuth.value ? menuLink : menuLink.filter((el) => !el?.isAuth);
-	});
+	const isOpenRef = toRef(props, 'isOpen');
+	useBodyScrollLock(isOpenRef);
 
 	const closeMobileMenu = () => {
 		emit('close');
 	};
+
+	const uiMenuLink = computed(() => {
+		return isAuth.value ? menuLink : menuLink.filter((el) => !el?.isAuth);
+	});
 </script>
 
 <template>
-	<div class="mobile-menu-wrapper">
-		<div @click="closeMobileMenu" @touchmove.prevent class="mobile-menu-overlay"></div>
+	<Teleport to="body">
+		<Transition name="slide-right">
+			<div v-if="isOpen" class="mobile-menu-wrapper">
+				<div @click="closeMobileMenu" class="mobile-menu-overlay"></div>
 
-		<div class="header-menu-mobile">
-			<nav class="nav" aria-label="Основное меню">
-				<slot name="searchButton"></slot>
-				<ul class="nav-list">
-					<template v-for="link in uiMenuLink" :key="link.name">
-						<li class="nav-item">
-							<RouterLink @click="closeMobileMenu" :to="link.path">{{ link.text }}</RouterLink>
-						</li>
-					</template>
-				</ul>
-			</nav>
-
-			<div class="auth-block">
-				<template v-if="isAuth">
-					<div class="block" v-tooltip.top="`${user?.name}`">
-						<span class="block__text">Пользователь: </span
-						><span class="block__value">{{ user?.name ?? 'Нет имени' }}</span>
-					</div>
-
-					<div class="block" v-tooltip.top="`${user?.email}`">
-						<span class="block__text">Почта: </span>
-						<span class="block__value">{{ user?.email ?? 'Нет почты' }}</span>
-					</div>
-
-					<div class="block buttons">
-						<ButtonApp @click="signOut">
-							<template #icon><IconUserDelete /></template>
-							<template #textRight>Выйти</template>
+				<div class="header-menu-mobile">
+					<div class="header-section">
+						<slot name="searchButton"></slot>
+						<ButtonApp @click="closeMobileMenu" class="button-close sm">
+							<template #icon><IconClose /></template>
 						</ButtonApp>
 					</div>
-				</template>
 
-				<template v-else>
-					<div class="block buttons">
-						<ButtonApp @click="closeMobileMenu" v-if="!isAuth" :href="routePaths.login">
-							<template #icon><IconUserLogin /></template>
-							<template #textRight>Войти</template>
-						</ButtonApp>
+					<nav class="nav-section" aria-label="Основное меню">
+						<ul class="nav-list">
+							<template v-for="link in uiMenuLink" :key="link.name">
+								<li class="nav-item">
+									<RouterLink @click="closeMobileMenu" :to="link.path">{{ link.text }}</RouterLink>
+								</li>
+							</template>
+						</ul>
+					</nav>
 
-						<ButtonApp @click="closeMobileMenu" v-if="!isAuth" :href="routePaths.register">
-							<template #icon><IconUserRegister /></template>
-							<template #textRight>Регистрация</template>
-						</ButtonApp>
+					<div class="auth-block">
+						<template v-if="isAuth">
+							<div class="block" v-tooltip.top="`${user?.name}`">
+								<span class="block__text">Пользователь: </span
+								><span class="block__value">{{ user?.name ?? 'Нет имени' }}</span>
+							</div>
+
+							<div class="block" v-tooltip.top="`${user?.email}`">
+								<span class="block__text">Почта: </span>
+								<span class="block__value">{{ user?.email ?? 'Нет почты' }}</span>
+							</div>
+
+							<div class="block buttons">
+								<ButtonApp @click="signOut">
+									<template #icon><IconUserDelete /></template>
+									<template #textRight>Выйти</template>
+								</ButtonApp>
+							</div>
+						</template>
+
+						<template v-else>
+							<div class="block buttons">
+								<ButtonApp @click="closeMobileMenu" v-if="!isAuth" :href="routePaths.login">
+									<template #icon><IconUserLogin /></template>
+									<template #textRight>Войти</template>
+								</ButtonApp>
+
+								<ButtonApp @click="closeMobileMenu" v-if="!isAuth" :href="routePaths.register">
+									<template #icon><IconUserRegister /></template>
+									<template #textRight>Регистрация</template>
+								</ButtonApp>
+							</div>
+						</template>
 					</div>
-				</template>
+				</div>
 			</div>
-		</div>
-	</div>
+		</Transition>
+	</Teleport>
 </template>
 
 <style scoped>
@@ -84,15 +103,8 @@
 		display: none;
 	}
 
-	html:has(.mobile-menu-wrapper),
-	body:has(.mobile-menu-wrapper) {
-		overflow: hidden !important;
-		position: fixed;
-		width: 100%;
-		height: 100%;
-	}
-
-	@media (max-width: 800px) {
+	@media screen and (max-width: 800px),
+		screen and (orientation: landscape) and (max-height: 480px) {
 		.mobile-menu-wrapper {
 			display: flex;
 			justify-content: flex-end;
@@ -101,7 +113,7 @@
 			left: 0;
 			width: 100vw;
 			height: 100dvh;
-			z-index: 9;
+			z-index: 10;
 		}
 
 		.mobile-menu-overlay {
@@ -119,7 +131,7 @@
 			flex-direction: column;
 			justify-content: flex-start;
 			align-items: flex-start;
-			gap: 10px;
+			gap: 30px;
 			position: relative;
 			height: 100dvh;
 			background-color: var(--color-blue-dark);
@@ -129,13 +141,21 @@
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch; /* Плавный скролл на iOS Safari */
 
-			.nav {
-				width: 100%; /* Изменено */
+			.header-section {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 30px;
+				margin-bottom: 30px;
+			}
+
+			.nav-section {
+				width: 100%;
 			}
 
 			.nav-list {
 				margin: 0;
-				margin-top: 50px;
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
@@ -192,5 +212,28 @@
 
 	.router-link-exact-active {
 		color: #fff;
+	}
+
+	/* ========================================== */
+	/* Анимации                                   */
+	/* ========================================== */
+	.slide-right-enter-active,
+	.slide-right-leave-active {
+		transition: opacity 0.3s ease;
+	}
+
+	.slide-right-enter-from :deep(.mobile-menu-overlay),
+	.slide-right-leave-to :deep(.mobile-menu-overlay) {
+		opacity: 0;
+	}
+
+	.slide-right-enter-active :deep(.header-menu-mobile),
+	.slide-right-leave-active :deep(.header-menu-mobile) {
+		transition: transform 0.3s cubic-bezier(0.3, 0.8, 0.3, 1);
+	}
+
+	.slide-right-enter-from :deep(.header-menu-mobile),
+	.slide-right-leave-to :deep(.header-menu-mobile) {
+		transform: translateX(100%);
 	}
 </style>
