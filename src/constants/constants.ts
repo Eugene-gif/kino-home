@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   USER: 'user',
   SESSION: 'session'
 } as const;
+const FIELD_ID = 'field-id';
 
 const PLACEHOLDER_IMAGE = placeholderImg;
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
@@ -32,6 +33,7 @@ export {
   APP_PREFIX,
   DEFAULT_TTL,
   STORAGE_KEYS,
+  FIELD_ID,
   PLACEHOLDER_IMAGE,
   IMAGE_BASE_URL,
   IMAGE_SIZES,

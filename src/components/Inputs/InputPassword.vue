@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { ref, computed, inject } from 'vue';
+	import { FIELD_ID } from '@/constants/constants';
 	import VisibilitySwitch from './VisibilitySwitch.vue';
 	import IconKey from '@/assets/icons/IconKey.vue';
 
@@ -14,7 +15,7 @@
 
 	const inputRef = ref<HTMLInputElement | null>(null);
 	const isVisiblePassword = ref<boolean>(false);
-	const inputId = id ?? inject<string>('field-id');
+	const inputId = id ?? inject<string>(FIELD_ID);
 
 	const currentType = computed(() => {
 		return isVisiblePassword.value ? 'text' : 'password';

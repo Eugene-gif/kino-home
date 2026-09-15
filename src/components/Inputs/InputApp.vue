@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { ref, inject } from 'vue';
+	import { FIELD_ID } from '@/constants/constants';
 
 	const { type, placeholder, inputName, id } = defineProps<{
 		type?: 'text' | 'email';
@@ -13,7 +14,7 @@
 
 	const inputRef = ref<HTMLInputElement | null>(null);
 
-	const inputId = id ?? inject<string>('field-id');
+	const inputId = id ?? inject<string>(FIELD_ID);
 
 	const focus = () => {
 		inputRef.value?.focus();

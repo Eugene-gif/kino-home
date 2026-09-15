@@ -1,8 +1,9 @@
 <script setup lang="ts">
 	import { provide, useId } from 'vue';
+	import { FIELD_ID } from '@/constants/constants';
 
 	const uuid = useId();
-	provide('field-id', uuid);
+	provide(FIELD_ID, uuid);
 </script>
 
 <template>
