@@ -10,7 +10,7 @@
 	import { useToast } from 'vue-toastification';
 	import { formatDateFns, formatDateFnsWithTime, formatDateFnsYear } from '@/utils/date';
 	import { buildImagePath } from '@/utils/images';
-  import { transformArrayInString } from '@/utils/transformArrayInString';
+	import { transformArrayInString } from '@/utils/transformArrayInString';
 	import SingleSliderList from '@/components/SingleSliderList/SingleSliderList.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import ReviewItem from '@/components/ReviewItem/ReviewItem.vue';
@@ -144,9 +144,9 @@
 			id: el.id ?? 0,
 			title: el.name ?? '',
 			rating: Number(el.vote_average).toFixed(1),
-			imageUrl: buildImagePath(el.poster_path),
+			imageUrl: buildImagePath(el.backdrop_path),
 			genreNames: getGenreNamesByIds(el.genre_ids ?? [], 'tv'),
-      genreStringNames: transformArrayInString(getGenreNamesByIds(el.genre_ids ?? [])),
+			genreStringNames: transformArrayInString(getGenreNamesByIds(el.genre_ids ?? [])),
 			mediaType: el.media_type ?? 'tv',
 		}));
 	});
@@ -173,7 +173,7 @@
 	const copyCurrentUrl = () => {
 		const currentUrl = window.location.href;
 		copy(currentUrl);
-		if (copied) toast.success(`Ссылка скопирована в буфер обмена`);
+		if (copied) toast.success(`Ссылка скопирована`, { timeout: 1500 });
 		else toast.error('Ошибка копирования, попробуйте позже');
 	};
 
@@ -216,7 +216,7 @@
 						<template #textRight> Смотреть </template>
 					</ButtonApp>
 
-					<ButtonApp @click="copyCurrentUrl">
+					<ButtonApp v-tooltip.top="`Копировать ссылку`" @click="copyCurrentUrl">
 						<template #icon>
 							<IconCopy />
 						</template>
@@ -266,7 +266,7 @@
 					/>
 				</ul>
 
-				<div v-else class="reviews__no-list">Список пуст</div>
+				<div v-else class="empty-block">Список пуст</div>
 			</section>
 
 			<section class="similar section">
@@ -503,5 +503,13 @@
 		justify-content: center;
 		align-items: center;
 		margin: auto;
+	}
+
+	.empty-block {
+		font-size: 32px;
+		font-weight: 700;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>

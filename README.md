@@ -1,48 +1,104 @@
-# .
+# 🚀 [КиноДом](https://kino-home.vercel.app/)
 
-This template should help get you started developing with Vue 3 in Vite.
+**Современный и отзывчивый трекер фильмов и сериалов на стеке Vue 3 + TypeScript + TMDB + Supabase, решающий проблему хаотичного поиска и разрозненного хранения понравившегося медиаконтента.** Приложение предоставляет удобный поиск по мировой базе киноиндустрии, защищенное JWT-авторизацией пространство для CRUD-управления личными коллекциями «Избранного». Главная ценность продукта — в скорости нахождения нужного контента, структурировании данных в реальном времени и удобном интерфейсе, который отлично работает как на ПК, так и на смартфонах. Ваша личная кинотека всегда под рукой на любом устройстве.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 📌 Оглавление
 
-## Recommended Browser Setup
+- [Функционал](#-функционал)
+- [Технологический стек](#-технологический-стек)
+- [Быстрый старт](#-быстрый-старт)
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
+---
+
+## ✨ Функционал
+
+Основные возможности и ключевые особенности приложения:
+
+- ⚡ **Высокая производительность:** быстрый и отзывчивый интерфейс благодаря связке Vue 3 + Vite.
+- 🔒 **Безопасность:** поддержка современных стандартов авторизации.
+- 📱 **Адаптивность:** полноценное и корректное отображение на любых мобильных устройствах и планшетах.
+- 🌟 **Персонализация:** возможность создавать и гибко вести персональные списки избранных фильмов и сериалов.
+- 🔌 **Интеграция:** мгновенный поиск и синхронизация данных о мировом кинематографе через внешнее TMDB API.
+
+---
+
+## 🛠 Технологический стек
+
+Список основных технологий, библиотек и фреймворков, использованных в проекте:
+
+| Слой / Компонент | Технология                                             | Версия       |
+| :--------------- | :----------------------------------------------------- | :----------- |
+| **Frontend**     | Vue3 / Vite / TypeScript / Vue-Router / Pinia / VueUse | `^3.5.27`    |
+| **Backend**      | TMDB / Supabase / PostgREST                            | `14.5`       |
+| **Database**     | Postgres                                               | `17.6.1.166` |
+
+---
+
+## 🚀 Быстрый старт
+
+### Требования
+
+Перед началом убедитесь, что у вас установлены:
+
+- Node.js (версии 22.12.0 или выше)
+- Менеджер пакетов npm или yarn
+
+### Установка и запуск
+
+1. **Склонируйте репозиторий:**
+   ```bash
+   git clone https://github.com/Eugene-gif/kino-home.git
+   cd kino-home
+   ```
+
+###
+
+2. **Настройте переменные окружения:**
+   Создайте файл `.env` в корневом каталоге по шаблону `.env.example`:
+
+   ```env
+    VITE_TMDB_ACCESS_TOKEN=ВАШ КЛЮЧ
+    VITE_TMDB_API_BASE_URL=ВАШ URL
+    VITE_SUPABASE_URL=ВАШ URL
+    VITE_SUPABASE_PUBLISHABLE_KEY=ВАШ КЛЮЧ
+   ```
+
+###
+
+3. **Установите зависимости:**
+   ```bash
+   npm install
+   ```
+
+###
+
+4. **Запустите проект в режиме разработки:**
+   ```bash
+   npm run dev
+   ```
+   Проект будет доступен по адресу: `http://localhost:5173/`
+
+###
+
+5. **Сборка проекта:**
+   ```bash
+   npm run build
+   ```
+   Сгенерируется папка `dist` в корне проекта
+
+---
+
+## Рекомендуемые настройки IDE
+
+- [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+### Рекомендуемые настройки браузера
+
+- Браузеры на основе Chromium (Chrome, Edge, Brave, etc.):
   - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
   - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
 - Firefox:
   - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
   - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
