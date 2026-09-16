@@ -95,7 +95,8 @@
 		align-self: flex-start;
 	}
 
-	@media (width <= 800px) {
+	@media screen and (max-width: 800px),
+		screen and (orientation: landscape) and (max-height: 480px) {
 		.list {
 			flex-direction: column;
 			max-width: 300px;

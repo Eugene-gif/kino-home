@@ -9,7 +9,7 @@
   --font-weight-base: 400;
   --line-height-base: 1.2;
   --text-color-base: #898792;
-  --header-ident-base: 90px;
+  --header-ident-base: 60px;
   --header-bg: #141026;
   --header-mobile-bg: #320722;
   --color-red: #cc1a3a;
@@ -19,14 +19,19 @@
   --color-grey: #cfd0d9;
   --color-grey-dark: #898792;
   --color-green: #13af65;
-  --color-yellow: #9a8a50;
-  --color-bright-green: #00ff00;
+  --color-green-bright: #00ff00;
+  --color-yellow: #FFC107;
+  --color-violet: #8356be;
+  --color-blue: #5660be;
+  --color-blue-dark: #141A29;
 
   --color-btn-base: #898792;
   --color-btn-violet: #8356be;
   --color-btn-blue: #5660be;
   --color-btn-red: #cc1a3a;
   --color-btn-green: #13af65;
+  --color-btn-green-bright: #00ff00;
+  --color-btn-yellow: #FFC107;
 }
 
 html {

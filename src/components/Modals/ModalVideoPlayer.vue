@@ -3,12 +3,14 @@
 	import { useDevice } from '@/composables/useDevice';
 	import { useBodyScrollLock } from '@/composables/useBodyScrollLock';
 	import { onKeyStroke } from '@vueuse/core';
+	import { VueYtframe } from 'vue3-ytframe';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconLogo from '@/assets/icons/IconLogo.vue';
 	import IconClose from '@/assets/icons/IconClose.vue';
 
 	const props = defineProps<{
 		isOpen: boolean;
+		videoKey?: string;
 	}>();
 
 	const emit = defineEmits<{
@@ -16,6 +18,8 @@
 	}>();
 
 	const { isMobile } = useDevice();
+
+	const testKey = 'O-b2VfmmbyA';
 
 	const isOpenRef = toRef(props, 'isOpen');
 	useBodyScrollLock(isOpenRef);
@@ -34,7 +38,7 @@
 
 <template>
 	<Teleport to="body">
-		<Transition name="modal-search">
+		<Transition name="modal-player">
 			<div
 				v-if="isOpen"
 				class="modal-overlay"
@@ -52,12 +56,12 @@
 						</ButtonApp>
 					</section>
 
-					<section v-if="$slots.search" class="search">
-						<slot name="search"></slot>
-					</section>
-
 					<section class="content">
-						<slot name="content"></slot>
+						<VueYtframe
+							class="video-player"
+							:videoId="videoKey ?? testKey"
+							:playerVars="{ autoplay: 1, rel: 0 }"
+						/>
 					</section>
 				</div>
 			</div>
@@ -103,14 +107,11 @@
 	.content {
 		margin-top: 32px;
 		flex: 1 1 auto;
-		overflow-y: auto;
 		-webkit-overflow-scrolling: touch; /* для старых iOS*/
 		overscroll-behavior: contain;
 		min-height: 0;
-	}
-
-	.search {
-		margin-top: 20px;
+		height: 80vh;
+		height: 80dvh;
 	}
 
 	@media screen and (max-width: 800px),
@@ -118,19 +119,20 @@
 		.modal-panel {
 			padding: 10px 20px 20px 20px;
 		}
+
 		.content {
 			padding: 5px;
 			margin-top: 10px;
 		}
 	}
 
-	.modal-search-enter-active,
-	.modal-search-leave-active {
+	.modal-player-enter-active,
+	.modal-player-leave-active {
 		transition: opacity 0.3s ease;
 	}
 
-	.modal-search-enter-from,
-	.modal-search-leave-to {
+	.modal-player-enter-from,
+	.modal-player-leave-to {
 		opacity: 0;
 	}
 </style>

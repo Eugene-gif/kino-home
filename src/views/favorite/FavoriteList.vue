@@ -32,7 +32,7 @@
 			<template #favorite>
 				<ButtonApp
 					class="sm blur bg-none"
-					:class="item.has_watched ? 'green' : 'yellow'"
+					:class="item.has_watched ? 'green-bright' : 'yellow'"
 					:loading="isLoadingUpdateItem && currentItemId === item.content_id"
 					@click="updateFavoriteItem(item.content_id, item.has_watched)"
 					v-tooltip.top="`${item.has_watched ? 'Статус: Просмотрен' : 'Статус: Не просмотрен'}`"

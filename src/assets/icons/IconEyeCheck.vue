@@ -10,6 +10,6 @@
 <style scoped>
 	@import './icon.css';
 	.icon {
-		color: var(--color-green);
+		color: var(--color-green-bright);
 	}
 </style>

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 	import { inject } from 'vue';
+  import { FIELD_ID } from '@/constants/constants';
 
 	const { text, id } = defineProps<{
 		text: string;
 		id?: string;
 	}>();
 
-	const labelId = id ?? inject<string>('field-id');
+	const labelId = id ?? inject<string>(FIELD_ID);
 </script>
 
 <template>
