@@ -10,7 +10,6 @@
 	import LabelApp from '@/components/Inputs/LabelApp.vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
 	import IconMail from '@/assets/icons/IconMail.vue';
-	import IconArrowRight from '@/assets/icons/IconArrowRight.vue';
 
 	const authStore = useAuthStore();
 	const { email, password, isLoading } = storeToRefs(authStore);
@@ -78,7 +77,7 @@
 
 		<ButtonApp v-tooltip.left="'На главную'" class="nav-link" :href="routePaths.home">
 			<template #icon>
-				<IconArrowRight />
+				<span class="nav-link-btn-icon"> → </span>
 			</template>
 		</ButtonApp>
 	</div>
