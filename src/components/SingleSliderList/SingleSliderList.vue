@@ -1,14 +1,6 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
-	import {
-		Navigation,
-		Pagination,
-		Scrollbar,
-		A11y,
-		Thumbs,
-		Mousewheel,
-		FreeMode,
-	} from 'swiper/modules';
+	import { Navigation, Pagination, Scrollbar, Mousewheel, FreeMode } from 'swiper/modules';
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import CardApp from '@/components/CardApp/CardApp.vue';
 	import CardAppSkeleton from '@/components/CardApp/CardAppSkeleton.vue';
@@ -20,7 +12,7 @@
 		loading?: boolean;
 	}>();
 
-	const modules = [Navigation, Pagination, Scrollbar, A11y, Thumbs, Mousewheel, FreeMode];
+	const modules = [Navigation, Pagination, Scrollbar, Mousewheel, FreeMode];
 
 	const breakpoints = {
 		320: {

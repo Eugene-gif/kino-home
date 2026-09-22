@@ -3,16 +3,12 @@
 		Navigation,
 		Pagination,
 		Scrollbar,
-		A11y,
-		Thumbs,
 		Autoplay,
-		Keyboard,
 		Mousewheel,
 		FreeMode,
 	} from 'swiper/modules';
 	import { Swiper, SwiperSlide } from 'swiper/vue';
 	import ButtonApp from '@/components/Button/ButtonApp.vue';
-	import IconArrowLeft from '@/assets/icons/IconArrowLeft.vue';
 	import HeroCard from '@/views/home/components/HeroCard.vue';
 
 	import type { CardAppType } from '@/components/CardApp/CardApp.types';
@@ -27,17 +23,7 @@
 
 	const { heroItems } = props;
 
-	const modules = [
-		Navigation,
-		Pagination,
-		Scrollbar,
-		A11y,
-		Thumbs,
-		Autoplay,
-		Keyboard,
-		Mousewheel,
-		FreeMode,
-	];
+	const modules = [Navigation, Pagination, Scrollbar, Autoplay, Mousewheel, FreeMode];
 </script>
 
 <template>
@@ -50,12 +36,9 @@
 				nextEl: '.btn-next',
 				prevEl: '.btn-prev',
 			}"
-			:loop="heroItems.length >= 4"
 			:pagination="{ clickable: true }"
+			:loop="heroItems.length >= 4"
 			:scrollbar="{ draggable: true }"
-			:keyboard="{
-				enabled: true,
-			}"
 			:autoplay="{ delay: 5000 }"
 			:free-mode="{
 				enabled: true,
@@ -81,9 +64,7 @@
 		</Swiper>
 
 		<ButtonApp class="btn-next no-border">
-			<template #icon>
-				<IconArrowLeft style="width: 40px" />
-			</template>
+			<template #icon> <span class="btn-next-icon"> ← </span></template>
 		</ButtonApp>
 	</div>
 </template>
@@ -106,6 +87,11 @@
 
 		.btn-next {
 			left: 15%;
+		}
+
+		.btn-next-icon {
+			font-size: 32px;
+      display: block;
 		}
 
 		.swiper-slide {
