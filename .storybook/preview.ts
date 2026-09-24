@@ -8,9 +8,6 @@ import '@/assets/styles/main.css';
 import '@/assets/icons/icon.css';
 import 'vue-toastification/dist/index.css';
 import 'floating-vue/dist/style.css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
 
 const EmptyRoute = { template: '<div />' };
 const router = createRouter({

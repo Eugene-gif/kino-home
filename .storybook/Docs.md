@@ -6,9 +6,10 @@ Storybook подключён к Vue 3 + Vite через `@storybook/vue3-vite`. 
 
 - `ButtonApp`: обычная кнопка, иконка, загрузка, disabled и RouterLink.
 - `CardApp`: фильм, сериал и слот избранного.
-- `FooterApp`, `HeaderApp`, `LoaderApp`: основные состояния.
+- `FooterApp`, `LoaderApp`: основные состояния.
+- `HeaderApp`: гость и авторизованный пользователь. Авторизованное состояние показывает ссылку «Избранное», аватар и профильное меню с именем, почтой и выходом.
 - Inputs: `InputApp`, `InputPassword`, `InputSearch`, `LabelApp`, `FormField`, `VisibilitySwitch` — пустые/заполненные и интерактивные состояния там, где это полезно.
-- Modals: открытый поиск со слотами и открытый видеоплеер.
+- Modals: поиск и видеоплеер с управляемым через Controls prop `isOpen`; закрытие окна синхронизирует Controls.
 - `ReviewItem`: короткий и длинный отзыв.
 - `SingleSliderList`: список карточек и skeleton-состояние.
 - `FavoriteList`: заполненный и пустой список.

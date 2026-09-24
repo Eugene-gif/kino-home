@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { ref } from 'vue';
+import { useArgs } from 'storybook/preview-api';
 import ModalVideoPlayer from './ModalVideoPlayer.vue';
 
 const meta = {
@@ -16,18 +16,23 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Open: Story = {
-  render: (args) => ({
-    components: { ModalVideoPlayer },
-    setup() {
-      const isOpen = ref(args.isOpen);
-      return { args, isOpen };
-    },
-    template: `
-      <ModalVideoPlayer
-        :is-open="isOpen"
-        :video-key="args.videoKey"
-        @close="isOpen = false"
-      />
-    `,
-  }),
+  render: (args) => {
+    const [, updateArgs] = useArgs();
+
+    return {
+      components: { ModalVideoPlayer },
+      setup() {
+        const closeModal = () => updateArgs({ isOpen: false });
+
+        return { args, closeModal };
+      },
+      template: `
+        <ModalVideoPlayer
+          :is-open="args.isOpen"
+          :video-key="args.videoKey"
+          @close="closeModal"
+        />
+      `,
+    };
+  },
 };
