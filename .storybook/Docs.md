@@ -1,6 +1,6 @@
 # Storybook
 
-Storybook подключён к Vue 3 + Vite через `@storybook/vue3-vite`. Конфигурация использует alias `@` из приложения, глобальные стили, Pinia, memory-router, toast и `floating-vue`. Внешние вызовы Supabase и YouTube-плеер заменены локальными заглушками только внутри Storybook, поэтому stories не требуют секретов из `.env` и не отправляют запросы к этим сервисам.
+Storybook подключён к Vue 3 + Vite через `@storybook/vue3-vite`. Автоматическая документация для stories с тегом `autodocs` генерируется через `@storybook/addon-docs`. Конфигурация использует alias `@` из приложения, глобальные стили, Pinia, memory-router, toast и `floating-vue`. Внешние вызовы Supabase и YouTube-плеер заменены локальными заглушками только внутри Storybook, поэтому stories не требуют секретов из `.env` и не отправляют запросы к этим сервисам.
 
 ## Stories
 

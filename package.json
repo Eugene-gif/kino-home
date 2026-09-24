@@ -33,6 +33,7 @@
     "vue3-ytframe": "^1.0.0"
   },
   "devDependencies": {
+    "@storybook/addon-docs": "^10.6.0",
     "@storybook/vue3-vite": "^10.6.0",
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.10.9",
