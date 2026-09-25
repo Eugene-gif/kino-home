@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { ref } from 'vue';
+import { useArgs } from 'storybook/preview-api';
+import { computed } from 'vue';
 import InputSearch from './InputSearch.vue';
 
 const meta = {
@@ -14,18 +15,26 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const render: Story['render'] = (args) => ({
-  components: { InputSearch },
-  setup() {
-    const text = ref(args.text);
-    return { args, text };
-  },
-  template: `
-    <div style="width:min(720px, 85vw)">
-      <InputSearch v-bind="args" v-model:text="text" />
-    </div>
-  `,
-});
+const render: Story['render'] = (args) => {
+  const [, updateArgs] = useArgs();
+
+  return {
+    components: { InputSearch },
+    setup() {
+      const text = computed({
+        get: () => args.text,
+        set: (text) => updateArgs({ text }),
+      });
+
+      return { args, text };
+    },
+    template: `
+      <div style="width:min(720px, 85vw)">
+        <InputSearch v-bind="args" v-model:text="text" />
+      </div>
+    `,
+  };
+};
 
 export const Empty: Story = { render };
 

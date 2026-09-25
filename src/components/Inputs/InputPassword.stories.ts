@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { ref } from 'vue';
+import { useArgs } from 'storybook/preview-api';
+import { computed } from 'vue';
 import InputPassword from './InputPassword.vue';
 
 const meta = {
@@ -18,18 +19,26 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Empty: Story = {
-  render: (args) => ({
-    components: { InputPassword },
-    setup() {
-      const value = ref(args.modelValue);
-      return { args, value };
-    },
-    template: `
-      <div style="width:min(420px, 80vw)">
-        <InputPassword v-bind="args" v-model="value" />
-      </div>
-    `,
-  }),
+  render: (args) => {
+    const [, updateArgs] = useArgs();
+
+    return {
+      components: { InputPassword },
+      setup() {
+        const value = computed({
+          get: () => args.modelValue,
+          set: (modelValue) => updateArgs({ modelValue }),
+        });
+
+        return { args, value };
+      },
+      template: `
+        <div style="width:min(420px, 80vw)">
+          <InputPassword v-bind="args" v-model="value" />
+        </div>
+      `,
+    };
+  },
 };
 
 export const Filled: Story = {

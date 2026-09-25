@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { ref } from 'vue';
+import { useArgs } from 'storybook/preview-api';
+import { computed } from 'vue';
 import VisibilitySwitch from './VisibilitySwitch.vue';
 
 const meta = {
@@ -14,14 +15,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Visible: Story = {
-  render: (args) => ({
-    components: { VisibilitySwitch },
-    setup() {
-      const checked = ref(args.modelValue);
-      return { checked };
-    },
-    template: '<VisibilitySwitch v-model="checked" />',
-  }),
+  render: (args) => {
+    const [, updateArgs] = useArgs();
+
+    return {
+      components: { VisibilitySwitch },
+      setup() {
+        const checked = computed({
+          get: () => args.modelValue,
+          set: (modelValue) => updateArgs({ modelValue }),
+        });
+
+        return { checked };
+      },
+      template: '<VisibilitySwitch v-model="checked" />',
+    };
+  },
 };
 
 export const Hidden: Story = {
