@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import { analyzer } from 'vite-bundle-analyzer'
@@ -17,5 +19,12 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./tests/setup.ts'],
+    include: ['src/**/*.test.ts'],
+    clearMocks: true,
+    restoreMocks: true,
   },
 })
