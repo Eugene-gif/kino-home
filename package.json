@@ -21,7 +21,8 @@
     "build-storybook": "storybook build",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:ui": "vitest run --reporter=html && vite preview --outDir .vitest --open"
+    "test:ui": "vitest run --reporter=html --coverage && vite preview --outDir .vitest --open",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
@@ -41,6 +42,7 @@
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.10.9",
     "@vitejs/plugin-vue": "^6.0.3",
+    "@vitest/coverage-v8": "^5.0.2",
     "@vitest/ui": "^5.0.2",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.5.1",

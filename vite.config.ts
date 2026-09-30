@@ -26,5 +26,15 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     clearMocks: true,
     restoreMocks: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: [
+        'src/components/{Button,CardApp,FooterApp,HeaderApp,Inputs,Loader,Modals,ReviewItem,SingleSliderList}/**/*.{ts,vue}',
+        'src/views/favorite/FavoriteList.vue',
+        'src/views/home/components/{HeroCard,HeroSlider}.vue',
+      ],
+      exclude: ['src/**/*.test.ts', 'src/**/*.stories.ts'],
+    },
   },
 })
