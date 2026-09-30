@@ -14,12 +14,17 @@ describe('VisibilitySwitch', () => {
 		});
 
 		const checkbox = wrapper.get('input');
+		const openIcon = wrapper.get('.eye-open').element as HTMLElement;
+		const closeIcon = wrapper.get('.eye-close').element as HTMLElement;
+
 		expect((checkbox.element as HTMLInputElement).checked).toBe(true);
-		expect(wrapper.get('.eye-open').isVisible()).toBe(true);
+		expect(openIcon.style.display).not.toBe('none');
+		expect(closeIcon.style.display).toBe('none');
 
 		await checkbox.setValue(false);
 
 		expect(wrapper.emitted('update:modelValue')).toEqual([[false]]);
-		expect(wrapper.get('.eye-close').isVisible()).toBe(true);
+		expect(openIcon.style.display).toBe('none');
+		expect(closeIcon.style.display).not.toBe('none');
 	});
 });
