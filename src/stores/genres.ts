@@ -4,6 +4,7 @@ import { mapToRecord } from '@/utils/mapToRecord';
 import { getCachedItem, setCachedItem } from '@/utils/storage';
 import { genreMovieList, genreTvList } from '@/api/endpoints';
 import { STORAGE_KEYS } from '@/constants/constants';
+import { reportError } from '@/utils/reportError';
 import type { GenreMovieList200GenresItem, GenreTvList200GenresItem } from '@/stores/typesForStores';
 
 export const useGenresStore = defineStore('genres', () => {
@@ -35,8 +36,9 @@ export const useGenresStore = defineStore('genres', () => {
         setCachedItem(STORAGE_KEYS.MOVIES, movies.value);
       }
     } catch (err) {
-      console.error('Failed to fetch genres movies', err);
-      throw err;
+      reportError(err, {
+        operation: 'fetchGenresMovies',
+      });
     }
   }
 
@@ -49,8 +51,9 @@ export const useGenresStore = defineStore('genres', () => {
         setCachedItem(STORAGE_KEYS.TV, tv.value);
       }
     } catch (err) {
-      console.error('Failed to fetch genres TV', err);
-      throw err;
+      reportError(err, {
+        operation: 'fetchGenresTv',
+      });
     }
   }
 

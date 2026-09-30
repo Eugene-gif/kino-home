@@ -4,6 +4,7 @@ import { supabase } from '@/api/supabase';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { useToast } from 'vue-toastification';
+import { reportError } from '@/utils/reportError';
 import type { FavoriteItem, ContentFavoriteItem } from './typesForStores';
 
 export const useFavoriteStore = defineStore('favorite', () => {
@@ -62,8 +63,12 @@ export const useFavoriteStore = defineStore('favorite', () => {
       }
 
       toast.success('Добавлено в избранное', { timeout: 1000 });
-    } catch {
+    } catch (err) {
       toast.error('Ошибка добавления, попробуйте позже');
+      reportError(err, {
+        operation: 'addFavoriteItem',
+        extra: { favoriteId: content.id },
+      });
     } finally {
       isLoadingFavoriteById.value = false;
     }
@@ -86,8 +91,12 @@ export const useFavoriteStore = defineStore('favorite', () => {
       if (item) item.has_watched = !item.has_watched;
 
       toast.success(hasWatched ? 'Удалён из просмотренных' : 'Добавлен в просмотренные', { timeout: 1500 });
-    } catch {
+    } catch (err) {
       toast.error('Ошибка, попробуйте позже');
+      reportError(err, {
+        operation: 'updateFavoriteItem',
+        extra: { favoriteId: contentId },
+      });
     } finally {
       isLoadingUpdateItem.value = false;
       currentItemId.value = null;
@@ -109,8 +118,12 @@ export const useFavoriteStore = defineStore('favorite', () => {
 
       toast.info('Удалено из избранного', { timeout: 1000 });
       favoriteList.value = favoriteList.value.filter(item => item.content_id !== id);
-    } catch {
+    } catch (err) {
       toast.error('Ошибка удаления');
+      reportError(err, {
+        operation: 'deleteFavoriteItem',
+        extra: { favoriteId: id },
+      });
     } finally {
       isLoadingDeleteItem.value = false;
       isLoadingFavoriteById.value = false;
@@ -134,8 +147,12 @@ export const useFavoriteStore = defineStore('favorite', () => {
       if (error) throw error;
 
       currentFavoriteItem.value = content;
-    } catch {
+    } catch (err) {
       toast.error('Ошибка получения медиа', { timeout: 1000 });
+      reportError(err, {
+        operation: 'getFavoriteItem',
+        extra: { favoriteId: id },
+      });
     } finally {
       isLoadingFavoriteById.value = false;
     }
@@ -153,8 +170,11 @@ export const useFavoriteStore = defineStore('favorite', () => {
       }
 
       favoriteList.value = collections.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
-    } catch {
+    } catch (err) {
       toast.error('Ошибка получения коллекции');
+      reportError(err, {
+        operation: 'getFavoriteList',
+      });
     } finally {
       isLoading.value = false;
     }

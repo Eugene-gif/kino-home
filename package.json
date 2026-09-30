@@ -21,6 +21,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@sentry/vue": "^11.1.0",
     "@supabase/supabase-js": "^2.112.3",
     "@vueuse/core": "^14.3.0",
     "date-fns": "^4.3.0",

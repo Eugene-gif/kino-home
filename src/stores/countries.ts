@@ -5,6 +5,7 @@ import { STORAGE_KEYS } from '@/constants/constants';
 import { getCachedItem, setCachedItem } from '@/utils/storage';
 import { mapToRecordCountries } from '@/utils/mapToRecord';
 import { configurationCountries } from '@/api/endpoints';
+import { reportError } from '@/utils/reportError';
 import type { ConfigurationCountries200Item } from '@/stores/typesForStores';
 
 export const useCountriesStore = defineStore('countries', () => {
@@ -34,7 +35,9 @@ export const useCountriesStore = defineStore('countries', () => {
       }
     } catch (err) {
       toast.error('Ошибка загрузки стран');
-      throw err;
+      reportError(err, {
+        operation: 'fetchCountries'
+      });
     }
   }
 

@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { searchMulti, trendingAll, personPopularList } from '@/api/endpoints';
 import { useToast } from 'vue-toastification';
+import { reportError } from '@/utils/reportError';
 
 import type { SearchMulti200ResultsItem, PersonPopularList200ResultsItem, ExtendedTrendingAll200ResultsItem } from '@/stores/typesForStores';
 
@@ -24,7 +25,10 @@ export const useSearchStore = defineStore('search', () => {
       searchedList.value = data.results ?? [];
     } catch (err) {
       toast.error('Ошибка поиска, попробуйте позже');
-      throw err;
+      reportError(err, {
+        operation: 'fetchSearchMulti',
+        extra: { searchString: searchStr }
+      });
     } finally {
       isLoading.value = false;
       isSearchLoading.value = false;
@@ -38,7 +42,9 @@ export const useSearchStore = defineStore('search', () => {
       trendingList.value = data.results ?? [];
     } catch (err) {
       toast.error('Ошибка загрузки трендов');
-      throw err;
+      reportError(err, {
+        operation: 'fetchTrendingAll',
+      });
     }
   }
 
@@ -48,7 +54,9 @@ export const useSearchStore = defineStore('search', () => {
       personList.value = data.results ?? [];
     } catch (err) {
       toast.error('Ошибка загрузки популярных персон');
-      throw err;
+      reportError(err, {
+        operation: 'fetchPersonPopularList',
+      });
     }
   }
 

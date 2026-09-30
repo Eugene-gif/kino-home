@@ -6,6 +6,7 @@ import { useToast } from 'vue-toastification';
 import { moviePopularList, discoverMovie, movieDetails, movieVideos } from '@/api/endpoints';
 import { transformArrayInString } from '@/utils/transformArrayInString';
 import { buildImagePath } from '@/utils/images';
+import { reportError } from '@/utils/reportError';
 import type { MoviePopularList200ResultsItem, MovieDetailsFull } from '@/stores/typesForStores';
 import type { GenreWithMoviesType } from '@/stores/typesForStores';
 
@@ -60,16 +61,19 @@ export const useMoviesStore = defineStore('movies', () => {
     isError.value = false;
     detailsMovie.value = null;
     try {
-      const { data } = await movieDetails(id, { append_to_response: append });
+      const { data } = await movieDetails(id = 1, { append_to_response: append });
       detailsMovie.value = data;
 
       if (!data?.videos?.results?.length) {
         await fetchMovieVideos(id);
       }
     } catch (err) {
-      toast.error(`Не удалось загрузить фильм: ${id}`);
       isError.value = true;
-      throw err;
+      toast.error(`Не удалось загрузить фильм: ${id}`);
+      reportError(err, {
+        operation: 'fetchMovieDetails',
+        extra: { movieId: id }
+      });
     } finally {
       isLoadingMovieDetails.value = false;
     }
@@ -88,7 +92,10 @@ export const useMoviesStore = defineStore('movies', () => {
     } catch (err) {
       toast.error(`Не удалось загрузить трейлер`);
       isError.value = true;
-      throw err;
+      reportError(err, {
+        operation: 'fetchMovieVideos',
+        extra: { movieId: id }
+      });
     } finally {
       isLoadingMovieDetails.value = false;
     }
@@ -101,9 +108,12 @@ export const useMoviesStore = defineStore('movies', () => {
       const { data } = await moviePopularList();
       popularMovies.value = data.results ?? [];
       isError.value = false;
-    } catch {
+    } catch (err) {
       toast.error('Ошибка загрузки популярных фильмов.');
       isError.value = true;
+      reportError(err, {
+        operation: 'fetchPopularMovies',
+      });
     } finally {
       isLoadingPopularMovies.value = false;
     }
@@ -135,9 +145,12 @@ export const useMoviesStore = defineStore('movies', () => {
         console.error(`Failed to fetchMoviesByAllGenres: "${genre.name}(id: ${genre.id})":`, result?.reason);
         return { ...genre, movies: [] };
       });
-    } catch {
-      toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
+    } catch (err) {
       isError.value = true;
+      toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
+      reportError(err, {
+        operation: 'fetchMoviesByAllGenres',
+      });
     } finally {
       isLoadingGenreWithMovies.value = false;
     }
