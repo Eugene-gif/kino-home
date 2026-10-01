@@ -1,6 +1,8 @@
 import '@/assets/styles/main.css';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import { SENTRY_DSN } from '@/constants/constants';
+import { init } from "@sentry/vue";
 import Toast, { POSITION } from 'vue-toastification';
 import "vue-toastification/dist/index.css";
 import { useGenresStore } from '@/stores/genres';
@@ -13,6 +15,12 @@ import router from './router';
 
 const app = createApp(App);
 const pinia = createPinia();
+
+init({
+  app,
+  dsn: SENTRY_DSN,
+  enabled: import.meta.env.PROD,
+});
 
 app.use(pinia);
 app.use(router);

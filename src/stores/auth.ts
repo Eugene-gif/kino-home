@@ -6,6 +6,14 @@ import { STORAGE_KEYS, getFromStorage, saveToStorage, removeFromStorage } from '
 import router from '@/router';
 import { routePaths } from '@/constants/routesData';
 import type { Session } from '@supabase/supabase-js';
+import { isAuthError } from '@supabase/supabase-js';
+import { reportError } from '@/utils/reportError';
+import { SUPABASE_EXPECTED_AUTH_ERRORS } from '@/constants/constants';
+
+const reportUnexpectedAuthError = (error: unknown, operation: string) => {
+  if (isAuthError(error) && error.code && SUPABASE_EXPECTED_AUTH_ERRORS.has(error.code)) return;
+  reportError(error, { operation, service: 'supabase' });
+};
 
 interface SessionApp {
   access_token?: string | null;
@@ -75,7 +83,8 @@ export const useAuthStore = defineStore('auth', () => {
       password.value = '';
       toast.success('Вы вошли в профиль!');
     } catch (err) {
-      toast.error((err as Error).message ?? 'Ошибка входа в профиль. Попробуйте позже.');
+      reportUnexpectedAuthError(err, 'signIn');
+      toast.error(err instanceof Error ? err.message : 'Ошибка входа в профиль. Попробуйте позже.');
     } finally {
       isLoading.value = false;
     }
@@ -106,20 +115,28 @@ export const useAuthStore = defineStore('auth', () => {
       password.value = '';
       toast.success('Вы успешно зарегестрировались и вошли в профиль!');
     } catch (err) {
-      toast.error((err as Error).message ?? 'Ошибка регистрации. Попробуйте позже.');
+      reportUnexpectedAuthError(err, 'signUp');
+      toast.error(err instanceof Error ? err.message : 'Ошибка регистрации. Попробуйте позже.');
     } finally {
       isLoading.value = false;
     }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    removeFromStorage(STORAGE_KEYS.USER);
-    removeFromStorage(STORAGE_KEYS.SESSION);
-    session.value = null;
-    user.value = null;
-    router.push(routePaths.home);
-    toast.info('Вы вышли из профиля');
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.info('Вы вышли из профиля');
+    } catch (err) {
+      reportError(err, { operation: 'signOut', service: 'supabase' });
+      toast.error('Не удалось завершить выход на сервере');
+    } finally {
+      removeFromStorage(STORAGE_KEYS.USER);
+      removeFromStorage(STORAGE_KEYS.SESSION);
+      session.value = null;
+      user.value = null;
+      router.push(routePaths.home);
+    }
   }
 
   return { signUp, signIn, signOut, refreshSession, refreshUser, userName, email, password, isLoading, user, accessToken, isAuth };

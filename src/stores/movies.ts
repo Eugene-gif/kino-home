@@ -6,6 +6,7 @@ import { useToast } from 'vue-toastification';
 import { moviePopularList, discoverMovie, movieDetails, movieVideos } from '@/api/endpoints';
 import { transformArrayInString } from '@/utils/transformArrayInString';
 import { buildImagePath } from '@/utils/images';
+import { reportError } from '@/utils/reportError';
 import type { MoviePopularList200ResultsItem, MovieDetailsFull } from '@/stores/typesForStores';
 import type { GenreWithMoviesType } from '@/stores/typesForStores';
 
@@ -67,9 +68,13 @@ export const useMoviesStore = defineStore('movies', () => {
         await fetchMovieVideos(id);
       }
     } catch (err) {
-      toast.error(`Не удалось загрузить фильм: ${id}`);
       isError.value = true;
-      throw err;
+      toast.error(`Не удалось загрузить фильм: ${id}`);
+      reportError(err, {
+        operation: 'fetchMovieDetails',
+        service: 'tmdb',
+        extra: { movieId: id }
+      });
     } finally {
       isLoadingMovieDetails.value = false;
     }
@@ -88,7 +93,11 @@ export const useMoviesStore = defineStore('movies', () => {
     } catch (err) {
       toast.error(`Не удалось загрузить трейлер`);
       isError.value = true;
-      throw err;
+      reportError(err, {
+        operation: 'fetchMovieVideos',
+        service: 'tmdb',
+        extra: { movieId: id }
+      });
     } finally {
       isLoadingMovieDetails.value = false;
     }
@@ -101,9 +110,13 @@ export const useMoviesStore = defineStore('movies', () => {
       const { data } = await moviePopularList();
       popularMovies.value = data.results ?? [];
       isError.value = false;
-    } catch {
+    } catch (err) {
       toast.error('Ошибка загрузки популярных фильмов.');
       isError.value = true;
+      reportError(err, {
+        operation: 'fetchPopularMovies',
+        service: 'tmdb',
+      });
     } finally {
       isLoadingPopularMovies.value = false;
     }
@@ -132,12 +145,23 @@ export const useMoviesStore = defineStore('movies', () => {
           return { ...genre, movies: result.value };
         }
 
-        console.error(`Failed to fetchMoviesByAllGenres: "${genre.name}(id: ${genre.id})":`, result?.reason);
+        if (result?.status === 'rejected') {
+          reportError(result.reason, {
+            operation: 'fetchMoviesByGenre',
+            service: 'tmdb',
+            extra: { genreId: genre.id },
+          });
+        }
+
         return { ...genre, movies: [] };
       });
-    } catch {
-      toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
+    } catch (err) {
       isError.value = true;
+      toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
+      reportError(err, {
+        operation: 'fetchMoviesByAllGenres',
+        service: 'tmdb',
+      });
     } finally {
       isLoadingGenreWithMovies.value = false;
     }

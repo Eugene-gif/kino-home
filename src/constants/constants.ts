@@ -27,7 +27,17 @@ const ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN as string;
 const API_BASE_URL = import.meta.env.VITE_TMDB_API_BASE_URL as string;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string;
 const DEFAULT_LANGUAGE = 'ru-RU';
+
+const SUPABASE_EXPECTED_AUTH_ERRORS = new Set([
+  'invalid_credentials',
+  'email_not_confirmed',
+  'user_already_exists',
+  'email_exists',
+  'weak_password',
+  'email_address_invalid',
+]);
 
 export {
   APP_PREFIX,
@@ -43,6 +53,8 @@ export {
   DEFAULT_LANGUAGE,
   API_BASE_URL,
   SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
+  SUPABASE_PUBLISHABLE_KEY,
+  SUPABASE_EXPECTED_AUTH_ERRORS,
+  SENTRY_DSN
 }
 

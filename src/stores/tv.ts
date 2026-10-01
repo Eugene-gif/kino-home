@@ -6,6 +6,7 @@ import { APPEND_TO_RESPONSE_TV } from '@/constants/constants';
 import { useToast } from 'vue-toastification';
 import { buildImagePath } from '@/utils/images';
 import { transformArrayInString } from '@/utils/transformArrayInString';
+import { reportError } from '@/utils/reportError';
 import type { TvDetailsFull } from '@/stores/typesForStores';
 import type { GenreWithTvType } from '@/stores/typesForStores';
 
@@ -64,9 +65,14 @@ export const useTvStore = defineStore('tv', () => {
       if (!data?.videos?.results?.length) {
         await fetchTvVideos(id);
       }
-    } catch {
+    } catch (err) {
       isError.value = true;
       toast.error(`Не удалось загрузить сериал: ${id}`);
+      reportError(err, {
+        operation: 'fetchTvDetails',
+        service: 'tmdb',
+        extra: { tvId: id }
+      });
     } finally {
       isLoadingTvDetails.value = false;
     }
@@ -85,7 +91,11 @@ export const useTvStore = defineStore('tv', () => {
     } catch (err) {
       toast.error(`Не удалось загрузить трейлер`);
       isError.value = true;
-      throw err;
+      reportError(err, {
+        operation: 'fetchTvVideos',
+        service: 'tmdb',
+        extra: { tvId: id }
+      });
     } finally {
       isLoadingTvDetails.value = false;
     }
@@ -114,12 +124,22 @@ export const useTvStore = defineStore('tv', () => {
           return { ...genre, tvs: result.value };
         }
 
-        console.error(`Failed to fetchTvByAllGenres: "${genre.name}(id: ${genre.id})":`, result?.reason);
+        if (result?.status === 'rejected') {
+          reportError(result.reason, {
+            operation: 'fetchTvByGenre',
+            service: 'tmdb',
+            extra: { genreId: genre.id },
+          });
+        }
         return { ...genre, tvs: [] };
       });
-    } catch {
+    } catch (err) {
       toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
       isError.value = true;
+      reportError(err, {
+        operation: 'fetchTvByAllGenres',
+        service: 'tmdb',
+      });
     } finally {
       isLoadingGenreWithTvs.value = false;
     }
