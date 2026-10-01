@@ -38,6 +38,7 @@ dataExample
 
 # Vitest
 __screenshots__/
+.vitest/
 
 # Vite
 *.timestamp-*-*.mjs

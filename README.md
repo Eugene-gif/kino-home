@@ -9,6 +9,8 @@
 - [Функционал](#-функционал)
 - [Технологический стек](#-технологический-стек)
 - [Быстрый старт](#-быстрый-старт)
+- [Тесты](#-тесты)
+- [Storybook](#-storybook)
 
 ---
 
@@ -102,3 +104,61 @@
 - Firefox:
   - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
   - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+
+
+---
+
+## ✅ Тесты
+
+**Watch режим:**
+   ```bash
+   npm test
+   ```
+
+   ###
+
+**Однократный запуск всех unit-тестов:**
+   ```bash
+   npm run test:run
+   ```
+
+   ###
+
+**Отдельный файл:**
+   ```bash
+   npm run test:run -- src/components/Button/ButtonApp.test.ts
+   ```
+
+   ###
+
+**Запуск статистики покрытия(доступна в UI-отчете):**
+   ```bash
+   npm run test:coverage
+   ```
+
+   ###
+
+**UI-отчет:**
+   ```bash
+   npm run test:ui
+   ```
+
+---
+
+## 📕 Storybook
+
+**Локальный Storybook запускается на порту `6006`:**
+   ```bash
+   npm run storybook
+   ```
+
+   ###
+
+**Статическая сборка создаётся в `storybook-static`:**
+   ```bash
+   npm run build-storybook
+   ```
+
+   ###
+
+[К оглавлению](#-оглавление)
