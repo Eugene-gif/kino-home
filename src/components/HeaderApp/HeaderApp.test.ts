@@ -1,49 +1,38 @@
-import { defineComponent, nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { useSearchStore } from '@/stores/search';
 import HeaderApp from './HeaderApp.vue';
 
-const mocks = vi.hoisted(() => ({
-	mobile: false,
-	inputFocus: vi.fn(),
-	store: undefined as
-		| {
-				isLoading: { value: boolean };
-				isSearchLoading: { value: boolean };
-				isSearchLoaded: { value: boolean };
-				searchedList: { value: unknown[] };
-				trendingList: { value: unknown[] };
-				personList: { value: unknown[] };
-				fetchSearchMulti: ReturnType<typeof vi.fn>;
-				fetchHeaderData: ReturnType<typeof vi.fn>;
-		  }
-		| undefined,
+type SearchStore = ReturnType<typeof useSearchStore>;
+
+const { ref, computed, defineComponent, nextTick } = await vi.hoisted(() => import('vue'));
+
+const mocks = vi.hoisted(() => {
+	return {
+		mobile: ref(false),
+		inputFocus: vi.fn(),
+		store: {
+			isLoading: ref(false),
+			isSearchLoading: ref(false),
+			isSearchLoaded: ref(false),
+			searchedList: ref<SearchStore['searchedList']>([]),
+			trendingList: ref<SearchStore['trendingList']>([]),
+			personList: ref<SearchStore['personList']>([]),
+			fetchSearchMulti: vi.fn<SearchStore['fetchSearchMulti']>(),
+			fetchHeaderData: vi.fn<SearchStore['fetchHeaderData']>(),
+		},
+	};
+});
+
+vi.mock('pinia', () => ({ storeToRefs: (store: typeof mocks.store) => store }));
+
+vi.mock('@/composables/useDevice.ts', () => ({
+	useDevice: () => ({ isMobile: mocks.mobile }),
 }));
 
-vi.mock('pinia', () => ({ storeToRefs: (store: unknown) => store }));
+vi.mock('@/stores/search', () => ({ useSearchStore: () => mocks.store }));
 
-vi.mock('@/composables/useDevice.ts', async () => {
-	const { computed } = await import('vue');
-	return { useDevice: () => ({ isMobile: computed(() => mocks.mobile) }) };
-});
-
-vi.mock('@/stores/search', async () => {
-	const { ref } = await import('vue');
-	mocks.store = {
-		isLoading: ref(false),
-		isSearchLoading: ref(false),
-		isSearchLoaded: ref(false),
-		searchedList: ref([]),
-		trendingList: ref([]),
-		personList: ref([]),
-		fetchSearchMulti: vi.fn(),
-		fetchHeaderData: vi.fn(),
-	};
-	return { useSearchStore: () => mocks.store };
-});
-
-vi.mock('@/stores/auth', async () => {
-	const { computed, ref } = await import('vue');
+vi.mock('@/stores/auth', () => {
 	const user = ref(null);
 	return {
 		useAuthStore: () => ({
@@ -144,32 +133,32 @@ const global = {
 
 describe('HeaderApp', () => {
 	beforeEach(() => {
-		mocks.mobile = false;
-		mocks.store!.isLoading.value = false;
-		mocks.store!.isSearchLoading.value = false;
-		mocks.store!.isSearchLoaded.value = false;
-		mocks.store!.searchedList.value = [];
-		mocks.store!.trendingList.value = [];
-		mocks.store!.personList.value = [];
+		mocks.mobile.value = false;
+		mocks.store.isLoading.value = false;
+		mocks.store.isSearchLoading.value = false;
+		mocks.store.isSearchLoaded.value = false;
+		mocks.store.searchedList.value = [];
+		mocks.store.trendingList.value = [];
+		mocks.store.personList.value = [];
 	});
 
 	it('загружает данные шапки при монтировании и отображает десктопное меню', () => {
 		const wrapper = mount(HeaderApp, { global });
 
-		expect(mocks.store!.fetchHeaderData).toHaveBeenCalledOnce();
+		expect(mocks.store.fetchHeaderData).toHaveBeenCalledOnce();
 		expect(wrapper.find('.desktop-stub').exists()).toBe(true);
 		expect(wrapper.find('.mobile-stub').exists()).toBe(false);
 		expect(wrapper.getComponent(RouterLinkStub).props('to')).toBe('/');
 	});
 
 	it('открывает поиск, фокусирует поле и преобразует данные хранилища для контента', async () => {
-		mocks.store!.trendingList.value = [
+		mocks.store.trendingList.value = [
 			{ id: 1, name: 'Тьма', poster_path: '/dark.webp', media_type: 'tv' },
 		];
-		mocks.store!.searchedList.value = [
+		mocks.store.searchedList.value = [
 			{ id: 2, title: 'Дюна', poster_path: '/dune.webp', media_type: 'movie' },
 		];
-		mocks.store!.personList.value = [
+		mocks.store.personList.value = [
 			{ id: 3, name: 'Дени Вильнёв', known_for_department: 'Directing' },
 		];
 		const wrapper = mount(HeaderApp, { global });
@@ -194,34 +183,34 @@ describe('HeaderApp', () => {
 		await wrapper.get('.desktop-stub .button-stub').trigger('click');
 
 		await wrapper.get('.search-input').setValue('Матрица');
-		expect(mocks.store!.fetchSearchMulti).not.toHaveBeenCalled();
+		expect(mocks.store.fetchSearchMulti).not.toHaveBeenCalled();
 		await vi.advanceTimersByTimeAsync(500);
-		expect(mocks.store!.fetchSearchMulti).toHaveBeenCalledWith('Матрица');
+		expect(mocks.store.fetchSearchMulti).toHaveBeenCalledWith('Матрица');
 
-		mocks.store!.searchedList.value = [{ id: 1 }];
-		mocks.store!.isSearchLoaded.value = true;
+		mocks.store.searchedList.value = [{ id: 1 }];
+		mocks.store.isSearchLoaded.value = true;
 		await wrapper.get('.clear-search').trigger('click');
 
-		expect(mocks.store!.searchedList.value).toEqual([]);
-		expect(mocks.store!.isSearchLoaded.value).toBe(false);
+		expect(mocks.store.searchedList.value).toEqual([]);
+		expect(mocks.store.isSearchLoaded.value).toBe(false);
 		expect(wrapper.getComponent(InputSearchStub).props('text')).toBe('');
 	});
 
 	it('закрывает и очищает поиск из его контента', async () => {
-		mocks.store!.searchedList.value = [{ id: 1 }];
-		mocks.store!.isSearchLoaded.value = true;
+		mocks.store.searchedList.value = [{ id: 1 }];
+		mocks.store.isSearchLoaded.value = true;
 		const wrapper = mount(HeaderApp, { global });
 		await wrapper.get('.desktop-stub .button-stub').trigger('click');
 
 		await wrapper.get('.content-close').trigger('click');
 
 		expect(wrapper.getComponent(ModalStub).props('isOpen')).toBe(false);
-		expect(mocks.store!.searchedList.value).toEqual([]);
-		expect(mocks.store!.isSearchLoaded.value).toBe(false);
+		expect(mocks.store.searchedList.value).toEqual([]);
+		expect(mocks.store.isSearchLoaded.value).toBe(false);
 	});
 
 	it('открывает и закрывает мобильное меню и закрывает его при открытии поиска', async () => {
-		mocks.mobile = true;
+		mocks.mobile.value = true;
 		const wrapper = mount(HeaderApp, { global });
 		const mobileMenu = wrapper.getComponent(MobileStub);
 
