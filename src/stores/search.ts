@@ -27,7 +27,8 @@ export const useSearchStore = defineStore('search', () => {
       toast.error('Ошибка поиска, попробуйте позже');
       reportError(err, {
         operation: 'fetchSearchMulti',
-        extra: { searchString: searchStr }
+        service: 'tmdb',
+        extra: { queryLength: searchStr.length }
       });
     } finally {
       isLoading.value = false;
@@ -44,6 +45,7 @@ export const useSearchStore = defineStore('search', () => {
       toast.error('Ошибка загрузки трендов');
       reportError(err, {
         operation: 'fetchTrendingAll',
+        service: 'tmdb',
       });
     }
   }
@@ -56,6 +58,7 @@ export const useSearchStore = defineStore('search', () => {
       toast.error('Ошибка загрузки популярных персон');
       reportError(err, {
         operation: 'fetchPersonPopularList',
+        service: 'tmdb',
       });
     }
   }

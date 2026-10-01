@@ -36,7 +36,8 @@ export const useCountriesStore = defineStore('countries', () => {
     } catch (err) {
       toast.error('Ошибка загрузки стран');
       reportError(err, {
-        operation: 'fetchCountries'
+        operation: 'fetchCountries',
+        service: 'tmdb',
       });
     }
   }

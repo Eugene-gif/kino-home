@@ -30,6 +30,15 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY a
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string;
 const DEFAULT_LANGUAGE = 'ru-RU';
 
+const SUPABASE_EXPECTED_AUTH_ERRORS = new Set([
+  'invalid_credentials',
+  'email_not_confirmed',
+  'user_already_exists',
+  'email_exists',
+  'weak_password',
+  'email_address_invalid',
+]);
+
 export {
   APP_PREFIX,
   DEFAULT_TTL,
@@ -45,6 +54,7 @@ export {
   API_BASE_URL,
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
+  SUPABASE_EXPECTED_AUTH_ERRORS,
   SENTRY_DSN
 }
 

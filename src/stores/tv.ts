@@ -70,6 +70,7 @@ export const useTvStore = defineStore('tv', () => {
       toast.error(`Не удалось загрузить сериал: ${id}`);
       reportError(err, {
         operation: 'fetchTvDetails',
+        service: 'tmdb',
         extra: { tvId: id }
       });
     } finally {
@@ -92,7 +93,8 @@ export const useTvStore = defineStore('tv', () => {
       isError.value = true;
       reportError(err, {
         operation: 'fetchTvVideos',
-        extra: { id }
+        service: 'tmdb',
+        extra: { tvId: id }
       });
     } finally {
       isLoadingTvDetails.value = false;
@@ -122,7 +124,13 @@ export const useTvStore = defineStore('tv', () => {
           return { ...genre, tvs: result.value };
         }
 
-        console.error(`Failed to fetchTvByAllGenres: "${genre.name}(id: ${genre.id})":`, result?.reason);
+        if (result?.status === 'rejected') {
+          reportError(result.reason, {
+            operation: 'fetchTvByGenre',
+            service: 'tmdb',
+            extra: { genreId: genre.id },
+          });
+        }
         return { ...genre, tvs: [] };
       });
     } catch (err) {
@@ -130,6 +138,7 @@ export const useTvStore = defineStore('tv', () => {
       isError.value = true;
       reportError(err, {
         operation: 'fetchTvByAllGenres',
+        service: 'tmdb',
       });
     } finally {
       isLoadingGenreWithTvs.value = false;

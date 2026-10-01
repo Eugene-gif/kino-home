@@ -67,7 +67,8 @@ export const useFavoriteStore = defineStore('favorite', () => {
       toast.error('Ошибка добавления, попробуйте позже');
       reportError(err, {
         operation: 'addFavoriteItem',
-        extra: { favoriteId: content.id },
+        service: 'supabase',
+        extra: { contentId: content.id, mediaType: type, table: 'collections' },
       });
     } finally {
       isLoadingFavoriteById.value = false;
@@ -95,7 +96,8 @@ export const useFavoriteStore = defineStore('favorite', () => {
       toast.error('Ошибка, попробуйте позже');
       reportError(err, {
         operation: 'updateFavoriteItem',
-        extra: { favoriteId: contentId },
+        service: 'supabase',
+        extra: { contentId, table: 'collections' },
       });
     } finally {
       isLoadingUpdateItem.value = false;
@@ -122,7 +124,8 @@ export const useFavoriteStore = defineStore('favorite', () => {
       toast.error('Ошибка удаления');
       reportError(err, {
         operation: 'deleteFavoriteItem',
-        extra: { favoriteId: id },
+        service: 'supabase',
+        extra: { contentId: id, table: 'collections' },
       });
     } finally {
       isLoadingDeleteItem.value = false;
@@ -151,7 +154,8 @@ export const useFavoriteStore = defineStore('favorite', () => {
       toast.error('Ошибка получения медиа', { timeout: 1000 });
       reportError(err, {
         operation: 'getFavoriteItem',
-        extra: { favoriteId: id },
+        service: 'supabase',
+        extra: { contentId: id, table: 'collections' },
       });
     } finally {
       isLoadingFavoriteById.value = false;
@@ -174,6 +178,8 @@ export const useFavoriteStore = defineStore('favorite', () => {
       toast.error('Ошибка получения коллекции');
       reportError(err, {
         operation: 'getFavoriteList',
+        service: 'supabase',
+        extra: { table: 'collections' },
       });
     } finally {
       isLoading.value = false;

@@ -18,7 +18,8 @@ const pinia = createPinia();
 
 init({
   app,
-  dsn: SENTRY_DSN
+  dsn: SENTRY_DSN,
+  enabled: import.meta.env.PROD,
 });
 
 app.use(pinia);

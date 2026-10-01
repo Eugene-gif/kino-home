@@ -1,4 +1,5 @@
 import { ACCESS_TOKEN, DEFAULT_LANGUAGE, API_BASE_URL } from "@/constants/constants";
+import { ApiError } from './api-error';
 
 const getBody = <T>(c: Response | Request): Promise<T> => {
   const contentType = c.headers.get('content-type');
@@ -44,22 +45,16 @@ export const appFetch = async <T>(
     headers: getHeaders(options.headers),
   });
 
-  const data = await getBody<T>(response);
-
   if (!response.ok) {
-    console.error('TMDB request failed:', {
-      url: requestUrl,
+    throw new ApiError({
+      service: 'tmdb',
       status: response.status,
-      statusText: response.statusText,
-      data,
+      method: options.method ?? 'GET',
+      path: new URL(requestUrl).pathname,
     });
-
-    throw {
-      status: response.status,
-      data,
-      headers: response.headers,
-    }
   }
+
+  const data = await getBody<T>(response);
 
   return { status: response.status, data, headers: response.headers } as T;
 };

@@ -61,7 +61,7 @@ export const useMoviesStore = defineStore('movies', () => {
     isError.value = false;
     detailsMovie.value = null;
     try {
-      const { data } = await movieDetails(id = 1, { append_to_response: append });
+      const { data } = await movieDetails(id, { append_to_response: append });
       detailsMovie.value = data;
 
       if (!data?.videos?.results?.length) {
@@ -72,6 +72,7 @@ export const useMoviesStore = defineStore('movies', () => {
       toast.error(`Не удалось загрузить фильм: ${id}`);
       reportError(err, {
         operation: 'fetchMovieDetails',
+        service: 'tmdb',
         extra: { movieId: id }
       });
     } finally {
@@ -94,6 +95,7 @@ export const useMoviesStore = defineStore('movies', () => {
       isError.value = true;
       reportError(err, {
         operation: 'fetchMovieVideos',
+        service: 'tmdb',
         extra: { movieId: id }
       });
     } finally {
@@ -113,6 +115,7 @@ export const useMoviesStore = defineStore('movies', () => {
       isError.value = true;
       reportError(err, {
         operation: 'fetchPopularMovies',
+        service: 'tmdb',
       });
     } finally {
       isLoadingPopularMovies.value = false;
@@ -142,7 +145,14 @@ export const useMoviesStore = defineStore('movies', () => {
           return { ...genre, movies: result.value };
         }
 
-        console.error(`Failed to fetchMoviesByAllGenres: "${genre.name}(id: ${genre.id})":`, result?.reason);
+        if (result?.status === 'rejected') {
+          reportError(result.reason, {
+            operation: 'fetchMoviesByGenre',
+            service: 'tmdb',
+            extra: { genreId: genre.id },
+          });
+        }
+
         return { ...genre, movies: [] };
       });
     } catch (err) {
@@ -150,6 +160,7 @@ export const useMoviesStore = defineStore('movies', () => {
       toast.error('Ошибка загрузки фильмов. Попробуйте позже.');
       reportError(err, {
         operation: 'fetchMoviesByAllGenres',
+        service: 'tmdb',
       });
     } finally {
       isLoadingGenreWithMovies.value = false;

@@ -38,6 +38,7 @@ export const useGenresStore = defineStore('genres', () => {
     } catch (err) {
       reportError(err, {
         operation: 'fetchGenresMovies',
+        service: 'tmdb',
       });
     }
   }
@@ -53,6 +54,7 @@ export const useGenresStore = defineStore('genres', () => {
     } catch (err) {
       reportError(err, {
         operation: 'fetchGenresTv',
+        service: 'tmdb',
       });
     }
   }
