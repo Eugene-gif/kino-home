@@ -126,16 +126,16 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-
+      toast.info('Вы вышли из профиля');
+    } catch (err) {
+      reportError(err, { operation: 'signOut', service: 'supabase' });
+      toast.error('Не удалось завершить выход на сервере');
+    } finally {
       removeFromStorage(STORAGE_KEYS.USER);
       removeFromStorage(STORAGE_KEYS.SESSION);
       session.value = null;
       user.value = null;
       router.push(routePaths.home);
-      toast.info('Вы вышли из профиля');
-    } catch (err) {
-      reportError(err, { operation: 'signOut', service: 'supabase' });
-      toast.error('Не удалось выйти из профиля. Попробуйте позже.');
     }
   }
 
