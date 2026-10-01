@@ -64,6 +64,15 @@ export const useAuthStore = defineStore('auth', () => {
     saveToStorage(STORAGE_KEYS.SESSION, session.value);
   }
 
+  const clearAuth = () => {
+    const hadAuthData = !!user.value || !!session.value;
+    removeFromStorage(STORAGE_KEYS.USER);
+    removeFromStorage(STORAGE_KEYS.SESSION);
+    session.value = null;
+    user.value = null;
+    if (hadAuthData) router.push(routePaths.home);
+  }
+
   const signIn = async () => {
     try {
       isLoading.value = true;
@@ -131,13 +140,9 @@ export const useAuthStore = defineStore('auth', () => {
       reportError(err, { operation: 'signOut', service: 'supabase' });
       toast.error('Не удалось завершить выход на сервере');
     } finally {
-      removeFromStorage(STORAGE_KEYS.USER);
-      removeFromStorage(STORAGE_KEYS.SESSION);
-      session.value = null;
-      user.value = null;
-      router.push(routePaths.home);
+      clearAuth();
     }
   }
 
-  return { signUp, signIn, signOut, refreshSession, refreshUser, userName, email, password, isLoading, user, accessToken, isAuth };
+  return { signUp, signIn, signOut, refreshSession, refreshUser, clearAuth, userName, email, password, isLoading, user, accessToken, isAuth };
 })
